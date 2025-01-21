@@ -8,29 +8,27 @@ services:
   - postgresql
   - rabbitmq
   - docker
-  # - mongodb  # odkomentuj, jeśli Travis to obsługuje i faktycznie chcesz użyć MongoDB
 
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y clang cmake ccache shellcheck groovy gradle mercurial subversion git-lfs default-jdk
-  
-  # Instalacja shfmt z GitHuba
   - curl -sS -L https://github.com/mvdan/sh/releases/download/v3.4.0/shfmt_v3.4.0_linux_amd64 -o shfmt
   - chmod +x shfmt
   - sudo mv shfmt /usr/local/bin/
-
   - sudo apt-get install -y docker-compose || true
-  
   - sudo systemctl start mysql || true
   - sudo systemctl start rabbitmq-server || true
   - sudo systemctl start postgresql || true
 
 script:
   - java --version
-  - sudo systemctl status mysql.service
-  - sudo systemctl status rabbitmq-server.service
-  - sudo systemctl status postgresql.service
-  - sudo rabbitmqctl status
+  
+  # Sprawdzamy, czy usługi faktycznie działają (kod wyjścia 0 = active)
+  - sudo systemctl is-active mysql
+  - sudo systemctl is-active rabbitmq-server
+  - sudo systemctl is-active postgresql
+
+  # Dalsze polecenia sprawdzające wersje lub status
   - mysqld --version
   - mysqld --print-defaults
   - postgres --version
@@ -50,7 +48,6 @@ script:
   - docker run hello-world
   - docker compose version || true
   - docker buildx version || true
-  # Poniższe może się nie powieść, jeśli MongoDB nie jest faktycznie zainstalowane
   - mongod --version || true
   - gradle -version
   - groovy -version
