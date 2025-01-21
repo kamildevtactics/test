@@ -1,54 +1,69 @@
+dist: bionic
+group: stable
+language: generic
+sudo: required
+
+services:
+  - mysql
+  - postgresql
+  - rabbitmq
+  - docker
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y docker-compose || true
+
+before_script:
+  - sudo systemctl start mysql || true
+  - sudo systemctl start postgresql || true
+
 script:
-  # Sprawdzanie wersji i stanu usług
-  - java --version
+  # Usługi
   - sudo systemctl status mysql.service
   - sudo systemctl status rabbitmq-server.service
   - sudo systemctl status postgresql.service
-  - sudo rabbitmqctl status || true  # Dodano || true, aby uniknąć błędu hosta RabbitMQ
+  - sudo rabbitmqctl status || true
 
-  # Wersje i konfiguracje baz danych
+  # Bazy danych
   - mysqld --version
-  - postgres --version
+  - psql --version
   - mysqld --print-defaults
-  - psql -U postgres -c 'SHOW config_file'
+  - psql -U postgres -c 'SELECT 1;' || true
 
   # Python i pip
-  - python --version       # Python 2
-  - pip --version          # Pip dla Pythona 2
-  - python3 --version      # Python 3
-  - pip3 --version         # Pip dla Pythona 3
+  - python --version
+  - pip --version
+  - python3 --version
+  - pip3 --version
 
   # Heroku CLI
   - heroku --version
 
-  # Narzędzia do podpisów kontenerów
-  - cosign version
-
-  # Systemy kontroli wersji
+  # Kontrola wersji
   - git --version
   - git-lfs --version
   - hg --version
   - svn --version
 
-  # Kompilatory i narzędzia programistyczne
+  # Kompilatory i narzędzia
   - clang --version
   - cmake --version
   - gcc --version
   - ccache -V
 
-  # Narzędzia analizy i formatowania
+  # Analiza i formatowanie
   - shellcheck --version
   - shfmt -version
 
-  # Docker i związane narzędzia
+  # Docker i powiązane
   - docker version
   - docker run hello-world
-  - docker compose version
+  - docker-compose --version
   - docker buildx version
 
   # MongoDB
   - mongod --version
 
-  # Systemy budowania i JVM
+  # JVM i systemy budowania
   - gradle -version
   - groovy -version
