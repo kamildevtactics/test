@@ -1,5 +1,5 @@
 dist: bionic
-group: stable
+group: dev
 language: generic
 sudo: required
 
