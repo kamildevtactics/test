@@ -1,3 +1,47 @@
-dist: focal
+dist: bionic
+group: stable
+language: generic
+sudo: required
+
+services:
+  - mysql
+  - postgresql
+  - rabbitmq
+  - docker
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y clang cmake ccache shellcheck shfmt groovy gradle mercurial subversion git-lfs mongodb default-jdk
+  - sudo apt-get install -y docker-compose || true
+  - sudo systemctl start mysql || true
+  - sudo systemctl start rabbitmq-server || true
+  - sudo systemctl start postgresql || true
+
 script:
-  - echo "hello"
+  - java --version
+  - sudo systemctl status mysql.service
+  - sudo systemctl status rabbitmq-server.service
+  - sudo systemctl status postgresql.service
+  - sudo rabbitmqctl status
+  - mysqld --version
+  - mysqld --print-defaults
+  - postgres --version
+  - psql -U postgres -c 'SHOW config_file'
+  - cosign version || true
+  - git --version
+  - git-lfs --version
+  - hg --version
+  - svn --version
+  - clang --version
+  - cmake --version
+  - gcc --version
+  - ccache -V
+  - shellcheck --version
+  - shfmt -version
+  - docker version
+  - docker run hello-world
+  - docker compose version || true
+  - docker buildx version || true
+  - mongod --version
+  - gradle -version
+  - groovy -version
