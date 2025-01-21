@@ -9,35 +9,24 @@ services:
   - rabbitmq
   - docker
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y clang cmake ccache shellcheck groovy gradle mercurial subversion git-lfs default-jdk
-  - curl -sS -L https://github.com/mvdan/sh/releases/download/v3.4.0/shfmt_v3.4.0_linux_amd64 -o shfmt
-  - chmod +x shfmt
-  - sudo mv shfmt /usr/local/bin/
-  - sudo apt-get install -y docker-compose || true
-  - sudo systemctl start mysql || true
-  - sudo systemctl start rabbitmq-server || true
-  - sudo systemctl start postgresql || true
-
 script:
-  - java --version
-  
-  # Sprawdzamy, czy usługi faktycznie działają (kod wyjścia 0 = active)
+  # Sprawdzenie, czy usługi działają (kod wyjścia 0 = active)
   - sudo systemctl is-active mysql
   - sudo systemctl is-active rabbitmq-server
   - sudo systemctl is-active postgresql
-
-  # Dalsze polecenia sprawdzające wersje lub status
-  - mysqld --version
-  - mysqld --print-defaults
-  - postgres --version
-  - psql -U postgres -c 'SHOW config_file'
-  - cosign version || true
+  
+  # Sprawdzenie wersji narzędzi
+  - java --version
+  - python --version       # Python 2
+  - pip --version          # Pip dla Pythona 2
+  - python3 --version      # Python 3
+  - pip3 --version         # Pip dla Pythona 3
+  - heroku --version
+  - cosign version
   - git --version
   - git-lfs --version
-  - hg --version
-  - svn --version
+  - hg --version           # Mercurial
+  - svn --version          # Subversion
   - clang --version
   - cmake --version
   - gcc --version
@@ -46,8 +35,8 @@ script:
   - shfmt -version
   - docker version
   - docker run hello-world
-  - docker compose version || true
-  - docker buildx version || true
-  - mongod --version || true
+  - docker compose version
+  - docker buildx version
+  - mongod --version
   - gradle -version
   - groovy -version
