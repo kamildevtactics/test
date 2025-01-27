@@ -1,48 +1,71 @@
-os: linux
 dist: focal
+group: dev
+language: generic
+sudo: required
 
-install: skip
-script: java -version
-jobs:
-  include:
-    - name: "JDK 17 - PHP on XENIAL"
-      dist: xenial
-      language: php
-      php: 8.2.9
-      jdk: openjdk17
-    - name: "JDK 17 - PHP on Bionic"
-      dist: bionic
-      language: php
-      php: 8.2.9
-      jdk: openjdk17
-    - name: "JDK 17 - PHP on FOCAL"
-      dist: focal
-      language: php
-      php: 8.2.9
-      jdk: openjdk17
-    - name: "JDK 17 - PHP on JAMMY"
-      dist: jammy
-      language: php
-      php: 8.2.9
-      jdk: openjdk17
+services:
+  - mysql
+  - postgresql
+  - rabbitmq
+  - docker
 
-    - name: "JDK 17 - RUBY on XENIAL"
-      dist: xenial
-      language: ruby
-      ruby: 3.1.2
-      jdk: openjdk17
-    - name: "JDK 17 - RUBY on Bionic"
-      dist: bionic
-      language: ruby
-      ruby: 3.1.2
-      jdk: openjdk17
-    - name: "JDK 17 - RUBY on FOCAL"
-      dist: focal
-      language: ruby
-      ruby: 3.1.2
-      jdk: openjdk17
-    - name: "JDK 17 - RUBY on JAMMY"
-      dist: jammy
-      language: ruby
-      ruby: 3.1.2
-      jdk: openjdk17
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y docker-compose || true
+
+before_script:
+  - sudo systemctl start mysql || true
+  - sudo systemctl start postgresql || true
+
+script:
+  # Usługi
+  - sudo systemctl status mysql.service
+  - sudo systemctl status rabbitmq-server.service
+  - sudo systemctl status postgresql.service
+  - sudo rabbitmqctl status || true
+
+  # Bazy danych
+  - mysqld --version
+  - psql --version
+  - mysqld --print-defaults
+  - psql -U postgres -c 'SELECT 1;' || true
+
+  # Python i pip
+  - python --version
+  - pip --version
+  - python3 --version
+  - pip3 --version
+
+  # Heroku CLI
+  - heroku --version
+
+  # Kontrola wersji
+  - git --version
+  - git-lfs --version
+  - hg --version
+  - svn --version
+
+  # Kompilatory i narzędzia
+  - clang --version
+  - cmake --version
+  - gcc --version
+  - ccache -V
+
+  # Analiza i formatowanie
+  - shellcheck --version
+  - shfmt -version
+
+  # Docker i powiązane
+  - docker version
+  - docker run hello-world
+  - docker-compose --version
+  - docker buildx version
+
+  # MongoDB
+  - mongod --version
+
+  # JVM i systemy budowania
+  - gradle -version
+  - groovy -version
+  - java -version
+  - javac -version
