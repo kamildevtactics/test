@@ -1,38 +1,48 @@
-os: freebsd
-group: dev
+os: linux
+dist: focal
 
-script:
-  # Ruby support
-  - ruby --version
-  - rvm list
+install: skip
+script: java -version
+jobs:
+  include:
+    - name: "JDK 17 - PHP on XENIAL"
+      dist: xenial
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
+    - name: "JDK 17 - PHP on Bionic"
+      dist: bionic
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
+    - name: "JDK 17 - PHP on FOCAL"
+      dist: focal
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
+    - name: "JDK 17 - PHP on JAMMY"
+      dist: jammy
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
 
-  # C i C++ support
-  - make --version
-  - autoreconf --version
-  - scons --version
-  - shellcheck --version
-  - shfmt -version
-  - clang --version
-  - gcc --version
-  - cmake --version
-  - ccache -V
-  - llvm-config --version
-
-  # Python support
-  - python3.6 --version
-  - python3.8 --version
-  - pip3 --version
-  - pypy --version
-
-  # Go support
-  - go version
-
-  # Julia support
-  - julia --version
-
-  # Java support
-  - java -version
-  - javac -version
-  - ant -version
-  - mvn -version
-  - gradle -version
+    - name: "JDK 17 - RUBY on XENIAL"
+      dist: xenial
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
+    - name: "JDK 17 - RUBY on Bionic"
+      dist: bionic
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
+    - name: "JDK 17 - RUBY on FOCAL"
+      dist: focal
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
+    - name: "JDK 17 - RUBY on JAMMY"
+      dist: jammy
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
