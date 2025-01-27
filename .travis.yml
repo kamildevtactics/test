@@ -1,29 +1,18 @@
-#dist: focal
-dist: bionic
-#dist: freebsd
-#os: freebsd
-group: dev
-language: generic
-sudo: required
+os: freebsd
 
-services:
-  - mysql
-  - postgresql
-  - rabbitmq
-  - docker
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y docker-compose || true
+  - sudo pkg update
+  - sudo pkg install -y docker-compose || true
 
 before_script:
-  - sudo systemctl start mysql || true
-  - sudo systemctl start postgresql || true
+  - sudo service mysql-server start || true
+  - sudo service postgresql start || true
 
 script:
-  - sudo systemctl status mysql.service
-  - sudo systemctl status rabbitmq-server.service
-  - sudo systemctl status postgresql.service
+  - sudo service mysql-server status
+  - sudo service rabbitmq status
+  - sudo service postgresql status
   - sudo rabbitmqctl status || true
 
   - mysqld --version
@@ -31,11 +20,8 @@ script:
   - mysqld --print-defaults
   - psql -U postgres -c 'SELECT 1;' || true
 
-  - python --version
-  - pip --version
   - python3 --version
   - pip3 --version
-
 
   - heroku --version
 
