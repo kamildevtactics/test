@@ -1,5 +1,4 @@
 os: freebsd
-language: generic
 
 script:
   # Ruby support
