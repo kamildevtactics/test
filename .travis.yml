@@ -69,3 +69,12 @@ script:
   - groovy -version
   - java -version
   - javac -version
+
+  # Wszystkie zainstalowane wersje Javy
+  - echo "Dostępne wersje Javy:"
+  - sudo update-java-alternatives --list
+
+  # Sprawdzenie zawartości katalogu z instalacjami Javy
+  - echo "Zainstalowane wersje w katalogu /usr/lib/jvm:"
+  - ls -l /usr/lib/jvm
+
