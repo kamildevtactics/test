@@ -1,6 +1,6 @@
-#dist: focal
+dist: focal
 #dist: bionic
-dist: freebsd 14
+#dist: freebsd 14
 group: dev
 language: generic
 sudo: required
