@@ -1,4 +1,5 @@
 os: freebsd
+group: dev
 
 script:
   # Ruby support
