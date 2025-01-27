@@ -1,5 +1,5 @@
 os: freebsd
-
+group: stable
 
 before_install:
   - sudo pkg update
