@@ -1,49 +1,38 @@
 os: freebsd
-group: stable
-
-before_install:
-  - sudo pkg update
-  - sudo pkg install -y docker-compose || true
-
-before_script:
-  - sudo service mysql-server start || true
-  - sudo service postgresql start || true
+language: generic
 
 script:
-  - sudo service mysql-server status
-  - sudo service rabbitmq status
-  - sudo service postgresql status
-  - sudo rabbitmqctl status || true
+  # Ruby support
+  - ruby --version
+  - rvm list
 
-  - mysqld --version
-  - psql --version
-  - mysqld --print-defaults
-  - psql -U postgres -c 'SELECT 1;' || true
-
-  - python3 --version
-  - pip3 --version
-
-  - heroku --version
-
-  - git --version
-  - git-lfs --version
-  - hg --version
-  - svn --version
-
-  - clang --version
-  - cmake --version
-  - gcc --version
-  - ccache -V
-
+  # C i C++ support
+  - make --version
+  - autoreconf --version
+  - scons --version
   - shellcheck --version
   - shfmt -version
+  - clang --version
+  - gcc --version
+  - cmake --version
+  - ccache -V
+  - llvm-config --version
 
-  - docker version
-  - docker run hello-world
-  - docker-compose --version
-  - docker buildx version
+  # Python support
+  - python3.6 --version
+  - python3.8 --version
+  - pip3 --version
+  - pypy --version
 
-  - mongod --version
+  # Go support
+  - go version
 
+  # Julia support
+  - julia --version
+
+  # Java support
+  - java -version
+  - javac -version
+  - ant -version
+  - mvn -version
   - gradle -version
-  - groovy -version
