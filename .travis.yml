@@ -1,4 +1,6 @@
-dist: focal
+#dist: focal
+#dist: bionic
+dist: freebsd 14
 group: dev
 language: generic
 sudo: required
@@ -18,52 +20,43 @@ before_script:
   - sudo systemctl start postgresql || true
 
 script:
-  # Usługi
   - sudo systemctl status mysql.service
   - sudo systemctl status rabbitmq-server.service
   - sudo systemctl status postgresql.service
   - sudo rabbitmqctl status || true
 
-  # Bazy danych
   - mysqld --version
   - psql --version
   - mysqld --print-defaults
   - psql -U postgres -c 'SELECT 1;' || true
 
-  # Python i pip
   - python --version
   - pip --version
   - python3 --version
   - pip3 --version
 
-  # Heroku CLI
+
   - heroku --version
 
-  # Kontrola wersji
   - git --version
   - git-lfs --version
   - hg --version
   - svn --version
 
-  # Kompilatory i narzędzia
   - clang --version
   - cmake --version
   - gcc --version
   - ccache -V
 
-  # Analiza i formatowanie
   - shellcheck --version
   - shfmt -version
 
-  # Docker i powiązane
   - docker version
   - docker run hello-world
   - docker-compose --version
   - docker buildx version
 
-  # MongoDB
   - mongod --version
 
-  # JVM i systemy budowania
   - gradle -version
   - groovy -version
