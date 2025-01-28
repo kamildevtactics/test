@@ -1,80 +1,38 @@
-dist: bionic
-group: stable
-language: generic
-sudo: required
-
-services:
-  - mysql
-  - postgresql
-  - rabbitmq
-  - docker
-
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y docker-compose || true
-
-before_script:
-  - sudo systemctl start mysql || true
-  - sudo systemctl start postgresql || true
+os: freebsd
+group: dev
 
 script:
-  # Usługi
-  - sudo systemctl status mysql.service
-  - sudo systemctl status rabbitmq-server.service
-  - sudo systemctl status postgresql.service
-  - sudo rabbitmqctl status || true
+  # Ruby support
+  - ruby --version
+  - rvm list
 
-  # Bazy danych
-  - mysqld --version
-  - psql --version
-  - mysqld --print-defaults
-  - psql -U postgres -c 'SELECT 1;' || true
-
-  # Python i pip
-  - python --version
-  - pip --version
-  - python3 --version
-  - pip3 --version
-
-  # Heroku CLI
-  - heroku --version
-
-  # Kontrola wersji
-  - git --version
-  - git-lfs --version
-  - hg --version
-  - svn --version
-
-  # Kompilatory i narzędzia
-  - clang --version
-  - cmake --version
-  - gcc --version
-  - ccache -V
-
-  # Analiza i formatowanie
+  # C i C++ support
+  - make --version
+  - autoreconf --version
+  - scons --version
   - shellcheck --version
   - shfmt -version
+  - clang --version
+  - gcc --version
+  - cmake --version
+  - ccache -V
+  - llvm-config --version
 
-  # Docker i powiązane
-  - docker version
-  - docker run hello-world
-  - docker-compose --version
-  - docker buildx version
+  # Python support
+  - python3.6 --version
+  - python3.8 --version
+  - pip3 --version
+  - pypy --version
 
-  # MongoDB
-  - mongod --version
+  # Go support
+  - go version
 
-  # JVM i systemy budowania
-  - gradle -version
-  - groovy -version
+  # Julia support
+  - julia --version
+
+  # Java support
   - java -version
   - javac -version
-
-  # Wszystkie zainstalowane wersje Javy
-  - echo "Dostępne wersje Javy:"
-  - sudo update-java-alternatives --list
-
-  # Sprawdzenie zawartości katalogu z instalacjami Javy
-  - echo "Zainstalowane wersje w katalogu /usr/lib/jvm:"
-  - ls -l /usr/lib/jvm
-
+  - ant -version
+  - mvn -version
+  - gradle -version
