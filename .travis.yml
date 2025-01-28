@@ -1,38 +1,89 @@
-os: freebsd
+dist: focal
 group: dev
+language: generic
+sudo: required
+
+services:
+  - mysql
+  - postgresql
+  - rabbitmq
+  - docker
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y docker-compose || true
+
+before_script:
+  - sudo systemctl start mysql || true
+  - sudo systemctl start postgresql || true
 
 script:
-  # Ruby support
-  - ruby --version
-  - rvm list
+  # Usługi
+  - sudo systemctl status mysql.service
+  - sudo systemctl status rabbitmq-server.service
+  - sudo systemctl status postgresql.service
+  - sudo rabbitmqctl status || true
 
-  # C i C++ support
-  - make --version
-  - autoreconf --version
-  - scons --version
+  # Bazy danych
+  - mysqld --version
+  - psql --version
+  - mysqld --print-defaults
+  - psql -U postgres -c 'SELECT 1;' || true
+
+  # Python i pip
+  - python --version
+  - pip --version
+  - python3 --version
+  - pip3 --version
+
+  # Heroku CLI
+  - heroku --version
+
+  # Kontrola wersji
+  - git --version
+  - git-lfs --version
+  - hg --version
+  - svn --version
+
+  # Kompilatory i narzędzia
+  - clang --version
+  - cmake --version
+  - gcc --version
+  - ccache -V
+
+  # Analiza i formatowanie
   - shellcheck --version
   - shfmt -version
-  - clang --version
-  - gcc --version
-  - cmake --version
-  - ccache -V
-  - llvm-config --version
 
-  # Python support
-  - python3.6 --version
-  - python3.8 --version
-  - pip3 --version
-  - pypy --version
+  # Docker i powiązane
+  - docker version
+  - docker run hello-world
+  - docker-compose --version
+  - docker buildx version
 
-  # Go support
-  - go version
+  # MongoDB
+  - mongod --version
 
-  # Julia support
-  - julia --version
-
-  # Java support
+  # JVM i systemy budowania
+  - gradle -version
+  - groovy -version
   - java -version
   - javac -version
-  - ant -version
-  - mvn -version
-  - gradle -version
+
+  # ===== Dodane Polecenia =====
+
+  # 1. Wylistowanie wszystkich plików i katalogów w /opt/jvm
+  - echo "===== Lista zawartości katalogu /opt/jvm ====="
+  - if [ -d "/opt/jvm" ]; then
+      ls -la /opt/jvm;
+    else
+      echo "/opt/jvm nie istnieje.";
+    fi
+
+  # 2. Wypisanie zawartości pliku /home/travis/.bash_profile.d/travis_jdk.bash
+  - echo "===== Zawartość pliku /home/travis/.bash_profile.d/travis_jdk.bash ====="
+  - if [ -f "/home/travis/.bash_profile.d/travis_jdk.bash" ]; then
+      cat /home/travis/.bash_profile.d/travis_jdk.bash;
+    else
+      echo "Plik /home/travis/.bash_profile.d/travis_jdk.bash nie istnieje.";
+    fi
