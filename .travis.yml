@@ -1,5 +1,5 @@
 dist: focal
-group: dev
+group: stable
 language: generic
 sudo: required
 
@@ -69,21 +69,3 @@ script:
   - groovy -version
   - java -version
   - javac -version
-
-  # ===== Dodane Polecenia =====
-
-  # 1. Wylistowanie wszystkich plików i katalogów w /opt/jvm
-  - echo "===== Lista zawartości katalogu /opt/jvm ====="
-  - if [ -d "/opt/jvm" ]; then
-      ls -la /opt/jvm;
-    else
-      echo "/opt/jvm nie istnieje.";
-    fi
-
-  # 2. Wypisanie zawartości pliku /home/travis/.bash_profile.d/travis_jdk.bash
-  - echo "===== Zawartość pliku /home/travis/.bash_profile.d/travis_jdk.bash ====="
-  - if [ -f "/home/travis/.bash_profile.d/travis_jdk.bash" ]; then
-      cat /home/travis/.bash_profile.d/travis_jdk.bash;
-    else
-      echo "Plik /home/travis/.bash_profile.d/travis_jdk.bash nie istnieje.";
-    fi
