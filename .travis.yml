@@ -78,7 +78,7 @@ script:
     directories=(
       "/opt"
       "/usr/lib"
-      "/usr"
+      "/usr/lib/jvm"
       "/home/travis/.bash_profile.d"
       "/opt/tools" # Dodaj tutaj inne katalogi według potrzeby
     )
