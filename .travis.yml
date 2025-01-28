@@ -1,4 +1,4 @@
-dist: focal
+dist: bionic
 group: dev
 language: generic
 sudo: required
