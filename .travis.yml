@@ -8,6 +8,6 @@ jobs:
     - name: "JDK 17 - PHP on FOCAL"
       dist: focal
       language: php
-      php: 8.2.9
+      php: 8.3
       jdk: openjdk9
 
