@@ -3,16 +3,72 @@ group: dev
 language: generic
 sudo: required
 
+services:
+  - mysql
+  - postgresql
+  - rabbitmq
+  - docker
+
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y docker-compose || true
+
+before_script:
+  - sudo systemctl start mysql || true
+  - sudo systemctl start postgresql || true
+
+script:
+  # Usługi
+  - sudo systemctl status mysql.service
+  - sudo systemctl status rabbitmq-server.service
+  - sudo systemctl status postgresql.service
+  - sudo rabbitmqctl status || true
+
+  # Bazy danych
+  - mysqld --version
+  - psql --version
+  - mysqld --print-defaults
+  - psql -U postgres -c 'SELECT 1;' || true
+
+  # Python i pip
+  - python --version
+  - pip --version
+  - python3 --version
+  - pip3 --version
+
+  # Heroku CLI
+  - heroku --version
+
+  # Kontrola wersji
+  - git --version
+  - git-lfs --version
+  - hg --version
+  - svn --version
+
+  # Kompilatory i narzędzia
+  - clang --version
+  - cmake --version
+  - gcc --version
+  - ccache -V
+
+  # Analiza i formatowanie
+  - shellcheck --version
+  - shfmt -version
+
+  # Docker i powiązane
+  - docker version
+  - docker run hello-world
+  - docker-compose --version
+  - docker buildx version
+
+  # MongoDB
+  - mongod --version
 
   # JVM i systemy budowania
   - gradle -version
   - groovy -version
   - java -version
   - javac -version
-  - apt list --installed | grep openjdk
 
   # ===== Dodane Polecenia =====
 
@@ -20,11 +76,10 @@ before_install:
   - echo "===== Lista zawartości wybranych katalogów ====="
   - |
     directories=(
-      "/opt"
       "/usr/lib"
       "/usr/lib/jvm"
-      "/home/travis/.bash_profile.d"
-      "/opt/tools" # Dodaj tutaj inne katalogi według potrzeby
+      "/usr/local/lib/jvm"
+      "/usr/local/lib"
     )
 
     for dir in "${directories[@]}"; do
