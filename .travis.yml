@@ -64,21 +64,42 @@ script:
   # MongoDB
   - mongod --version
 
-  # ===== Dodajemy i wyświetlamy update-alternatives dla JDK 8 =====
-  - sudo update-alternatives --install /usr/bin/java java /usr/local/lib/jvm/openjdk8/bin/java 1
-  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk9/bin/javac 1
+  # =======================================
+  #   Dodajemy kilka JDK do alternatyw
+  # =======================================
+  # openjdk8 (priorytet: 1)
+  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk8/bin/java  1
+  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk8/bin/javac 1
+
+  # openjdk9 (priorytet: 2)
+  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk9/bin/java  2
+  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk9/bin/javac 2
+
+  # openjdk10 (priorytet: 3)
+  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk10/bin/java  3
+  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk10/bin/javac 3
+
+  # openjdk11 (priorytet: 4)
+  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk11/bin/java  4
+  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk11/bin/javac 4
+
+  # Wyświetlamy listę wszystkich zarejestrowanych alternatyw
   - sudo update-alternatives --list java
   - sudo update-alternatives --list javac
 
-  # JVM i systemy budowania
-  - gradle -version
-  - groovy -version
+  # Przykład sprawdzenia domyślnej wersji
   - java -version
   - javac -version
 
+  # =======================================
+  #   Reszta sprawdzeń
+  # =======================================
+  - gradle -version
+  - groovy -version
+
   # ===== Dodane Polecenia =====
 
-  # 1. Wylistowanie wszystkich plików i katalogów w /opt/jvm, /usr/lib/jvm, /home/travis/.bash_profile.d oraz /opt/tools
+  # 1. Wylistowanie wszystkich plików i katalogów w /opt/jvm, /usr/lib/jvm, /usr/local/lib/jvm oraz /usr/local/lib
   - echo "===== Lista zawartości wybranych katalogów ====="
   - |
     directories=(
