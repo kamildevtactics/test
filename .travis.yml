@@ -1,128 +1,13 @@
-dist: bionic
-group: master
-language: generic
-sudo: required
+os: linux
+dist: focal
 
-services:
-  - mysql
-  - postgresql
-  - rabbitmq
-  - docker
+install: skip
+script: java -version
+jobs:
+  include:
+    - name: "JDK 17 - PHP on FOCAL"
+      dist: focal
+      language: php
+      php: 8.2.9
+      jdk: openjdk9
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y docker-compose || true
-
-before_script:
-  - sudo systemctl start mysql || true
-  - sudo systemctl start postgresql || true
-
-script:
-  # Usługi
-  - sudo systemctl status mysql.service
-  - sudo systemctl status rabbitmq-server.service
-  - sudo systemctl status postgresql.service
-  - sudo rabbitmqctl status || true
-
-  # Bazy danych
-  - mysqld --version
-  - psql --version
-  - mysqld --print-defaults
-  - psql -U postgres -c 'SELECT 1;' || true
-
-  # Python i pip
-  - python --version
-  - pip --version
-  - python3 --version
-  - pip3 --version
-
-  # Heroku CLI
-  - heroku --version
-
-  # Kontrola wersji
-  - git --version
-  - git-lfs --version
-  - hg --version
-  - svn --version
-
-  # Kompilatory i narzędzia
-  - clang --version
-  - cmake --version
-  - gcc --version
-  - ccache -V
-
-  # Analiza i formatowanie
-  - shellcheck --version
-  - shfmt -version
-
-  # Docker i powiązane
-  - docker version
-  - docker run hello-world
-  - docker-compose --version
-  - docker buildx version
-
-  # MongoDB
-  - mongod --version
-
-  # =======================================
-  #   Dodajemy kilka JDK do alternatyw
-  # =======================================
-  # openjdk8 (priorytet: 1)
-  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk8/bin/java  1
-  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk8/bin/javac 1
-
-  # openjdk9 (priorytet: 2)
-  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk9/bin/java  2
-  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk9/bin/javac 2
-
-  # openjdk10 (priorytet: 3)
-  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk10/bin/java  3
-  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk10/bin/javac 3
-
-  # openjdk11 (priorytet: 4)
-  - sudo update-alternatives --install /usr/bin/java  java  /usr/local/lib/jvm/openjdk11/bin/java  4
-  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk11/bin/javac 4
-
-  # Wyświetlamy listę wszystkich zarejestrowanych alternatyw
-  - sudo update-alternatives --list java
-  - sudo update-alternatives --list javac
-
-  # Przykład sprawdzenia domyślnej wersji
-  - java -version
-  - javac -version
-
-  # =======================================
-  #   Reszta sprawdzeń
-  # =======================================
-  - gradle -version
-  - groovy -version
-
-  # ===== Dodane Polecenia =====
-
-  # 1. Wylistowanie wszystkich plików i katalogów w /opt/jvm, /usr/lib/jvm, /usr/local/lib/jvm oraz /usr/local/lib
-  - echo "===== Lista zawartości wybranych katalogów ====="
-  - |
-    directories=(
-      "/usr/lib"
-      "/usr/lib/jvm"
-      "/usr/local/lib/jvm"
-      "/usr/local/lib"
-    )
-
-    for dir in "${directories[@]}"; do
-      echo "===== Lista zawartości katalogu $dir ====="
-      if [ -d "$dir" ]; then
-        ls -la "$dir"
-      else
-        echo "Katalog $dir nie istnieje."
-      fi
-      echo ""
-    done
-
-  # 2. Wypisanie zawartości pliku /home/travis/.bash_profile.d/travis_jdk.bash
-  - echo "===== Zawartość pliku /home/travis/.bash_profile.d/travis_jdk.bash ====="
-  - if [ -f "/home/travis/.bash_profile.d/travis_jdk.bash" ]; then
-      cat /home/travis/.bash_profile.d/travis_jdk.bash;
-    else
-      echo "Plik /home/travis/.bash_profile.d/travis_jdk.bash nie istnieje.";
-    fi
