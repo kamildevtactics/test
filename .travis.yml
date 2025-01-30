@@ -1,5 +1,5 @@
 dist: focal
-group: dev 
+group: master
 language: generic
 sudo: required
 
