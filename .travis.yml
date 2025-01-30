@@ -64,6 +64,12 @@ script:
   # MongoDB
   - mongod --version
 
+  # ===== Dodajemy i wyświetlamy update-alternatives dla JDK 8 =====
+  - sudo update-alternatives --install /usr/bin/java java /usr/local/lib/jvm/openjdk8/bin/java 1
+  - sudo update-alternatives --install /usr/bin/javac javac /usr/local/lib/jvm/openjdk9/bin/javac 1
+  - sudo update-alternatives --list java
+  - sudo update-alternatives --list javac
+
   # JVM i systemy budowania
   - gradle -version
   - groovy -version
