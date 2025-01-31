@@ -9,4 +9,4 @@ jobs:
       dist: xenial
       language: ruby
       ruby: 3.1.2
-      jdk: openjdk17
+      jdk: openjdk15
