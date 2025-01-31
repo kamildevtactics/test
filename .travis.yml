@@ -6,7 +6,7 @@ script: java -version
 jobs:
   include:
     - name: "JDK 17 - RUBY on XENIAL"
-      dist: xenial
+      dist: bionic
       language: ruby
       ruby: 3.1.2
       jdk: openjdk17
