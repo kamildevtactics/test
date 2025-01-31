@@ -9,4 +9,4 @@ jobs:
       dist: bionic
       language: php
       php: 8.2.9
-      jdk: openjdk17
+      jdk: openjdk8
