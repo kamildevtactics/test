@@ -7,6 +7,6 @@ jobs:
   include:
     - name: "JDK 17 - RUBY on XENIAL"
       dist: xenial
-      language: php
-      php: 8.3
+      language: ruby
+      ruby: 3.1.2
       jdk: openjdk17
