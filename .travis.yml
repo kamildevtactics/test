@@ -5,7 +5,7 @@ install: skip
 script: java -version
 jobs:
   include:
-    - name: "JDK 17 - PHP on Bionic test 8.2.9 v2"
+    - name: "JDK 17 - PHP on Bionic test 8.2.9 v3"
       dist: bionic
       language: php
       php: 8.2.9
