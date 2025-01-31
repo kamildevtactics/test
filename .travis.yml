@@ -7,7 +7,7 @@ jobs:
   include:
     - name: "JDK 17 - PHP on FOCAL"
       dist: focal
+      jdk: openjdk17
       language: php
       php: 8.3
-      jdk: openjdk9
 
