@@ -7,6 +7,6 @@ jobs:
   include:
     - name: "JDK 17 - PHP on Bionic test 8.2.9"
       dist: bionic
-      language: php
-      php: 8.2.9
+      language: scala
+      php:  3.6.3
       jdk: openjdk17
