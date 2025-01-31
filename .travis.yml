@@ -5,7 +5,7 @@ install: skip
 script: java -version
 jobs:
   include:
-    - name: "JDK 17 - RUBY on XENIAL"
+    - name: "JDK 17 - RUBY on BIONIC"
       dist: bionic
       language: ruby
       ruby: 3.1.2
