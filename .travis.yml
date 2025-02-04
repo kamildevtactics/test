@@ -1,12 +1,48 @@
 os: linux
-dist: focal
+dist: xenial
 
 install: skip
 script: java -version
 jobs:
   include:
-    - name: "JDK 17 - PHP on Bionic test 8.2.9 v9"
+    - name: "JDK 17 - PHP on XENIAL"
       dist: xenial
       language: php
       php: 8.2.9
+      jdk: openjdk17
+    - name: "JDK 17 - PHP on Bionic"
+      dist: bionic
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
+    - name: "JDK 17 - PHP on FOCAL"
+      dist: focal
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
+    - name: "JDK 17 - PHP on JAMMY"
+      dist: jammy
+      language: php
+      php: 8.2.9
+      jdk: openjdk17
+
+    - name: "JDK 17 - RUBY on XENIAL"
+      dist: xenial
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
+    - name: "JDK 17 - RUBY on Bionic"
+      dist: bionic
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
+    - name: "JDK 17 - RUBY on FOCAL"
+      dist: focal
+      language: ruby
+      ruby: 3.1.2
+      jdk: openjdk17
+    - name: "JDK 17 - RUBY on JAMMY"
+      dist: jammy
+      language: ruby
+      ruby: 3.1.2
       jdk: openjdk17
