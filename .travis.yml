@@ -9,4 +9,4 @@ jobs:
       dist: xenial
       language: php
       php: 8.2.9
-      jdk: openjdk9
+      jdk: openjdk17
