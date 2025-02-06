@@ -20,6 +20,8 @@ jobs:
         - python -m pip install virtualenv==20.0.2
     - dist: xenial
       group: stable
+      install:
+        - sudo apt-get install build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
       env:
         - RELEASE=xenial
       name: xenial
