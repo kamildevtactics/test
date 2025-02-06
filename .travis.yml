@@ -32,7 +32,7 @@ allow_failures:
 
 env:
   global:
-    - VERSION=3.13-dev
+    - VERSION=3.13.1
   # - ALIAS=nightly
 
 install:
