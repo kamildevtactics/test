@@ -17,7 +17,7 @@ jobs:
         - sudo git pull
         - popd
         - python --version
-        - sudo python -m pip install virtualenv==20.0.2
+        - python -m pip install virtualenv==20.0.2
     - dist: xenial
       group: stable
       env:
