@@ -22,6 +22,7 @@ jobs:
       group: stable
       install:
         - sudo apt-get install build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
+        - pyenv install -l
       env:
         - RELEASE=xenial
       name: xenial
