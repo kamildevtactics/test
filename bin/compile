@@ -18,7 +18,7 @@ VENV_HOME="$HOME/virtualenv"
 mkdir -p "$VENV_HOME"
 
 install_numpy() {
-  "$VENV_HOME/$VIRTENV_VERSION/bin/pip" install --upgrade numpy
+  "$VENV_HOME/$VIRTENV_VERSION/bin/pip3" install --upgrade numpy
 }
 
 sudo env PYTHON_BUILD_ROOT=/opt/pyenv/plugins/python-build \
