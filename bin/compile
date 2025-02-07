@@ -1,72 +1,78 @@
 #!/usr/bin/env bash
-
 set -o errexit
+set -o nounset
+set -o pipefail
 set -o verbose
 
-if [[ ! $INSTALL_DEST ]] ; then
-  echo 'Missing INSTALL_DEST'
+if [[ -z "${INSTALL_DEST:-}" ]]; then
+  echo "Missing INSTALL_DEST"
   exit 1
 fi
 
-if [[ ! $VERSION ]] ; then
-  echo 'Missing $VERSION'
-  exit 1
+if [[ -z "${VERSION:-}" ]]; then
+  VERSION=$(curl -s https://www.python.org/downloads/ | grep -oP 'Download Python \K[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+  echo "Automatically determined Python version: $VERSION"
 fi
 
-function install_numpy() {
-  $HOME/virtualenv/$VIRTENV_VERSION/bin/pip install --upgrade numpy
+VENV_HOME="$HOME/virtualenv"
+mkdir -p "$VENV_HOME"
+
+install_numpy() {
+  "$VENV_HOME/$VIRTENV_VERSION/bin/pip" install --upgrade numpy
 }
 
 sudo env PYTHON_BUILD_ROOT=/opt/pyenv/plugins/python-build \
-  /opt/pyenv/plugins/python-build/bin/python-build --verbose $VERSION $INSTALL_DEST/$VERSION
+  /opt/pyenv/plugins/python-build/bin/python-build --verbose "$VERSION" "$INSTALL_DEST/$VERSION"
 
-if [[ $ALIAS ]] ; then
-  sudo rm -rf $INSTALL_DEST/$ALIAS
-  sudo ln -sf $INSTALL_DEST/$VERSION $INSTALL_DEST/$ALIAS
+if [[ -n "${ALIAS:-}" ]]; then
+  sudo rm -rf "$INSTALL_DEST/$ALIAS"
+  sudo ln -sf "$INSTALL_DEST/$VERSION" "$INSTALL_DEST/$ALIAS"
 fi
 
-# set up virtualenv arguments
-if [[ $VERSION = pypy3* ]]; then
-  PYTHON_BIN=pypy3
-  VIRTENV_VERSION=$VERSION
-elif [[ $VERSION = pypy* ]]; then
-  PYTHON_BIN=pypy
-  VIRTENV_VERSION=$VERSION
+if [[ "$VERSION" == pypy3* ]]; then
+  PYTHON_BIN="pypy3"
+  VIRTENV_VERSION="$VERSION"
+elif [[ "$VERSION" == pypy* ]]; then
+  PYTHON_BIN="pypy"
+  VIRTENV_VERSION="$VERSION"
 else
-  PYTHON_BIN=python
-  VIRTENV_VERSION=python$VERSION
+  PYTHON_BIN="python"
+  VIRTENV_VERSION="python$VERSION"
 fi
 
-# We must have everything under virtualenv's subtree to be able to tarball it.
-# Virtualenv 20+ puts preinstalled modules (pip, setuptools, wheel) into a shared location and symlinks to them.
-# 20.0.2+ copies by default instead but the devs plan to change that back sometime.
-# 'pip' seeder is the old behavior and is not planned for deprecation in the foreseeable future
-# (https://github.com/pypa/virtualenv/issues/1576#issuecomment-584769625).
-sudo -H pip install virtualenv
-python3 -m virtualenv --python=$INSTALL_DEST/$VERSION/bin/$PYTHON_BIN \
+PYTHON_CANDIDATES=($(compgen -c python3 | grep -E '^python3\.[0-9]+$' | sort -V -r))
+if [[ ${#PYTHON_CANDIDATES[@]} -eq 0 ]]; then
+  echo "No suitable Python3 version found in the system."
+  exit 1
+fi
+PYTHON="${PYTHON_CANDIDATES[0]}"
+echo "Using Python interpreter: $PYTHON"
+
+sudo -H "$PYTHON" -m pip install virtualenv
+
+"$PYTHON" -m virtualenv --python="$INSTALL_DEST/$VERSION/bin/$PYTHON_BIN" \
   --seeder=pip \
-  $HOME/virtualenv/$VIRTENV_VERSION
+  "$VENV_HOME/$VIRTENV_VERSION"
 
-if [[ $ALIAS ]] ; then
-  if [[ $ALIAS = pypy* ]]; then
-    VIRTENV_ALIAS=$ALIAS
+if [[ -n "${ALIAS:-}" ]]; then
+  if [[ "$ALIAS" == pypy* ]]; then
+    VIRTENV_ALIAS="$ALIAS"
   else
-    VIRTENV_ALIAS=python$ALIAS
+    VIRTENV_ALIAS="python$ALIAS"
   fi
-  rm -f $HOME/virtualenv/$VIRTENV_ALIAS
-  ln -sf $HOME/virtualenv/$VIRTENV_VERSION $HOME/virtualenv/$VIRTENV_ALIAS
+  rm -f "$VENV_HOME/$VIRTENV_ALIAS"
+  ln -sf "$VENV_HOME/$VIRTENV_VERSION" "$VENV_HOME/$VIRTENV_ALIAS"
 fi
 
-$HOME/virtualenv/$VIRTENV_VERSION/bin/python -c "import sys; assert sys.maxunicode > 65535"
+"$VENV_HOME/$VIRTENV_VERSION/bin/python" -c "import sys; assert sys.maxunicode > 65535"
 
-if [[ $PACKAGES ]] ; then
-  $HOME/virtualenv/$VIRTENV_VERSION/bin/pip install --upgrade $PACKAGES
+if [[ -n "${PACKAGES:-}" ]]; then
+  "$VENV_HOME/$VIRTENV_VERSION/bin/pip" install --upgrade $PACKAGES
 fi
 
-if ! [[ "${ALIAS}" == nightly || "${VERSION}" =~ -dev$ ]]; then
-  if [[ ${VERSION} == pypy* ]]; then
-    $HOME/virtualenv/$VIRTENV_VERSION/bin/${PYTHON_BIN} -m ensurepip
+if ! [[ "${ALIAS:-}" == "nightly" || "$VERSION" =~ -dev$ ]]; then
+  if [[ "$VERSION" == pypy* ]]; then
+    "$VENV_HOME/$VIRTENV_VERSION/bin/$PYTHON_BIN" -m ensurepip
   fi
   install_numpy
 fi
-
