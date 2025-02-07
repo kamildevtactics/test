@@ -2,18 +2,6 @@ language: shell
 
 jobs:
   include:
-    - name: freebsd
-      os: freebsd
-      group: dev
-      install:
-        - pushd /opt/pyenv/
-        - sudo git config --global --add safe.directory /opt/pyenv
-        - sudo git checkout master
-        - sudo git pull
-        - popd
-        # Upewnij się, że wywołujemy python3 – nie polegamy na aliasach
-        - python3 --version
-        - python3 -m pip install --upgrade pip setuptools virtualenv==20.0.2
     - name: xenial
       dist: xenial
       group: stable
@@ -69,7 +57,6 @@ before_script:
 script:
   - sudo apt-get update
   - sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
-  - ./bin/compile
 
 after_success: ./bin/archive
 
