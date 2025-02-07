@@ -6,23 +6,11 @@ language: shell
 
 jobs:
   include:
-    - language: bash
-      name: freebsd
-      os: freebsd
-      group: dev
-      install:
-        - pushd /opt/pyenv/
-        - sudo git config --global --add safe.directory /opt/pyenv
-        - sudo git checkout master
-        - sudo git pull
-        - popd
-        - python --version
-        - python -m pip install virtualenv==20.0.2
     - dist: xenial
       group: stable
       install:
         - sudo apt-get install build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
-        - pyenv install -l
+        - python -m pip install virtualenv==20.0.2
       env:
         - RELEASE=xenial
       name: xenial
