@@ -40,19 +40,17 @@ else
   VIRTENV_VERSION="python$VERSION"
 fi
 
-PYTHON_CANDIDATES=($(compgen -c python3 | grep -E '^python3\.[0-9]+$' | sort -V -r))
-if [[ ${#PYTHON_CANDIDATES[@]} -eq 0 ]]; then
-  echo "No suitable Python3 version found in the system."
+BUILT_PYTHON="$INSTALL_DEST/$VERSION/bin/$PYTHON_BIN"
+if [[ ! -x "$BUILT_PYTHON" ]]; then
+  echo "Built Python interpreter not found: $BUILT_PYTHON"
   exit 1
 fi
-PYTHON="${PYTHON_CANDIDATES[0]}"
-echo "Using Python interpreter: $PYTHON"
+echo "Using built Python interpreter: $BUILT_PYTHON"
 
-sudo -H "$PYTHON" -m pip install virtualenv
+sudo -H "$BUILT_PYTHON" -m ensurepip --upgrade
+sudo -H "$BUILT_PYTHON" -m pip install --upgrade pip virtualenv
 
-"$PYTHON" -m virtualenv --python="$INSTALL_DEST/$VERSION/bin/$PYTHON_BIN" \
-  --seeder=pip \
-  "$VENV_HOME/$VIRTENV_VERSION"
+"$BUILT_PYTHON" -m virtualenv --seeder=pip "$VENV_HOME/$VIRTENV_VERSION"
 
 if [[ -n "${ALIAS:-}" ]]; then
   if [[ "$ALIAS" == pypy* ]]; then
