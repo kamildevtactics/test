@@ -10,7 +10,8 @@ jobs:
       group: stable
       install:
         - sudo apt-get install build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
-        - python -m pip install virtualenv==20.0.2
+        - python3.9 -m pip install --upgrade pip setuptools
+        - python3.9 -m pip install virtualenv
       env:
         - RELEASE=xenial
       name: xenial
