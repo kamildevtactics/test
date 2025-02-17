@@ -83,6 +83,23 @@ jobs:
         - sudo python -m pip install virtualenv==20.0.2
 
     # Zadania Linux – dziedziczą konfigurację z defaults_linux
+    - <<: *defaults_linux
+      dist: jammy
+      env:
+        - RELEASE=jammy
+      name: jammy
+
+    - <<: *defaults_linux
+      dist: focal
+      env:
+        - RELEASE=focal
+      name: focal
+
+    - <<: *defaults_linux
+      dist: bionic
+      env:
+        - RELEASE=bionic
+      name: bionic
 
     # Dla xenial używamy własnego bloku install, nadpisując część z defaults_linux
     - <<: *defaults_linux
@@ -97,6 +114,19 @@ jobs:
         - python3 -m pip install --upgrade pip setuptools virtualenv
 
     # Wersje dla architektury ppc64le
+    - <<: *defaults_linux
+      arch: ppc64le
+      dist: jammy
+      env:
+        - RELEASE=jammy
+      name: jammy-ppc64le
+
+    - <<: *defaults_linux
+      arch: ppc64le
+      dist: focal
+      env:
+        - RELEASE=focal
+      name: focal-ppc64le
 
     - <<: *defaults_linux
       arch: ppc64le
