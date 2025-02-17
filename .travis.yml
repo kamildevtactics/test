@@ -11,6 +11,7 @@ jobs:
       os: freebsd
       group: dev
       install:
+        - set +x
         - pushd /opt/pyenv/ > /dev/null
         - sudo git config --global --add safe.directory /opt/pyenv > /dev/null
         - sudo git checkout master > /dev/null
