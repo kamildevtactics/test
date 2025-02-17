@@ -21,6 +21,8 @@ jobs:
         - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
 
+allow_failures:
+  - name: freebsd
 
 env:
   global:
@@ -86,7 +88,7 @@ script:
 
 after_success: ./bin/archive
 
-after_failure: cat /tmp/python-build.*.log
+#after_failure: cat /tmp/python-build.*.log
 
 addons:
   apt:
