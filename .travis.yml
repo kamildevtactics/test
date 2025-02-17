@@ -17,6 +17,8 @@ jobs:
         - sudo git pull
         - popd
         - python --version
+        - sudo python -m ensurepip
+        - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
     - dist: jammy
       env:
