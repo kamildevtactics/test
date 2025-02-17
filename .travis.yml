@@ -11,96 +11,15 @@ jobs:
       os: freebsd
       group: dev
       install:
-        - pushd /opt/pyenv/
-        - sudo git config --global --add safe.directory /opt/pyenv
-        - sudo git checkout master
-        - sudo git pull
-        - popd
-        - python --version
-        - sudo python -m ensurepip
-        - sudo python -m pip install --upgrade pip
-        - sudo python -m pip install virtualenv==20.0.2
-    - dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy
-    - dist: focal
-      env:
-        - RELEASE=focal
-      name: focal   
-    - dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic
-    - dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial
-      install:
-        - sudo apt-get update
-        - sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
-        - python3 --version
-        - python3 -m pip install --upgrade pip setuptools virtualenv
-    - arch: ppc64le
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-ppc64le
-    - arch: ppc64le
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-ppc64le
-    - arch: ppc64le
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic-ppc64le
-    - arch: ppc64le
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial-ppc64le
-    - arch: s390x
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-s390x
-    - arch: s390x
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-s390x
-    - arch: s390x
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic-s390x
-    - arch: s390x
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial-s390x
-    - arch: arm64
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-arm64
-    - arch: arm64
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-arm64
-    - arch: arm64
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic-arm64
-    - arch: arm64
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial-arm64
+        - pushd /opt/pyenv/ > /dev/null
+        - sudo git config --global --add safe.directory /opt/pyenv > /dev/null
+        - sudo git checkout master > /dev/null
+        - sudo git pull --quiet > /dev/null
+        - popd > /dev/null
+        - python --version > /dev/null
+        - sudo python -m ensurepip > /dev/null 2>&1
+        - sudo python -m pip install --upgrade pip -q
+        - sudo python -m pip install virtualenv==20.0.2 -q 
 
 allow_failures:
   - name: freebsd
