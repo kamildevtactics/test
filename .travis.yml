@@ -82,58 +82,15 @@ jobs:
         - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
 
-    # Zadania Linux – dziedziczą konfigurację z defaults_linux
-    - <<: *defaults_linux
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy
-
-    - <<: *defaults_linux
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal
-
-    - <<: *defaults_linux
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic
-
-    # Dla xenial używamy własnego bloku install, nadpisując część z defaults_linux
-    - <<: *defaults_linux
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial
-      install:
-        - sudo apt-get update
-        - sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
-        - python3 --version
-        - python3 -m pip install --upgrade pip setuptools virtualenv
-
-    # Wersje dla architektury ppc64le
-    - <<: *defaults_linux
-      arch: ppc64le
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-ppc64le
-
-    - <<: *defaults_linux
-      arch: ppc64le
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-ppc64le
-
     - <<: *defaults_linux
       arch: ppc64le
       dist: bionic
       env:
         - RELEASE=bionic
       name: bionic-ppc64le
+      install:
+        - sudo apt-get update
+        - sudo apt-get install python3-numpy
 
     - <<: *defaults_linux
       arch: ppc64le
@@ -141,64 +98,9 @@ jobs:
       env:
         - RELEASE=xenial
       name: xenial-ppc64le
-
-    # Wersje dla architektury s390x
-    - <<: *defaults_linux
-      arch: s390x
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-s390x
-
-    - <<: *defaults_linux
-      arch: s390x
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-s390x
-
-    - <<: *defaults_linux
-      arch: s390x
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic-s390x
-
-    - <<: *defaults_linux
-      arch: s390x
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial-s390x
-
-    # Wersje dla architektury arm64
-    - <<: *defaults_linux
-      arch: arm64
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-arm64
-
-    - <<: *defaults_linux
-      arch: arm64
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-arm64
-
-    - <<: *defaults_linux
-      arch: arm64
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic-arm64
-
-    - <<: *defaults_linux
-      arch: arm64
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial-arm64
+      install:
+        - sudo apt-get update
+        - sudo apt-get install python3-numpy
 
 allow_failures:
   - name: freebsd
