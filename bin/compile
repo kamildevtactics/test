@@ -17,9 +17,10 @@ fi
 VENV_HOME="$HOME/virtualenv"
 mkdir -p "$VENV_HOME"
 
-# Poprawiona funkcja instalująca numpy – z opcją --no-use-pep517
+# Funkcja instalująca numpy z aktualizacją narzędzi budowania i wymuszeniem użycia gotowych kół
 install_numpy() {
-  "$VENV_HOME/$VIRTENV_VERSION/bin/pip" install --upgrade numpy
+  "$VENV_HOME/$VIRTENV_VERSION/bin/pip" install --upgrade setuptools wheel
+  "$VENV_HOME/$VIRTENV_VERSION/bin/pip" install --upgrade --only-binary=:all: numpy
 }
 
 sudo env PYTHON_BUILD_ROOT=/opt/pyenv/plugins/python-build \
