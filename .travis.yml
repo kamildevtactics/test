@@ -1,7 +1,7 @@
 language: shell
 
 # stages:
-#   - build
+#   - build2
 # stage: build
 
 jobs:
