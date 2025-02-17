@@ -1,7 +1,7 @@
 language: shell
 
 # stages:
-#   - build
+#   - build2
 # stage: build
 
 jobs:
@@ -17,20 +17,16 @@ jobs:
         - sudo git pull
         - popd
         - python --version
+        - sudo python -m ensurepip
+        - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
-    - dist: xenial
-      group: stable
-      env:
-        - RELEASE=xenial
-      name: xenial
-    
 
 allow_failures:
   - name: freebsd
 
 env:
   global:
-    - VERSION=3.13-dev
+    - VERSION=3.9.9
   # - ALIAS=nightly
 
 install:
@@ -87,12 +83,12 @@ before_script:
     fi
 
 script: 
-  - sudo apt-get update && sudo apt-get install build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev -y
+  - sudo apt-get update && sudo apt-get install build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev -y
   - ./bin/compile
 
-after_success: ./bin/archive
+#after_success: ./bin/archive
 
-after_failure: cat /tmp/python-build.*.log
+#after_failure: cat /tmp/python-build.*.log
 
 addons:
   apt:
