@@ -34,6 +34,7 @@ defaults_linux: &defaults_linux
     - export PACKAGES=${PACKAGES:-pip nose pytest mock wheel pipenv dataclasses}
     - export PYTHON_CONFIGURE_OPTS="--with-wide-unicode --enable-shared --enable-ipv6 --enable-loadable-sqlite-extensions --with-computed-gotos $CONFIGURE_OPTS"
     - sudo chown -R $USER $HOME/.cache
+    - pip install --upgrade pip setuptools wheel
     - |
       if [[ $VERSION = pypy*-dev ]]; then
         if ! [[ -f ~/virtualenv/pypy/bin/activate ]]; then
