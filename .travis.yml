@@ -96,6 +96,20 @@ jobs:
       env:
         - RELEASE=xenial
       name: xenial-ppc64le
+    
+    - <<: *defaults_linux
+      arch: s390x
+      dist: bionic
+      env:
+        - RELEASE=bionic
+      name: bionic-s390x
+
+    - <<: *defaults_linux
+      arch: s390x
+      dist: xenial
+      env:
+        - RELEASE=xenial
+      name: xenial-s390x
       
 allow_failures:
   - name: freebsd
