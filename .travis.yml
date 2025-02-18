@@ -89,9 +89,6 @@ jobs:
       env:
         - RELEASE=bionic
       name: bionic-ppc64le
-      install:
-        - sudo apt-get update
-        - sudo apt-get install python3-numpy
 
     - <<: *defaults_linux
       arch: ppc64le
@@ -99,9 +96,6 @@ jobs:
       env:
         - RELEASE=xenial
       name: xenial-ppc64le
-      install:
-        - sudo apt-get update
-        - sudo apt-get install python3-numpy
-
+      
 allow_failures:
   - name: freebsd
