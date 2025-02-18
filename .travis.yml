@@ -15,16 +15,16 @@ defaults_linux: &defaults_linux
     - popd
     - alias python=python3
     - python -m pip install virtualenv
-    - sudo -H pip install --upgrade pip --break-system-packages
-    - sudo -H pip install setuptools --break-system-packages
+    - sudo pip install --upgrade pip
+    - sudo pip install setuptools
     - |
       # "freeze" zamiast "list" aby uniknąć ostrzeżeń
       if (python -m pip freeze --user | cat | grep -qP '^virtualenv=='); then
         python -m pip install --upgrade --user virtualenv
       elif (python -m pip freeze | cat | grep -qP '^virtualenv=='); then
-        sudo -H python -m pip install --upgrade virtualenv --break-system-packages
+        sudo python -m pip install --upgrade virtualenv
       else
-        sudo -H python -m pip install virtualenv --break-system-packages
+        sudo python -m pip install virtualenv
       fi
   before_script:
     - export INSTALL_DEST=${INSTALL_DEST:-/opt/python}
@@ -79,14 +79,26 @@ jobs:
         - popd
         - python --version
         - sudo python -m ensurepip
-        - sudo -H python -m pip install --upgrade pip --break-system-packages
-        - sudo -H python -m pip install virtualenv==20.0.2 --break-system-packages
+        - sudo python -m pip install --upgrade pip
+        - sudo python -m pip install virtualenv==20.0.2
     
     - <<: *defaults_linux
       dist: noble
       env:
         - RELEASE=noble
       name: noble
+      install:
+        - pushd /opt/pyenv/
+        - sudo git config --global --add safe.directory /opt/pyenv
+        - sudo git checkout master
+        - sudo git pull
+        - popd
+        - alias python=python3
+        # utworzenie wirtualnego środowiska
+        - python3 -m venv ~/.venv
+        - source ~/.venv/bin/activate
+        # aktualizacja pip, setuptools i virtualenv wewnątrz venv
+        - pip install --upgrade pip setuptools virtualenv
 
     - <<: *defaults_linux
       arch: arm64
