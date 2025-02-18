@@ -15,15 +15,7 @@ defaults_linux: &defaults_linux
     - popd
     - alias python=python3
     - python3 -m pip install --upgrade pip setuptools virtualenv
-    - |
-      # "freeze" zamiast "list" aby uniknąć ostrzeżeń
-      if (python -m pip freeze --user | cat | grep -qP '^virtualenv=='); then
-        python -m pip install --upgrade --user virtualenv
-      elif (python -m pip freeze | cat | grep -qP '^virtualenv=='); then
-        sudo python -m pip install --upgrade virtualenv
-      else
-        sudo python -m pip install virtualenv
-      fi
+
   before_script:
     - export INSTALL_DEST=${INSTALL_DEST:-/opt/python}
     - export LSB_RELEASE=${LSB_RELEASE:-$(lsb_release -rs)}
