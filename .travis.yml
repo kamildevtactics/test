@@ -2,7 +2,7 @@ language: shell
 
 env:
   global:
-    - VERSION=3.9.9
+    - VERSION=3.8.2
   # - ALIAS=nightly
 
 # Wspólna konfiguracja dla jobów Linux
@@ -81,6 +81,19 @@ jobs:
         - sudo python -m ensurepip
         - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
+    
+    - <<: *defaults_linux
+      dist: noble
+      env:
+        - RELEASE=noble
+      name: noble
+
+   - <<: *defaults_linux
+      arch: arm64
+      dist: noble
+      env:
+        - RELEASE=noble
+      name: noble-arm64
 
     - <<: *defaults_linux
       dist: jammy
