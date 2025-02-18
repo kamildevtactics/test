@@ -14,9 +14,7 @@ defaults_linux: &defaults_linux
     - sudo git pull
     - popd
     - alias python=python3
-    - python -m pip install virtualenv
-    - sudo pip install --upgrade pip
-    - sudo pip install setuptools
+    - pip install --upgrade pip setuptools virtualenv
     - |
       # "freeze" zamiast "list" aby uniknąć ostrzeżeń
       if (python -m pip freeze --user | cat | grep -qP '^virtualenv=='); then
