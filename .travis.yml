@@ -15,16 +15,16 @@ defaults_linux: &defaults_linux
     - popd
     - alias python=python3
     - python -m pip install virtualenv
-    - sudo pip install --upgrade pip
-    - sudo pip install setuptools
+    - sudo -H pip install --upgrade pip --break-system-packages
+    - sudo -H pip install setuptools --break-system-packages
     - |
       # "freeze" zamiast "list" aby uniknąć ostrzeżeń
       if (python -m pip freeze --user | cat | grep -qP '^virtualenv=='); then
         python -m pip install --upgrade --user virtualenv
       elif (python -m pip freeze | cat | grep -qP '^virtualenv=='); then
-        sudo python -m pip install --upgrade virtualenv
+        sudo -H python -m pip install --upgrade virtualenv --break-system-packages
       else
-        sudo python -m pip install virtualenv
+        sudo -H python -m pip install virtualenv --break-system-packages
       fi
   before_script:
     - export INSTALL_DEST=${INSTALL_DEST:-/opt/python}
@@ -79,8 +79,8 @@ jobs:
         - popd
         - python --version
         - sudo python -m ensurepip
-        - sudo python -m pip install --upgrade pip
-        - sudo python -m pip install virtualenv==20.0.2
+        - sudo -H python -m pip install --upgrade pip --break-system-packages
+        - sudo -H python -m pip install virtualenv==20.0.2 --break-system-packages
     
     - <<: *defaults_linux
       dist: noble
