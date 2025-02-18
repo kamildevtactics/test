@@ -83,7 +83,7 @@ jobs:
         - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
 
-            - <<: *defaults_linux
+    - <<: *defaults_linux
       dist: jammy
       env:
         - RELEASE=jammy
@@ -166,7 +166,6 @@ jobs:
         - NUMPY_VERSION=1.21.6
       name: bionic-s390x
       
-
     - <<: *defaults_linux
       arch: s390x
       dist: xenial
