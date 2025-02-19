@@ -53,7 +53,7 @@ fi
 echo "Using built Python interpreter: $BUILT_PYTHON"
 
 sudo -H "$BUILT_PYTHON" -m ensurepip --upgrade
-sudo -H /opt/python/3.12.3/bin -m pip install --upgrade pip virtualenv
+sudo -H "$BUILT_PYTHON" -m pip install --upgrade pip virtualenv
 
 "$BUILT_PYTHON" -m virtualenv --seeder=pip "$VENV_HOME/$VIRTENV_VERSION"
 
