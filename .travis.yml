@@ -2,7 +2,7 @@ language: shell
 
 env:
   global:
-    - VERSION=3.10.1
+    - VERSION=3.10.2
   # - ALIAS=nightly
 
 # Wspólna konfiguracja dla jobów Linux

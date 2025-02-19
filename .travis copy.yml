@@ -2,7 +2,7 @@ language: shell
 
 env:
   global:
-    - VERSION=3.9.9
+    - VERSION=3.10.1
   # - ALIAS=nightly
 
 # Wspólna konfiguracja dla jobów Linux
@@ -14,27 +14,24 @@ defaults_linux: &defaults_linux
     - sudo git pull
     - popd
     - alias python=python3
-    - python -m pip install virtualenv
-    - sudo pip install --upgrade pip
-    - sudo pip install setuptools
+    # Dodatkowe polecenia instalacyjne dla Xenial
     - |
-      # "freeze" zamiast "list" aby uniknąć ostrzeżeń
-      if (python -m pip freeze --user | cat | grep -qP '^virtualenv=='); then
-        python -m pip install --upgrade --user virtualenv
-      elif (python -m pip freeze | cat | grep -qP '^virtualenv=='); then
-        sudo python -m pip install --upgrade virtualenv
-      else
-        sudo python -m pip install virtualenv
+      if [ "$RELEASE" = "xenial" ]; then
+        sudo apt-get update
+        sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
+        python3 --version
       fi
+    - python3 -m pip install --upgrade pip setuptools virtualenv
+
   before_script:
+    - export PATH="/opt/python/${VERSION}/bin:$PATH"
     - export INSTALL_DEST=${INSTALL_DEST:-/opt/python}
     - export LSB_RELEASE=${LSB_RELEASE:-$(lsb_release -rs)}
     - export OS_NAME=${OS_NAME:-$(lsb_release -is | tr "A-Z" "a-z")}
     - export ARCH=${ARCH:-$(uname -m)}
     - export PACKAGES=${PACKAGES:-pip nose pytest mock wheel pipenv dataclasses}
     - export PYTHON_CONFIGURE_OPTS="--with-wide-unicode --enable-shared --enable-ipv6 --enable-loadable-sqlite-extensions --with-computed-gotos $CONFIGURE_OPTS"
-    - sudo chown -R $USER $HOME/.cache 
-    - pip install --upgrade pip setuptools wheel       
+    - sudo chown -R $USER $HOME/.cache
     - |
       if [[ $VERSION = pypy*-dev ]]; then
         if ! [[ -f ~/virtualenv/pypy/bin/activate ]]; then
@@ -44,11 +41,14 @@ defaults_linux: &defaults_linux
         source ~/virtualenv/pypy/bin/activate
         python --version
       fi
+
   script:
-        - sudo apt-get update && sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev gfortran libblas-dev liblapack-dev -y
+    - sudo apt-get update && sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev gfortran libblas-dev liblapack-dev -y
     - ./bin/compile
+
   after_success: ./bin/archive
   after_failure: cat /tmp/python-build.*.log
+
   addons:
     apt:
       packages:
@@ -83,7 +83,19 @@ jobs:
         - sudo python -m pip install --upgrade pip
         - sudo python -m pip install virtualenv==20.0.2
 
-    # Zadania Linux – dziedziczą konfigurację z defaults_linux
+    - <<: *defaults_linux
+      dist: noble
+      env:
+        - RELEASE=noble
+      name: noble
+
+    - <<: *defaults_linux
+      arch: arm64
+      dist: noble
+      env:
+        - RELEASE=noble
+      name: noble-arm64
+
     - <<: *defaults_linux
       dist: jammy
       env:
@@ -102,17 +114,11 @@ jobs:
         - RELEASE=bionic
       name: bionic
 
-    # Dla xenial używamy własnego bloku install, nadpisując część z defaults_linux
     - <<: *defaults_linux
       dist: xenial
       env:
         - RELEASE=xenial
       name: xenial
-      install:
-        - sudo apt-get update
-        - sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev
-        - python3 --version
-        - python3 -m pip install --upgrade pip setuptools virtualenv
 
     # Wersje dla architektury ppc64le
     - <<: *defaults_linux
@@ -134,6 +140,7 @@ jobs:
       dist: bionic
       env:
         - RELEASE=bionic
+        - NUMPY_VERSION=1.21.6
       name: bionic-ppc64le
 
     - <<: *defaults_linux
@@ -141,9 +148,9 @@ jobs:
       dist: xenial
       env:
         - RELEASE=xenial
+        - NUMPY_VERSION=1.21.6
       name: xenial-ppc64le
 
-    # Wersje dla architektury s390x
     - <<: *defaults_linux
       arch: s390x
       dist: jammy
@@ -163,6 +170,7 @@ jobs:
       dist: bionic
       env:
         - RELEASE=bionic
+        - NUMPY_VERSION=1.21.6
       name: bionic-s390x
 
     - <<: *defaults_linux
@@ -170,9 +178,9 @@ jobs:
       dist: xenial
       env:
         - RELEASE=xenial
+        - NUMPY_VERSION=1.21.6
       name: xenial-s390x
 
-    # Wersje dla architektury arm64
     - <<: *defaults_linux
       arch: arm64
       dist: jammy
