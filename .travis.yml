@@ -24,7 +24,7 @@ defaults_linux: &defaults_linux
     - python3 -m pip install --upgrade pip setuptools virtualenv
 
   before_script:
-    - export PATH="/opt/python/${VERSION}/bin:$PATH"
+    - export PATH="/opt/python/${VERSION}/bin"
     - echo "PATH: $PATH"
     - export INSTALL_DEST=${INSTALL_DEST:-/opt/python}
     - export LSB_RELEASE=${LSB_RELEASE:-$(lsb_release -rs)}
