@@ -1,4 +1,5 @@
 language: shell
+sudo: required
 
 env:
   global:
@@ -21,53 +22,63 @@ defaults_linux: &defaults_linux
         wget https://www.openssl.org/source/openssl-1.1.1u.tar.gz
         tar xzf openssl-1.1.1u.tar.gz
         cd openssl-1.1.1u
-        
+
         # Dynamiczna detekcja architektury systemu
-        if [ "$(uname -m)" = "x86_64" ]; then
+        case "$(uname -m)" in
+          x86_64)
             OPENSSL_CONFIGURE_TARGET="linux-x86_64"
-        elif [ "$(uname -m)" = "aarch64" ]; then
+            ;;
+          aarch64)
             OPENSSL_CONFIGURE_TARGET="linux-aarch64"
-        elif [ "$(uname -m)" = "ppc64le" ]; then
+            ;;
+          ppc64le)
             OPENSSL_CONFIGURE_TARGET="linux-ppc64le"
-        elif [ "$(uname -m)" = "s390x" ]; then
+            ;;
+          s390x)
             OPENSSL_CONFIGURE_TARGET="linux-s390x"
-        else
+            ;;
+          *)
             echo "Unsupported architecture: $(uname -m)"
             exit 1
-        fi
+            ;;
+        esac
 
         sudo make clean
         export CC=gcc
         export CXX=g++
-        sudo ./Configure $OPENSSL_CONFIGURE_TARGET --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib enable-ec_nistp_64_gcc_128
+        sudo ./Configure "$OPENSSL_CONFIGURE_TARGET" --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib enable-ec_nistp_64_gcc_128
         sudo make depend
-        sudo make -j$(nproc)
+        sudo make -j"$(nproc)"
         sudo make install
         sudo mv /usr/bin/openssl /usr/bin/openssl.bak
         sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl
+
+        # Dodaj katalog z bibliotekami OpenSSL do konfiguracji dynamicznego linkera
+        echo "/usr/local/openssl/lib" | sudo tee /etc/ld.so.conf.d/openssl.conf
         sudo ldconfig
+
         cd ..
         openssl version -a
       fi
     - python3 -m pip install --upgrade pip setuptools virtualenv
 
   before_script:
-    - export INSTALL_DEST=${INSTALL_DEST:-/opt/python}
-    - export LSB_RELEASE=${LSB_RELEASE:-$(lsb_release -rs)}
-    - export OS_NAME=${OS_NAME:-$(lsb_release -is | tr "A-Z" "a-z")}
-    - export ARCH=${ARCH:-$(uname -m)}
-    - export PACKAGES=${PACKAGES:-pip nose pytest mock wheel pipenv dataclasses}
+    - export INSTALL_DEST="${INSTALL_DEST:-/opt/python}"
+    - export LSB_RELEASE="${LSB_RELEASE:-$(lsb_release -rs)}"
+    - export OS_NAME="${OS_NAME:-$(lsb_release -is | tr 'A-Z' 'a-z')}"
+    - export ARCH="${ARCH:-$(uname -m)}"
+    - export PACKAGES="${PACKAGES:-pip nose pytest mock wheel pipenv dataclasses}"
     - |
       if [ "$RELEASE" = "xenial" ]; then
         export PYTHON_CONFIGURE_OPTS="--with-openssl=/usr/local/openssl --with-wide-unicode --enable-shared --enable-ipv6 --enable-loadable-sqlite-extensions --with-computed-gotos $CONFIGURE_OPTS"
       else
         export PYTHON_CONFIGURE_OPTS="--with-wide-unicode --enable-shared --enable-ipv6 --enable-loadable-sqlite-extensions --with-computed-gotos $CONFIGURE_OPTS"
       fi
-    - sudo chown -R $USER $HOME/.cache
+    - sudo chown -R "$USER" "$HOME/.cache"
     - |
-      if [[ $VERSION = pypy*-dev ]]; then
-        if ! [[ -f ~/virtualenv/pypy/bin/activate ]]; then
-          curl -O https://s3.amazonaws.com/travis-python-archives/binaries/ubuntu/$(lsb_release -rs)/x86_64/pypy2.7-5.9.0.tar.bz2
+      if [[ $VERSION == pypy*-dev ]]; then
+        if [ ! -f ~/virtualenv/pypy/bin/activate ]; then
+          curl -O "https://s3.amazonaws.com/travis-python-archives/binaries/ubuntu/$(lsb_release -rs)/x86_64/pypy2.7-5.9.0.tar.bz2"
           sudo tar xf pypy*.tar.bz2 -C /
         fi
         source ~/virtualenv/pypy/bin/activate
@@ -75,7 +86,7 @@ defaults_linux: &defaults_linux
       fi
 
   script:
-    - sudo apt-get update && sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev gfortran libblas-dev liblapack-dev -y
+    - sudo apt-get update && sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev gfortran libblas-dev liblapack-dev
     - ./bin/compile
 
   after_success: ./bin/archive
@@ -90,9 +101,9 @@ defaults_linux: &defaults_linux
         - python3-pip
     artifacts:
       paths:
-        - $LSB_RELEASE/
+        - "$LSB_RELEASE/"
       target_paths:
-        - /binaries/$OS_NAME/$LSB_RELEASE/$ARCH
+        - "/binaries/$OS_NAME/$LSB_RELEASE/$ARCH"
       branch:
         - default
       cache_control: public
