@@ -36,7 +36,10 @@ defaults_linux: &defaults_linux
             exit 1
         fi
 
-        sudo ./Configure $OPENSSL_CONFIGURE_TARGET --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
+        sudo make clean
+        export CC=gcc
+        export CXX=g++
+        sudo ./Configure $OPENSSL_CONFIGURE_TARGET --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib enable-ec_nistp_64_gcc_128
         sudo make depend
         sudo make -j$(nproc)
         sudo make install
