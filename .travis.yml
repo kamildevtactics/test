@@ -108,20 +108,20 @@ defaults_linux: &defaults_linux
 
 jobs:
   include:
-    - language: bash
-      name: freebsd
-      os: freebsd
-      group: dev
-      install:
-        - pushd /opt/pyenv/
-        - sudo git config --global --add safe.directory /opt/pyenv
-        - sudo git checkout master
-        - sudo git pull
-        - popd
-        - python --version
-        - sudo python -m ensurepip
-        - sudo python -m pip install --upgrade pip
-        - sudo python -m pip install virtualenv==20.0.2
+    # - language: bash
+    #   name: freebsd
+    #   os: freebsd
+    #   group: dev
+    #   install:
+    #     - pushd /opt/pyenv/
+    #     - sudo git config --global --add safe.directory /opt/pyenv
+    #     - sudo git checkout master
+    #     - sudo git pull
+    #     - popd
+    #     - python --version
+    #     - sudo python -m ensurepip
+    #     - sudo python -m pip install --upgrade pip
+    #     - sudo python -m pip install virtualenv==20.0.2
 
     - <<: *defaults_linux
       dist: noble
@@ -180,7 +180,6 @@ jobs:
       dist: bionic
       env:
         - RELEASE=bionic
-       # - NUMPY_VERSION=2.2.3
       name: bionic-ppc64le
 
    # - <<: *defaults_linux
@@ -210,7 +209,7 @@ jobs:
       dist: bionic
       env:
         - RELEASE=bionic
-       # - NUMPY_VERSION=2.2.3
+        - NUMPY_VERSION=2.2.3
       name: bionic-s390x
 
   #  - <<: *defaults_linux
