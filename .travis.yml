@@ -16,13 +16,13 @@ defaults_linux: &defaults_linux
     - |
       if [ "$RELEASE" = "xenial" ]; then
         sudo apt-get update
-        sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev wget checkinstall
+        sudo apt-get install -y build-essential checkinstall zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev libssl-dev wget
         python3 --version
         wget https://www.openssl.org/source/openssl-1.1.1u.tar.gz
         tar xzf openssl-1.1.1u.tar.gz
         cd openssl-1.1.1u
-        ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
-        make -j4
+        sudo ./Configure linux-x86_64 --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
+        sudo make -j$(nproc)
         sudo make install
         sudo mv /usr/bin/openssl /usr/bin/openssl.bak
         sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl
