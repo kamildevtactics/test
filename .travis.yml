@@ -43,7 +43,7 @@ defaults_linux: &defaults_linux
 
   script:
     - sudo apt-get update && sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev gfortran libblas-dev liblapack-dev -y
-    - export PATH="/opt/python/3.12.3/bin/python3.12:$PATH"
+    - export PATH="/opt/python/3.12.3/bin:$PATH"
     - ./bin/compile
 
   after_success: ./bin/archive
