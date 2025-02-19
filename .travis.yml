@@ -14,7 +14,7 @@ defaults_linux: &defaults_linux
     - sudo git pull
     - popd
     - alias python=python3
-    # Dodatkowe polecenia dla Xenial (lub innej wersji, jeśli zajdzie potrzeba)
+    # Dodatkowe polecenia instalacyjne dla Xenial
     - |
       if [ "$RELEASE" = "xenial" ]; then
         sudo apt-get update
@@ -208,6 +208,6 @@ jobs:
       env:
         - RELEASE=xenial
       name: xenial-arm64
-      
+
 allow_failures:
   - name: freebsd
