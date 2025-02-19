@@ -108,20 +108,20 @@ defaults_linux: &defaults_linux
 
 jobs:
   include:
-    - language: bash
-      name: freebsd
-      os: freebsd
-      group: dev
-      install:
-        - pushd /opt/pyenv/
-        - sudo git config --global --add safe.directory /opt/pyenv
-        - sudo git checkout master
-        - sudo git pull
-        - popd
-        - python --version
-        - sudo python -m ensurepip
-        - sudo python -m pip install --upgrade pip
-        - sudo python -m pip install virtualenv==20.0.2
+    # - language: bash
+    #   name: freebsd
+    #   os: freebsd
+    #   group: dev
+    #   install:
+    #     - pushd /opt/pyenv/
+    #     - sudo git config --global --add safe.directory /opt/pyenv
+    #     - sudo git checkout master
+    #     - sudo git pull
+    #     - popd
+    #     - python --version
+    #     - sudo python -m ensurepip
+    #     - sudo python -m pip install --upgrade pip
+    #     - sudo python -m pip install virtualenv==20.0.2
 
     - <<: *defaults_linux
       dist: noble
@@ -136,51 +136,50 @@ jobs:
         - RELEASE=noble
       name: noble-arm64
 
-   # - <<: *defaults_linux
-   #   dist: jammy
-   #   env:
-   #     - RELEASE=jammy
-   #   name: jammy
+    - <<: *defaults_linux
+      dist: jammy
+      env:
+        - RELEASE=jammy
+      name: jammy
 
-   # - <<: *defaults_linux
-   #   dist: focal
-   #   env:
-   #     - RELEASE=focal
-   #   name: focal
+    - <<: *defaults_linux
+      dist: focal
+      env:
+        - RELEASE=focal
+      name: focal
 
-   # - <<: *defaults_linux
-   #   dist: bionic
-   #   env:
-   #     - RELEASE=bionic
-   #   name: bionic
+    - <<: *defaults_linux
+      dist: bionic
+      env:
+        - RELEASE=bionic
+      name: bionic
 
-   # - <<: *defaults_linux
-   #   dist: xenial
-   #   env:
-   #     - RELEASE=xenial
-   #   name: xenial
+    # - <<: *defaults_linux
+    #   dist: xenial
+    #   env:
+    #     - RELEASE=xenial
+    #   name: xenial
+   
+    - <<: *defaults_linux
+      arch: ppc64le
+      dist: jammy
+      env:
+        - RELEASE=jammy
+      name: jammy-ppc64le
 
-    # Wersje dla architektury ppc64le
-   # - <<: *defaults_linux
-   #   arch: ppc64le
-   #   dist: jammy
-   #   env:
-   #     - RELEASE=jammy
-   #   name: jammy-ppc64le
-
-   # - <<: *defaults_linux
-   #   arch: ppc64le
-   #   dist: focal
-   #   env:
-   #     - RELEASE=focal
-   #   name: focal-ppc64le
+    - <<: *defaults_linux
+      arch: ppc64le
+      dist: focal
+      env:
+        - RELEASE=focal
+      name: focal-ppc64le
 
     - <<: *defaults_linux
       arch: ppc64le
       dist: bionic
       env:
         - RELEASE=bionic
-        - NUMPY_VERSION=1.25
+        - NUMPY_VERSION=1.24.1
       name: bionic-ppc64le
 
    # - <<: *defaults_linux
