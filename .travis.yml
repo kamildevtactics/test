@@ -5,7 +5,6 @@ env:
     - VERSION=3.12.3
   # - ALIAS=nightly
 
-# Wspólna konfiguracja dla jobów Linux
 defaults_linux: &defaults_linux
   install:
     - pushd /opt/pyenv/
@@ -14,20 +13,21 @@ defaults_linux: &defaults_linux
     - sudo git pull
     - popd
     - alias python=python3
-    # Dodatkowe polecenia instalacyjne dla Xenial
     - |
       if [ "$RELEASE" = "xenial" ]; then
         sudo apt-get update
-        sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev wget build-essential checkinstall zlib1g-dev
+        sudo apt-get install -y build-essential libbz2-dev libreadline-dev libsqlite3-dev libffi-dev zlib1g-dev wget checkinstall
         python3 --version
-        # Pobranie i kompilacja nowszego OpenSSL
         wget https://www.openssl.org/source/openssl-1.1.1u.tar.gz
         tar xzf openssl-1.1.1u.tar.gz
         cd openssl-1.1.1u
         ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
         make -j4
         sudo make install
+        sudo mv /usr/bin/openssl /usr/bin/openssl.bak
+        sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl
         cd ..
+        openssl version -a
       fi
     - python3 -m pip install --upgrade pip setuptools virtualenv
 
@@ -37,7 +37,6 @@ defaults_linux: &defaults_linux
     - export OS_NAME=${OS_NAME:-$(lsb_release -is | tr "A-Z" "a-z")}
     - export ARCH=${ARCH:-$(uname -m)}
     - export PACKAGES=${PACKAGES:-pip nose pytest mock wheel pipenv dataclasses}
-    # Uaktualnienie opcji konfiguracji – dla Xenial dodajemy informację o nowszym OpenSSL
     - |
       if [ "$RELEASE" = "xenial" ]; then
         export PYTHON_CONFIGURE_OPTS="--with-openssl=/usr/local/openssl --with-wide-unicode --enable-shared --enable-ipv6 --enable-loadable-sqlite-extensions --with-computed-gotos $CONFIGURE_OPTS"
@@ -80,7 +79,6 @@ defaults_linux: &defaults_linux
 
 jobs:
   include:
-    # Zadanie FreeBSD – własne polecenia install (używa pkg zamiast apt-get)
     - language: bash
       name: freebsd
       os: freebsd
