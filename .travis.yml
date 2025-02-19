@@ -3,7 +3,7 @@ sudo: required
 
 env:
   global:
-    - VERSION=3.13.0
+    - VERSION=3.13.1
   # - ALIAS=nightly
 
 defaults_linux: &defaults_linux
@@ -23,7 +23,6 @@ defaults_linux: &defaults_linux
         tar xzf openssl-1.1.1u.tar.gz
         cd openssl-1.1.1u
 
-        # Dynamiczna detekcja architektury systemu
         case "$(uname -m)" in
           x86_64)
             OPENSSL_CONFIGURE_TARGET="linux-x86_64"
@@ -53,7 +52,6 @@ defaults_linux: &defaults_linux
         sudo mv /usr/bin/openssl /usr/bin/openssl.bak
         sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl
 
-        # Dodaj katalog z bibliotekami OpenSSL do konfiguracji dynamicznego linkera
         echo "/usr/local/openssl/lib" | sudo tee /etc/ld.so.conf.d/openssl.conf
         sudo ldconfig
 
@@ -138,44 +136,44 @@ jobs:
         - RELEASE=noble
       name: noble-arm64
 
-    - <<: *defaults_linux
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy
+   # - <<: *defaults_linux
+   #   dist: jammy
+   #   env:
+   #     - RELEASE=jammy
+   #   name: jammy
 
-    - <<: *defaults_linux
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal
+   # - <<: *defaults_linux
+   #   dist: focal
+   #   env:
+   #     - RELEASE=focal
+   #   name: focal
 
-    - <<: *defaults_linux
-      dist: bionic
-      env:
-        - RELEASE=bionic
-      name: bionic
+   # - <<: *defaults_linux
+   #   dist: bionic
+   #   env:
+   #     - RELEASE=bionic
+   #   name: bionic
 
-    - <<: *defaults_linux
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial
+   # - <<: *defaults_linux
+   #   dist: xenial
+   #   env:
+   #     - RELEASE=xenial
+   #   name: xenial
 
     # Wersje dla architektury ppc64le
-    - <<: *defaults_linux
-      arch: ppc64le
-      dist: jammy
-      env:
-        - RELEASE=jammy
-      name: jammy-ppc64le
+   # - <<: *defaults_linux
+   #   arch: ppc64le
+   #   dist: jammy
+   #   env:
+   #     - RELEASE=jammy
+   #   name: jammy-ppc64le
 
-    - <<: *defaults_linux
-      arch: ppc64le
-      dist: focal
-      env:
-        - RELEASE=focal
-      name: focal-ppc64le
+   # - <<: *defaults_linux
+   #   arch: ppc64le
+   #   dist: focal
+   #   env:
+   #     - RELEASE=focal
+   #   name: focal-ppc64le
 
     - <<: *defaults_linux
       arch: ppc64le
@@ -185,13 +183,13 @@ jobs:
         - NUMPY_VERSION=1.21.6
       name: bionic-ppc64le
 
-    - <<: *defaults_linux
-      arch: ppc64le
-      dist: xenial
-      env:
-        - RELEASE=xenial
-        - NUMPY_VERSION=1.21.6
-      name: xenial-ppc64le
+   # - <<: *defaults_linux
+   #   arch: ppc64le
+   #   dist: xenial
+   #   env:
+   #     - RELEASE=xenial
+   #     - NUMPY_VERSION=1.21.6
+   #   name: xenial-ppc64le
 
     - <<: *defaults_linux
       arch: s390x
@@ -215,13 +213,13 @@ jobs:
         - NUMPY_VERSION=1.21.6
       name: bionic-s390x
 
-    - <<: *defaults_linux
-      arch: s390x
-      dist: xenial
-      env:
-        - RELEASE=xenial
-        - NUMPY_VERSION=1.21.6
-      name: xenial-s390x
+  #  - <<: *defaults_linux
+  #    arch: s390x
+  #    dist: xenial
+  #    env:
+  #      - RELEASE=xenial
+  #      - NUMPY_VERSION=1.21.6
+  #    name: xenial-s390x
 
     - <<: *defaults_linux
       arch: arm64
@@ -244,12 +242,12 @@ jobs:
         - RELEASE=bionic
       name: bionic-arm64
 
-    - <<: *defaults_linux
-      arch: arm64
-      dist: xenial
-      env:
-        - RELEASE=xenial
-      name: xenial-arm64
+  #  - <<: *defaults_linux
+  #    arch: arm64
+  #    dist: xenial
+  #    env:
+  #      - RELEASE=xenial
+  #    name: xenial-arm64
 
 allow_failures:
   - name: freebsd
