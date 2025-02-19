@@ -3,7 +3,7 @@ sudo: required
 
 env:
   global:
-    - VERSION=3.13.3
+    - VERSION=3.13.0
   # - ALIAS=nightly
 
 defaults_linux: &defaults_linux
