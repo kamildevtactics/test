@@ -21,11 +21,28 @@ defaults_linux: &defaults_linux
         wget https://www.openssl.org/source/openssl-1.1.1u.tar.gz
         tar xzf openssl-1.1.1u.tar.gz
         cd openssl-1.1.1u
-        sudo ./Configure linux-x86_64 --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
+        
+        # Dynamiczna detekcja architektury systemu
+        if [ "$(uname -m)" = "x86_64" ]; then
+            OPENSSL_CONFIGURE_TARGET="linux-x86_64"
+        elif [ "$(uname -m)" = "aarch64" ]; then
+            OPENSSL_CONFIGURE_TARGET="linux-aarch64"
+        elif [ "$(uname -m)" = "ppc64le" ]; then
+            OPENSSL_CONFIGURE_TARGET="linux-ppc64le"
+        elif [ "$(uname -m)" = "s390x" ]; then
+            OPENSSL_CONFIGURE_TARGET="linux-s390x"
+        else
+            echo "Unsupported architecture: $(uname -m)"
+            exit 1
+        fi
+
+        sudo ./Configure $OPENSSL_CONFIGURE_TARGET --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib
+        sudo make depend
         sudo make -j$(nproc)
         sudo make install
         sudo mv /usr/bin/openssl /usr/bin/openssl.bak
         sudo ln -s /usr/local/openssl/bin/openssl /usr/bin/openssl
+        sudo ldconfig
         cd ..
         openssl version -a
       fi
