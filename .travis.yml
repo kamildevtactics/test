@@ -18,8 +18,11 @@ script:
   - llvm-config --version
 
   # Python support
-  - python3.6 --version
-  - python3.8 --version
+  - python3.9 --version
+  - python3.10 --version
+  - python3.11 --version
+  - python3.12 --version
+  - python3.13 --version
   - pip3 --version
   - pypy --version
 
