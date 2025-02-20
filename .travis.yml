@@ -1,22 +1,6 @@
 os: freebsd
 
 script:
-  # Ruby support
-  - ruby --version
-  - rvm list
-
-  # C i C++ support
-  - make --version
-  - autoreconf --version
-  - scons --version
-  - shellcheck --version
-  - shfmt -version
-  - clang --version
-  - gcc --version
-  - cmake --version
-  - ccache -V
-  - llvm-config --version
-
   # Python support
   - python3.9 --version
   - python3.10 --version
@@ -26,15 +10,3 @@ script:
   - pip3 --version
   - pypy --version
 
-  # Go support
-  - go version
-
-  # Julia support
-  - julia --version
-
-  # Java support
-  - java -version
-  - javac -version
-  - ant -version
-  - mvn -version
-  - gradle -version
