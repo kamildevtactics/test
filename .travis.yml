@@ -8,7 +8,7 @@ before_install:
   - sudo bash -c 'export ANDROID_SDK_ROOT=/usr/local/android-sdk'
   - sudo bash -c 'export CMDLINE_TOOLS_PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest'
   - sudo bash -c 'export SDKMANAGER_BIN=$CMDLINE_TOOLS_PATH/bin/sdkmanager'
-  - sudo mkdir -p $CMDLINE_TOOLS_PATH
+  - sudo bash -c 'mkdir -p $CMDLINE_TOOLS_PATH'
   - sudo wget -q -O /tmp/android-sdk.zip "https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip"
   - if [ -f /tmp/android-sdk.zip ]; then echo "✅ Android SDK downloaded"; else echo "❌ Failed to download Android SDK" && exit 1; fi
   - sudo unzip -q /tmp/android-sdk.zip -d $CMDLINE_TOOLS_PATH && sudo mv $CMDLINE_TOOLS_PATH/cmdline-tools $CMDLINE_TOOLS_PATH/latest
