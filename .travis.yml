@@ -40,3 +40,6 @@ script:
   # Sprawdzenie domyślnej wersji Pythona ustawionej w pyenv
   - echo "Domyślna wersja Pythona w pyenv:"
   - pyenv version || echo "Brak ustawionej wersji Pythona w pyenv"
+  
+  - echo "pyenv root:"
+  - echo $pyenv root || echo "pyenv root nie jest ustawione"
