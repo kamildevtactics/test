@@ -1,5 +1,6 @@
 os: linux
 dist: bionic
+group: dev
 
 install: skip
 script: java -version
