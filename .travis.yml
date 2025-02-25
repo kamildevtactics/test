@@ -1,6 +1,6 @@
-os: linux
 dist: bionic
 group: dev
+language: generic
+sudo: required
 
-install: skip
 script: java -version
