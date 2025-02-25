@@ -1,7 +1,4 @@
 dist: bionic
-
-language: android
-
 group: dev
 
 before_install:
