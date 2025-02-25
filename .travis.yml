@@ -42,4 +42,4 @@ script:
   - pyenv version || echo "Brak ustawionej wersji Pythona w pyenv"
   
   - echo "pyenv root:"
-  - echo $pyenv root || echo "pyenv root nie jest ustawione"
+  - echo "$(pyenv root)" || echo "pyenv root nie jest ustawione"
