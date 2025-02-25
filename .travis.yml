@@ -1,45 +1,17 @@
-dist: jammy
-group: stable
+os: linux
+dist: bionic
+group: dev
 
-script:
-  - echo "Sprawdzanie, czy pyenv jest dostępne..."
-  - which pyenv
+language: android
 
-  # Sprawdzenie wersji pyenv
-  - echo "Sprawdzanie wersji pyenv..."
-  - pyenv --version || echo "pyenv nie jest dostępne"
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-30.0.3
+    - android-30
 
-  # Sprawdzenie, czy pyenv jest w PATH
-  - echo "Ścieżka systemowa PATH:"
-  - echo $PATH
-
-  # Sprawdzenie zmiennej PYENV_ROOT
-  - echo "Sprawdzanie zmiennej PYENV_ROOT:"
-  - echo $PYENV_ROOT || echo "PYENV_ROOT nie jest ustawione"
-
-  # Sprawdzenie, czy katalog pyenv istnieje
-  - echo "Sprawdzanie, czy katalog /opt/pyenv istnieje..."
-  - ls -la /opt/pyenv || echo "Katalog /opt/pyenv nie istnieje"
-
-  # Sprawdzenie zawartości katalogu bin
-  - echo "Sprawdzanie zawartości /opt/pyenv/bin..."
-  - ls -la /opt/pyenv/bin || echo "Brak katalogu /opt/pyenv/bin"
-
-  # Sprawdzenie inicjalizacji pyenv
-  - echo "Próba inicjalizacji pyenv..."
-  - eval "$(pyenv init --path)" || echo "Nie udało się zainicjalizować pyenv"
-
-  # Sprawdzenie wersji po inicjalizacji
-  - echo "Ponowne sprawdzenie wersji pyenv po inicjalizacji..."
-  - pyenv --version || echo "pyenv nadal nie działa"
-
-  # Sprawdzenie dostępnych wersji Pythona w pyenv
-  - echo "Lista dostępnych wersji Pythona w pyenv..."
-  - pyenv install --list || echo "Nie udało się pobrać listy wersji Pythona"
-
-  # Sprawdzenie domyślnej wersji Pythona ustawionej w pyenv
-  - echo "Domyślna wersja Pythona w pyenv:"
-  - pyenv version || echo "Brak ustawionej wersji Pythona w pyenv"
-  
-  - echo "pyenv root:"
-  - echo "$(pyenv root)" || echo "pyenv root nie jest ustawione"
+script: 
+  - java -version
+  - sdkmanager --version
+  - sdkmanager --list
