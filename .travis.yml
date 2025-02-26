@@ -10,7 +10,26 @@ group: dev
 #     - build-tools-30.0.3
 #     - android-30
 
-script: 
+script:
+  - echo "Checking Java version..."
   - java -version
+
+  - echo "Checking if Android SDK is installed..."
+  - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
+  
+  - echo "Checking sdkmanager availability..."
+  - if command -v sdkmanager >/dev/null 2>&1; then echo "✅ sdkmanager found"; else echo "❌ sdkmanager not found!"; exit 1; fi
+
+  - echo "Checking sdkmanager version..."
   - sdkmanager --version
+
+  - echo "Listing available SDK components..."
   - sdkmanager --list
+
+  - echo "Checking adb availability..."
+  - if command -v adb >/dev/null 2>&1; then echo "✅ adb found"; adb version; else echo "❌ adb not found!"; exit 1; fi
+
+  - echo "Checking emulator availability..."
+  - if command -v emulator >/dev/null 2>&1; then echo "✅ emulator found"; emulator -version; else echo "❌ emulator not found!"; exit 1; fi
+
+  - echo "All checks passed! ✅"
