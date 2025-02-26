@@ -1,14 +1,14 @@
 dist: jammy
 group: dev
 
-language: android
+# language: android
 
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-30.0.3
-    - android-30
+# android:
+#   components:
+#     - tools
+#     - platform-tools
+#     - build-tools-30.0.3
+#     - android-30
 
 script:
   - echo "Checking Java version..."
