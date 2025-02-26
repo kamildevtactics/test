@@ -12,5 +12,5 @@ group: dev
 
 script: 
   - java -version
-  # - sdkmanager --version
-  # - sdkmanager --list
+  - sdkmanager --version
+  - sdkmanager --list
