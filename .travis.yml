@@ -2,16 +2,16 @@ os: linux
 dist: bionic
 group: dev
 
-language: android
+# language: android
 
-android:
-  components:
-    - tools
-    - platform-tools
-    - build-tools-30.0.3
-    - android-30
+# android:
+#   components:
+#     - tools
+#     - platform-tools
+#     - build-tools-30.0.3
+#     - android-30
 
 script: 
   - java -version
-  - sdkmanager --version
-  - sdkmanager --list
+  # - sdkmanager --version
+  # - sdkmanager --list
