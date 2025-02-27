@@ -8,7 +8,7 @@ script:
   - java -version
 
   - echo "Checking if Android SDK is installed..."
-  - export ANDROID_HOME="/opt/android-sdk"
+  - export ANDROID_HOME="/usr/local/android-sdk"
   - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
   
   - echo "Checking sdkmanager availability..."
