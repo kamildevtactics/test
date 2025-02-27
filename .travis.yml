@@ -8,7 +8,7 @@ script:
   - java -version
 
   - echo "Checking if Android SDK is installed..."
-  - export ANDROID_HOME="/usr/local/android-sdk/android-sdk"
+  - export ANDROID_HOME="/opt/android-sdk"
   - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
   
   - echo "Checking sdkmanager availability..."
@@ -31,12 +31,15 @@ script:
 
   - echo "Checking installed components..."
   - echo "Checking build-tools;30.0.0..."
-  - if [ -d "$ANDROID_HOME/build-tools/30.0.0" ]; then echo "✅ build-tools;30.0.0 found"; else echo "❌ build-tools;30.0.0 not found!"; exit 1; fi
+  - if [ -d "$ANDROID_HOME/build-tools/30.0.0" ]; then echo "✅ build-tools;30.0.0 found"; else echo "❌ build-tools;33.0.2 not found!"; exit 1; fi
   
   - echo "Checking platforms;android-30..."
-  - if [ -d "$ANDROID_HOME/platforms/android-30" ]; then echo "✅ platforms;android-30 found"; else echo "❌ platforms;android-30 not found!"; exit 1; fi
+  - if [ -d "$ANDROID_HOME/platforms/android-33" ]; then echo "✅ platforms;android-30 found"; else echo "❌ platforms;android-33 not found!"; exit 1; fi
   
-  - echo "Checking Google Play Services..."
-  - if [ -d "$ANDROID_HOME/extras/google/google_play_services" ]; then echo "✅ Google Play Services found"; else echo "❌ Google Play Services not found!"; exit 1; fi
+  - echo "Checking system images..."
+  - if [ -d "$ANDROID_HOME/system-images/android-30/google_apis/x86_64" ]; then echo "✅ System images found"; else echo "❌ System images not found!"; exit 1; fi
 
+  - echo "Setting Android environment variables..."
+  - export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/cmdline-tools/bin:$ANDROID_HOME/build-tools/33.0.2
+  
   - echo "All checks passed! ✅"
