@@ -7,7 +7,7 @@ group: dev
 #   components:
 #     - tools
 #     - platform-tools
-#     - build-tools-30.0.3
+#     - build-tools-30.0.0
 #     - android-30
 
 script:
@@ -15,21 +15,35 @@ script:
   - java -version
 
   - echo "Checking if Android SDK is installed..."
+  - export ANDROID_HOME="/usr/local/android-sdk"
   - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
   
   - echo "Checking sdkmanager availability..."
-  - if command -v sdkmanager >/dev/null 2>&1; then echo "✅ sdkmanager found"; else echo "❌ sdkmanager not found!"; exit 1; fi
+  - export SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+  - if [ -f "$SDKMANAGER" ]; then echo "✅ sdkmanager found at: $SDKMANAGER"; else echo "❌ sdkmanager not found at expected location!"; exit 1; fi
 
   - echo "Checking sdkmanager version..."
-  - sdkmanager --version
+  - $SDKMANAGER --version
 
   - echo "Listing available SDK components..."
-  - sdkmanager --list
+  - $SDKMANAGER --list
 
   - echo "Checking adb availability..."
-  - if command -v adb >/dev/null 2>&1; then echo "✅ adb found"; adb version; else echo "❌ adb not found!"; exit 1; fi
+  - export ADB="$ANDROID_HOME/platform-tools/adb"
+  - if [ -f "$ADB" ]; then echo "✅ adb found"; $ADB version; else echo "❌ adb not found!"; exit 1; fi
 
   - echo "Checking emulator availability..."
-  - if command -v emulator >/dev/null 2>&1; then echo "✅ emulator found"; emulator -version; else echo "❌ emulator not found!"; exit 1; fi
+  - export EMULATOR="$ANDROID_HOME/emulator/emulator"
+  - if [ -f "$EMULATOR" ]; then echo "✅ emulator found"; $EMULATOR -version; else echo "❌ emulator not found!"; exit 1; fi
+
+  - echo "Checking installed components..."
+  - echo "Checking build-tools;30.0.0..."
+  - if [ -d "$ANDROID_HOME/build-tools/30.0.0" ]; then echo "✅ build-tools;30.0.0 found"; else echo "❌ build-tools;30.0.0 not found!"; exit 1; fi
+  
+  - echo "Checking platforms;android-30..."
+  - if [ -d "$ANDROID_HOME/platforms/android-30" ]; then echo "✅ platforms;android-30 found"; else echo "❌ platforms;android-30 not found!"; exit 1; fi
+  
+  - echo "Checking Google Play Services..."
+  - if [ -d "$ANDROID_HOME/extras/google/google_play_services" ]; then echo "✅ Google Play Services found"; else echo "❌ Google Play Services not found!"; exit 1; fi
 
   - echo "All checks passed! ✅"
