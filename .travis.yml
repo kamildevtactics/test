@@ -12,7 +12,7 @@ script:
   - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
   
   - echo "Checking sdkmanager availability..."
-  - export SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/cmdline-tools/bin/sdkmanager"
+  - export SDKMANAGER="$ANDROID_HOME/android-sdk/cmdline-tools/latest/cmdline-tools/bin/sdkmanager"
   - if [ -f "$SDKMANAGER" ]; then echo "✅ sdkmanager found at: $SDKMANAGER"; else echo "❌ sdkmanager not found at expected location!"; exit 1; fi
 
   - echo "Checking sdkmanager version..."
