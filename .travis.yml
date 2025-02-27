@@ -58,4 +58,4 @@ script:
   - echo "Checking Google Play Services..."
   - if [ -d "$ANDROID_HOME/extras/google/google_play_services" ]; then echo "✅ Google Play Services found"; else echo "❌ Google Play Services not found!"; exit 1; fi
 
-  - echo "All checks passed! ✅"
+  - echo "All checks passed ✅"
