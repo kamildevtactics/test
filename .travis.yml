@@ -1,45 +1,8 @@
+language: android
 dist: jammy
 group: dev
-
-# language: android
-
-script:
-  - echo "Checking Java version..."
-  - java -version
-
-  - echo "Checking if Android SDK is installed..."
-  - export ANDROID_HOME="/usr/local/android-sdk"
-  - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
-  
-  - echo "Checking sdkmanager availability..."
-  - export SDKMANAGER="$ANDROID_HOME/android-sdk/cmdline-tools/latest/cmdline-tools/bin/sdkmanager"
-  - if [ -f "$SDKMANAGER" ]; then echo "✅ sdkmanager found at: $SDKMANAGER"; else echo "❌ sdkmanager not found at expected location!"; exit 1; fi
-
-  - echo "Checking sdkmanager version..."
-  - $SDKMANAGER --version --sdk_root=$ANDROID_HOME
-
-  - echo "Listing available SDK components..."
-  - $SDKMANAGER --list --sdk_root=$ANDROID_HOME
-
-  # - echo "Checking adb availability..."
-  # - export ADB="$ANDROID_HOME/platform-tools/adb"
-  # - if [ -f "$ADB" ]; then echo "✅ adb found"; $ADB version; else echo "❌ adb not found!"; exit 1; fi
-
-  # - echo "Checking emulator availability..."
-  # - export EMULATOR="$ANDROID_HOME/emulator/emulator"
-  # - if [ -f "$EMULATOR" ]; then echo "✅ emulator found"; $EMULATOR -version; else echo "❌ emulator not found!"; exit 1; fi
-
-  - echo "Checking installed components..."
-  - echo "Checking build-tools;30.0.0..."
-  - if [ -d "$ANDROID_HOME/build-tools/30.0.0" ]; then echo "✅ build-tools;30.0.0 found"; else echo "❌ build-tools;33.0.2 not found!"; exit 1; fi
-  
-  - echo "Checking platforms;android-30..."
-  - if [ -d "$ANDROID_HOME/platforms/android-33" ]; then echo "✅ platforms;android-30 found"; else echo "❌ platforms;android-33 not found!"; exit 1; fi
-  
-  - echo "Checking system images..."
-  - if [ -d "$ANDROID_HOME/system-images/android-30/google_apis/x86_64" ]; then echo "✅ System images found"; else echo "❌ System images not found!"; exit 1; fi
-
-  - echo "Setting Android environment variables..."
-  - export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/cmdline-tools/bin:$ANDROID_HOME/build-tools/33.0.2
-  
-  - echo "All checks passed! ✅"
+android:
+  components:
+    - build-tools-26.0.2
+    - android-26
+    - extra
