@@ -1,5 +1,6 @@
 language: android
 dist: bionic
+group: dev
 android:
   components:
     - build-tools-26.0.2
