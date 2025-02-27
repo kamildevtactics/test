@@ -1,6 +1,5 @@
 language: android
 dist: jammy
-group: dev
 android:
   components:
     - build-tools-26.0.2
