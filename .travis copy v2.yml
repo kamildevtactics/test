@@ -1,19 +1,8 @@
 language: android
-dist: bionic
-
+dist: jammy
+group: dev
 android:
   components:
     - build-tools-26.0.2
     - android-26
     - extra
-
-before_install:
-  - echo "Checking system version..."
-  - lsb_release -a  # Sprawdza wersję systemu
-  - cat /etc/os-release  # Alternatywne sprawdzenie wersji systemu
-  - uname -a  # Informacje o jądrze systemu
-  - sudo apt update
-  - sudo apt install -y ant
-
-script:
-  - ant debug install test

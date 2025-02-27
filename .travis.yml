@@ -1,8 +1,8 @@
 language: android
-dist: trusty
+dist: bionic
+group: dev
 android:
   components:
-    - build-tools-26.0.2
-    - android-26
-    - add-on
+    - build-tools-31.0.0
+    - android-31
     - extra
