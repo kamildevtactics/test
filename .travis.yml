@@ -1,108 +1,61 @@
-language: shell
+dist: jammy
+group: dev
 
-# stages:
-#   - build2
-# stage: build
+script:
+  - echo "Checking Java version..."
+  - java -version
 
-jobs:
-  include:
-    - language: bash
-      name: freebsd
-      os: freebsd
-      group: dev
-      install:
-        - pushd /opt/pyenv/
-        - sudo git config --global --add safe.directory /opt/pyenv
-        - sudo git checkout master
-        - sudo git pull
-        - popd
-        - python --version
-        - sudo python -m ensurepip
-        - sudo python -m pip install --upgrade pip
-        - sudo python -m pip install virtualenv==20.0.2
-
-allow_failures:
-  - name: freebsd
-
-env:
-  global:
-    - VERSION=3.9.9
-  # - ALIAS=nightly
-
-install:
-  # - git clone https://github.com/pyenv/pyenv-update.git $(pyenv root)/plugins/pyenv-update
-  # - pyenv update
-  - pushd /opt/pyenv/
-  - sudo git config --global --add safe.directory /opt/pyenv
-  - sudo git checkout master
-  - sudo git pull
-  - popd
-  - alias python=python3
-  - python -m pip install virtualenv
-  - sudo pip install --upgrade pip
-  - sudo pip install setuptools
-  #- if [[ $(lsb_release -cs) == "jammy" &&  $(uname -m) == "ppc64le" ]]; then alias python=python3; fi
-  # As of this writing:
-  # * Py2 is EOL
-  #   * however, pip (https://pip.pypa.io/en/latest/develss/#python-2-support) intends to keep supporting it as long as practical
-  #   * Virtualenv also supports old versions (e.g. 3.4) far longer than PSF does
-  # * all images have `virtualenv` on PATH but vary in whether it's per-user or global and which Python installation it belongs to
-  #   * some of these preinstalled `virtualenv`s don't support 3.9+
-  # * selected amd64 images have 3.7.* preinstalled with pip; multiarch have pyenv not on PATH, with no alt versions
-  # * xenial's provided Py3, 3.5, is in security fixes mode, due for EOL in 06.2020
-  #
-  # So it seems to be safe to use `virtualenv` with system's Py2 if we update it, for the foreseeable future.
-  # FIXME: use an officially supported alt Python version for `virtualenv` instead once one is available in all images.
-  - |
-    # `cat` avoids "broken pipe"; `freeze` instead of `list` avoids a warning about future output format change
-    if (python -m pip freeze --user | cat | grep -qP '^virtualenv=='); then
-      python -m pip install --upgrade --user virtualenv
-    elif (python -m pip freeze | cat | grep -qP '^virtualenv=='); then
-      sudo python -m pip install --upgrade virtualenv
-    else
-      sudo python -m pip install virtualenv
-    fi
-
-before_script:
-  - "export INSTALL_DEST=${INSTALL_DEST:-/opt/python}"
-  - 'export LSB_RELEASE=${LSB_RELEASE:-$(lsb_release -rs || if [[ $(uname -a) == *"FreeBSD"* ]]; then echo $(uname -r | rev | cut -c9- | rev); else false; fi || echo ${$(sw_vers -productVersion)%*.*})}'
-  - 'export OS_NAME=${OS_NAME:-$((lsb_release -is || if [[ $(uname -a) == *"FreeBSD"* ]]; then echo $(uname | cut -c1-); else false; fi || echo "osx") | tr "A-Z" "a-z")}'
-  - "export ARCH=${ARCH:-$(uname -m)}"
-  # pipenv is supported for python 2.7 and 3.4 and higher.
-  - "export PACKAGES=${PACKAGES:-pip nose pytest mock wheel pipenv dataclasses}"
-  - export PYTHON_CONFIGURE_OPTS="--with-wide-unicode --enable-shared --enable-ipv6 --enable-loadable-sqlite-extensions --with-computed-gotos $CONFIGURE_OPTS"
-  - sudo chown -R $USER $HOME/.cache
-  - |
-    if [[ $VERSION = pypy*-dev ]]; then
-      if ! [[ -f ~/virtualenv/pypy/bin/activate ]]; then
-        curl -O https://s3.amazonaws.com/travis-python-archives/binaries/ubuntu/$(lsb_release -rs)/x86_64/pypy2.7-5.9.0.tar.bz2
-        sudo tar xf pypy*.tar.bz2 -C /
+  - echo "Checking if Android SDK is installed..."
+  - export ANDROID_HOME="/usr/local/android-sdk"
+  - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
+  
+  - echo "Checking sdkmanager availability..."
+  - export SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+  - if [ -f "$SDKMANAGER" ]; then 
+      echo "✅ sdkmanager found at: $SDKMANAGER"; 
+    else 
+      echo "Trying alternative path..."
+      export SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/cmdline-tools/bin/sdkmanager"
+      if [ -f "$SDKMANAGER" ]; then
+        echo "✅ sdkmanager found at alternative path: $SDKMANAGER"
+      else
+        echo "❌ sdkmanager not found at expected locations!"
+        exit 1
       fi
-      source ~/virtualenv/pypy/bin/activate
-      python --version
     fi
 
-script: 
-  - sudo apt-get update && sudo apt-get install build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev -y
-  - ./bin/compile
+  - echo "Checking sdkmanager version..."
+  - $SDKMANAGER --version --sdk_root=$ANDROID_HOME
 
-#after_success: ./bin/archive
+  - echo "Installing required components if missing..."
+  - echo "Installing platform-tools..."
+  - $SDKMANAGER "platform-tools" --sdk_root=$ANDROID_HOME
+  
+  - echo "Installing build-tools;30.0.0..."
+  - $SDKMANAGER "build-tools;30.0.0" --sdk_root=$ANDROID_HOME
+  
+  - echo "Installing platforms;android-30..."
+  - $SDKMANAGER "platforms;android-30" --sdk_root=$ANDROID_HOME
+  
+  - echo "Installing Google Play services..."
+  - $SDKMANAGER "extras;google;google_play_services" --sdk_root=$ANDROID_HOME
 
-#after_failure: cat /tmp/python-build.*.log
+  - echo "Checking adb availability..."
+  - export ADB="$ANDROID_HOME/platform-tools/adb"
+  - if [ -f "$ADB" ]; then echo "✅ adb found"; $ADB version; else echo "❌ adb not found!"; exit 1; fi
 
-addons:
-  apt:
-    packages:
-      - openssl
-      - libssl-dev
-      - mercurial
-      - python3-pip
-  artifacts:
-    paths:
-      - $LSB_RELEASE/
-    target_paths:
-      - /binaries/$OS_NAME/$LSB_RELEASE/$ARCH
-    branch:
-      - default
-    cache_control: public
+  - echo "Checking emulator availability..."
+  - export EMULATOR="$ANDROID_HOME/emulator/emulator"
+  - if [ -f "$EMULATOR" ]; then echo "✅ emulator found"; $EMULATOR -version; else echo "❌ emulator not found! Installing..."; $SDKMANAGER "emulator" --sdk_root=$ANDROID_HOME; fi
 
+  - echo "Checking installed components..."
+  - echo "Checking build-tools;30.0.0..."
+  - if [ -d "$ANDROID_HOME/build-tools/30.0.0" ]; then echo "✅ build-tools;30.0.0 found"; else echo "❌ build-tools;30.0.0 not found!"; exit 1; fi
+  
+  - echo "Checking platforms;android-30..."
+  - if [ -d "$ANDROID_HOME/platforms/android-30" ]; then echo "✅ platforms;android-30 found"; else echo "❌ platforms;android-30 not found!"; exit 1; fi
+  
+  - echo "Checking Google Play Services..."
+  - if [ -d "$ANDROID_HOME/extras/google/google_play_services" ]; then echo "✅ Google Play Services found"; else echo "❌ Google Play Services not found!"; exit 1; fi
+
+  - echo "All checks passe ✅"
