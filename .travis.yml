@@ -3,30 +3,23 @@ group: dev
 
 # language: android
 
-# android:
-#   components:
-#     - tools
-#     - platform-tools
-#     - build-tools-30.0.0
-#     - android-30
-
 script:
   - echo "Checking Java version..."
   - java -version
 
   - echo "Checking if Android SDK is installed..."
-  - export ANDROID_HOME="/usr/local/android-sdk"
+  - export ANDROID_HOME="/usr/local/android-sdk/android-sdk"
   - if [ -d "$ANDROID_HOME" ]; then echo "✅ ANDROID_HOME is set to: $ANDROID_HOME"; else echo "❌ ANDROID_HOME is not set or SDK is missing!"; exit 1; fi
   
   - echo "Checking sdkmanager availability..."
-  - export SDKMANAGER="$ANDROID_HOME/android-sdk/cmdline-tools/latest/cmdline-tools/bin/sdkmanager"
+  - export SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/cmdline-tools/bin/sdkmanager"
   - if [ -f "$SDKMANAGER" ]; then echo "✅ sdkmanager found at: $SDKMANAGER"; else echo "❌ sdkmanager not found at expected location!"; exit 1; fi
 
   - echo "Checking sdkmanager version..."
-  - $SDKMANAGER --version
+  - $SDKMANAGER --version --sdk_root=$ANDROID_HOME
 
   - echo "Listing available SDK components..."
-  - $SDKMANAGER --list
+  - $SDKMANAGER --list --sdk_root=$ANDROID_HOME
 
   - echo "Checking adb availability..."
   - export ADB="$ANDROID_HOME/platform-tools/adb"
