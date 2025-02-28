@@ -5,7 +5,7 @@ group: dev
 
 android:
   components:
-    - build-tools-32.0.1
+    - build-tools-32.0.0
     - android-32
     - extra
 
