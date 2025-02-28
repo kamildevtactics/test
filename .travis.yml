@@ -1,13 +1,5 @@
-language: android
-
 dist: bionic
 group: dev
-
-android:
-  components:
-    - build-tools-32.0.0
-    - android-32
-    - extra
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
