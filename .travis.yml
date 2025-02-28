@@ -3,9 +3,11 @@ group: dev
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
-  - sdkmanager --list
+  - ls -la /usr/local/android-sdk/android-sdk
+  - ls -la /usr/local/android-sdk
   - chmod -R 777 /usr/local/android-sdk/android-sdk
   - sudo chmod -R 777 /usr/local/android-sdk/android-sdk
   - sudo chmod -R 777 /usr/local/android-sdk
+  - sdkmanager --list
 
 
