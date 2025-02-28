@@ -7,4 +7,5 @@ before_script:
   - export PATH=/usr/local/android-sdk/android-sdk/cmdline-tools/latest/cmdline-tools/bin:/usr/local/android-sdk/android-sdk/tools:/usr/local/android-sdk/android-sdk/tools/bin:/usr/local/android-sdk/android-sdk/platform-tools:$PATH
   - echo "Zakończenie środowiska przed kompilacją..." 
 
-
+script:
+  - echo "Uruchamianie skryptu instalacji SDK i budowania..."
