@@ -1,11 +1,16 @@
+language: android
+
 dist: bionic
 group: dev
 
+android:
+  components:
+    - build-tools-32.0.0
+    - android-32
+    - extra
+
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
-  - sudo chmod -R 777 /usr/local/android-sdk
-  - export PATH=/usr/local/android-sdk/android-sdk/cmdline-tools/latest/cmdline-tools/bin:/usr/local/android-sdk/android-sdk/tools:/usr/local/android-sdk/android-sdk/tools/bin:/usr/local/android-sdk/android-sdk/platform-tools:$PATH
-  - yes | sdkmanager --sdk_root=/usr/local/android-sdk/android-sdk "build-tools;32.0.0" --verbose
 
 script:
-  - echo "Uruchamianie skryptu instalacji SDK i budowania..."
+  - echo "Zakończenie kompilacji..."
