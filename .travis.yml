@@ -8,6 +8,7 @@ before_script:
   - sudo chmod -R 777 /usr/local/android-sdk/android-sdk
   - sudo chmod -R 777 /usr/local/android-sdk/android-sdk
   - sudo chmod -R 777 /usr/local/android-sdk
-  - sdkmanager --list
+  - export PATH=/usr/local/android-sdk/android-sdk/cmdline-tools/latest/cmdline-tools/bin:/usr/local/android-sdk/android-sdk/tools:/usr/local/android-sdk/android-sdk/tools/bin:/usr/local/android-sdk/android-sdk/platform-tools:$PATH
+  - yes | sdkmanager --sdk_root=/usr/local/android-sdk/android-sdk "build-tools;32.0.1" --verbose
 
 
