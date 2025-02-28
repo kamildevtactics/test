@@ -1,8 +1,19 @@
 language: android
+
 dist: bionic
 group: dev
+
 android:
   components:
     - build-tools-32.0.1
     - android-32
     - extra
+
+before_script:
+  - echo "Przygotowywanie środowiska przed kompilacją..."
+  - sdkmanager --list
+  - chmod -R 777 /usr/local/android-sdk/android-sdk
+  - sudo chmod -R 777 /usr/local/android-sdk/android-sdk
+  - sudo chmod -R 777 /usr/local/android-sdk
+
+
