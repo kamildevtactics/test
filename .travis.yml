@@ -1,9 +1,16 @@
-dist: bionic
-group: dev
+language: android
+
+dist: trusty
+
+
+android:
+  components:
+    - build-tools-32.0.0
+    - android-32
+    - extra
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
-  - ls -ltrR /usr/local/android-sdk/cmdline-tools
 
 script:
-  - echo "Zakończenie kompilacji...."
+  - echo "Zakończenie kompilacji..."
