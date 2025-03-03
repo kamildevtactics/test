@@ -1,16 +1,9 @@
-language: android
-
-dist: focal
+dist: bionic
 group: dev
-
-android:
-  components:
-    - build-tools-32.0.0
-    - android-32
-    - extra
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
+  - if [ -d "/usr/local/android-sdk/cmdline-tools/" ]; then echo "Android cmdline-tools directory exists."; else echo "WARNING: /usr/local/android-sdk/cmdline-tools/ not found!"; fi
 
 script:
   - echo "Zakończenie kompilacji..."
