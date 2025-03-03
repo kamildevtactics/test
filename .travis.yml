@@ -6,4 +6,4 @@ before_script:
   - ls -ltrR /usr/local/android-sdk/cmdline-tools
 
 script:
-  - echo "Zakończenie kompilacji..."
+  - echo "Zakończenie kompilacji...."
