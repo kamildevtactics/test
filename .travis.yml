@@ -1,6 +1,6 @@
 language: android
 
-dist: bionic
+dist: focal
 group: dev
 
 android:
