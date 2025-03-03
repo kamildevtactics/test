@@ -1,22 +1,8 @@
+language: android
 dist: bionic
-
 group: dev
-
-before_install:
-  - sudo apt-get update
-  - sudo apt-get install -y unzip
-  - sudo bash -c 'export ANDROID_SDK_ROOT=/usr/local/android-sdk'
-  - sudo bash -c 'export CMDLINE_TOOLS_PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest'
-  - sudo bash -c 'export SDKMANAGER_BIN=$CMDLINE_TOOLS_PATH/bin/sdkmanager'
-  - sudo bash -c 'mkdir -p $CMDLINE_TOOLS_PATH'
-  - sudo wget -q -O /tmp/android-sdk.zip "https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip"
-  - if [ -f /tmp/android-sdk.zip ]; then echo "✅ Android SDK downloaded"; else echo "❌ Failed to download Android SDK" && exit 1; fi
-  - sudo unzip -q /tmp/android-sdk.zip -d $CMDLINE_TOOLS_PATH && sudo mv $CMDLINE_TOOLS_PATH/cmdline-tools $CMDLINE_TOOLS_PATH/latest
-  - sudo chmod -R a+rX $ANDROID_SDK_ROOT/*
-  - if [ -f "$SDKMANAGER_BIN" ]; then echo "✅ sdkmanager found"; else echo "❌ sdkmanager not found" && exit 1; fi
-  - yes | sudo $SDKMANAGER_BIN --install "platform-tools" "platforms;android-30" "build-tools;30.0.3" --sdk_root=$ANDROID_SDK_ROOT
-
-script:
-  - java -version
-  - $SDKMANAGER_BIN --list
-
+android:
+  components:
+    - build-tools-26.0.2
+    - android-26
+    - extra
