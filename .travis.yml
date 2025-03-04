@@ -1,5 +1,5 @@
 language: android
-dist: jammy
+dist: focal
 group: dev
 
 android:
