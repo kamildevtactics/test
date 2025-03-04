@@ -1,7 +1,6 @@
 language: android
-
-dist: trusty
-
+dist: bionic
+group: dev
 
 android:
   components:
