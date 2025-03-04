@@ -6,7 +6,9 @@ android:
   components:
     - build-tools-32.0.0
     - android-32
-    - extra
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
