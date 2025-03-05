@@ -6,10 +6,10 @@ before_script:
 
 script:
   - echo "Sprawdzanie instalacji pyenv..."
-  - test -d /home/travis/.pyenv && echo "📌 Pyenv location: /home/travis/.pyenv" || echo "❌ Pyenv location nie istnieje"
-  - test -L /opt/pyenv && echo "📌 Symlink: /opt/pyenv -> $(readlink /opt/pyenv)" || echo "❌ Symlink nie istnieje"
-  - if [ -f /opt/pyenv/bin/pyenv ]; then echo "📌 Python versions installed: $(/opt/pyenv/bin/pyenv versions)"; else echo "❌ Nie można sprawdzić wersji Pythona"; fi
-  - if [ -f /opt/pyenv/bin/pyenv ]; then echo "📌 Global Python version: $(/opt/pyenv/bin/pyenv global)"; else echo "❌ Nie można sprawdzić globalnej wersji Pythona"; fi
-  - test -f /home/travis/.bash_profile && echo "📌 Bash profile: /home/travis/.bash_profile" || echo "❌ Bash profile nie istnieje"
-  - if [ -f /home/travis/.bash_profile ]; then grep -q "pyenv" /home/travis/.bash_profile && echo "✅ Bash profile zawiera konfigurację pyenv" || echo "⚠️ Bash profile nie zawiera konfiguracji pyenv"; fi
+  - ls -la /home/travis/.pyenv
+  - ls -la /opt/pyenv
+  - /opt/pyenv/bin/pyenv versions
+  - /opt/pyenv/bin/pyenv global
+  - ls -la /home/travis/.bash_profile
+  - cat /home/travis/.bash_profile | grep pyenv
   - echo "Zakończenie kompilacji..."
