@@ -1,15 +1,176 @@
-dist: freebsd
+dist: bionic
 group: dev
 
-before_script:
-  - echo "Przygotowywanie środowiska przed kompilacją..."
+env:
+  global:
+    # Version Control
+    - EXPECTED_GIT_VERSION=2.45.1
+    - EXPECTED_GITLFS_VERSION=3.3.0
+    - EXPECTED_HG_VERSION=6.0
+    - EXPECTED_SVN_VERSION=1.14.1
+
+    # Compilers i Build Toolchain
+    - EXPECTED_CLANG_VERSION=17
+    - EXPECTED_CMAKE_VERSION=3.27.0
+    - EXPECTED_GCC_VERSION=9.5.0
+    - EXPECTED_CCACHE_VERSION=4.8.1
+    - EXPECTED_SHELLCHECK_VERSION=0.10.1
+    - EXPECTED_SHFMT_VERSION=3.8.1
+
+    # Docker
+    - EXPECTED_DOCKER_VERSION=24.0.3
+    - EXPECTED_DOCKER_COMPOSE_VERSION=2.19.0
+
+    # Ruby
+    - EXPECTED_RUBY_VERSION=3.3.1
+
+    # Python (preinstalowane wersje)
+    - EXPECTED_PYTHON36_VERSION=3.6.15
+    - EXPECTED_PYTHON37_VERSION=3.7.18
+    - EXPECTED_PYTHON38_VERSION=3.8.19
+    - EXPECTED_PYTHON312_VERSION=3.12.1
+
+    # Node.js (domyślna wersja)
+    - EXPECTED_NODE_VERSION_DEFAULT=20.15.0
+
+    # Go
+    - EXPECTED_GO_VERSION=1.20.7
+
+    # JVM / Java
+    - EXPECTED_JAVA_VERSION=11
+    - EXPECTED_GRADLE_VERSION=8.4
+    - EXPECTED_MAVEN_VERSION=3.9.5
+    - EXPECTED_GROOVY_VERSION=4.0.16
+
+    # Perl
+    - EXPECTED_PERL_VERSION=5.34
+
+    # PHP
+    - EXPECTED_PHP_VERSION=7.4.33
+
+    # Bazy danych i serwisy
+    - EXPECTED_MONGODB_VERSION=5.0.12
+    - EXPECTED_MYSQL_VERSION=8.0.33
+    - EXPECTED_REDIS_VERSION=7.2.10
+    - EXPECTED_POSTGRESQL_VERSIONS="9.6,10,11,12,13,14"
 
 script:
-  - echo "Sprawdzanie instalacji pyenv..."
-  - ls -la /home/travis/.pyenv
-  - ls -la /opt/pyenv
-  - /opt/pyenv/bin/pyenv versions
-  - /opt/pyenv/bin/pyenv global
-  - ls -la /home/travis/.bash_profile
-  - cat /home/travis/.bash_profile | grep pyenv
-  - echo "Zakończenie kompilacji..."
+  - echo "Rozpoczynam sprawdzanie wersji wszystkich komponentów..."
+
+  # Funkcja pomocnicza do weryfikacji wersji
+  - |
+    function check_version() {
+      local tool=$1
+      local version_command=$2
+      local expected=$3
+      local actual=$($version_command 2>&1)
+      echo "$tool: $actual"
+      if [[ "$actual" != *"$expected"* ]]; then
+        echo "Błąd: $tool nie ma oczekiwanej wersji. Oczekiwano: $expected, otrzymano: $actual"
+        exit 1
+      fi
+    }
+
+  # Version Control
+  - check_version "Git" "git --version" "$EXPECTED_GIT_VERSION"
+  - check_version "Git LFS" "git lfs version" "$EXPECTED_GITLFS_VERSION"
+  - check_version "Mercurial (hg)" "hg --version | head -n 1" "$EXPECTED_HG_VERSION"
+  - check_version "Subversion (svn)" "svn --version | head -n 1" "$EXPECTED_SVN_VERSION"
+
+  # Compilatory i narzędzia budujące
+  - check_version "Clang" "clang --version | head -n 1" "$EXPECTED_CLANG_VERSION"
+  - check_version "CMake" "cmake --version | head -n 1" "$EXPECTED_CMAKE_VERSION"
+  - check_version "GCC" "gcc --version | head -n 1" "$EXPECTED_GCC_VERSION"
+  - check_version "ccache" "ccache --version | head -n 1" "$EXPECTED_CCACHE_VERSION"
+  - check_version "ShellCheck" "shellcheck --version" "$EXPECTED_SHELLCHECK_VERSION"
+  - check_version "shfmt" "shfmt --version" "$EXPECTED_SHFMT_VERSION"
+
+  # Docker
+  - check_version "Docker" "docker --version" "$EXPECTED_DOCKER_VERSION"
+  - check_version "Docker Compose" "docker-compose --version" "$EXPECTED_DOCKER_COMPOSE_VERSION"
+
+  # Ruby
+  - check_version "Ruby" "ruby --version" "$EXPECTED_RUBY_VERSION"
+
+  # Python
+  - check_version "Python 3.6" "python3.6 --version" "$EXPECTED_PYTHON36_VERSION"
+  - check_version "Python 3.7" "python3.7 --version" "$EXPECTED_PYTHON37_VERSION"
+  - check_version "Python 3.8" "python3.8 --version" "$EXPECTED_PYTHON38_VERSION"
+  - check_version "Python 3.12" "python3.12 --version" "$EXPECTED_PYTHON312_VERSION"
+
+  # Node.js (domyślna wersja)
+  - check_version "Node.js (default)" "node --version" "$EXPECTED_NODE_VERSION_DEFAULT"
+
+  # Go
+  - check_version "Go" "go version" "$EXPECTED_GO_VERSION"
+
+  # Java i JVM
+  - |
+    JAVA_VERSION=$(java -version 2>&1 | head -n 1)
+    echo "Java: $JAVA_VERSION"
+    if [[ "$JAVA_VERSION" != *"$EXPECTED_JAVA_VERSION"* ]]; then
+      echo "Błąd: Java nie ma oczekiwanej wersji. Oczekiwano: $EXPECTED_JAVA_VERSION, otrzymano: $JAVA_VERSION"
+      exit 1
+    fi
+  - check_version "Gradle" "gradle --version | grep 'Gradle'" "$EXPECTED_GRADLE_VERSION"
+  - check_version "Maven" "mvn --version | head -n 1" "$EXPECTED_MAVEN_VERSION"
+  - check_version "Groovy" "groovy --version" "$EXPECTED_GROOVY_VERSION"
+
+  # Perl
+  - |
+    PERL_VERSION=$(perl -e 'printf "%vd", $^V')
+    echo "Perl: $PERL_VERSION"
+    if [[ "$PERL_VERSION" != "$EXPECTED_PERL_VERSION" ]]; then
+      echo "Błąd: Perl nie ma oczekiwanej wersji. Oczekiwano: $EXPECTED_PERL_VERSION, otrzymano: $PERL_VERSION"
+      exit 1
+    fi
+
+  # PHP
+  - check_version "PHP" "php --version | head -n 1" "$EXPECTED_PHP_VERSION"
+
+  # Bazy danych i serwisy
+  - |
+    MONGO_VERSION=$(mongod --version 2>&1 | grep "db version" | awk '{print $3}')
+    echo "MongoDB: $MONGO_VERSION"
+    if [[ "$MONGO_VERSION" != "$EXPECTED_MONGODB_VERSION" ]]; then
+      echo "Błąd: MongoDB nie ma oczekiwanej wersji. Oczekiwano: $EXPECTED_MONGODB_VERSION, otrzymano: $MONGO_VERSION"
+      exit 1
+    fi
+  - |
+    MYSQL_VERSION=$(mysql --version 2>&1 | awk '{print $5}' | sed 's/,//')
+    echo "MySQL: $MYSQL_VERSION"
+    if [[ "$MYSQL_VERSION" != "$EXPECTED_MYSQL_VERSION" ]]; then
+      echo "Błąd: MySQL nie ma oczekiwanej wersji. Oczekiwano: $EXPECTED_MYSQL_VERSION, otrzymano: $MYSQL_VERSION"
+      exit 1
+    fi
+  - |
+    REDIS_VERSION=$(redis-server --version 2>&1 | awk '{print $3}' | sed 's/v=//')
+    echo "Redis: $REDIS_VERSION"
+    if [[ "$REDIS_VERSION" != "$EXPECTED_REDIS_VERSION" ]]; then
+      echo "Błąd: Redis nie ma oczekiwanej wersji. Oczekiwano: $EXPECTED_REDIS_VERSION, otrzymano: $REDIS_VERSION"
+      exit 1
+    fi
+  - |
+    PSQL_VERSION=$(psql --version 2>&1)
+    echo "PostgreSQL: $PSQL_VERSION"
+    found=false
+    for ver in $(echo $EXPECTED_POSTGRESQL_VERSIONS | tr ',' ' '); do
+      if [[ "$PSQL_VERSION" == *"$ver"* ]]; then
+        found=true
+        break
+      fi
+    done
+    if [ "$found" = false ]; then
+      echo "Błąd: PostgreSQL nie ma oczekiwanej wersji. Oczekiwano jednej z: $EXPECTED_POSTGRESQL_VERSIONS, otrzymano: $PSQL_VERSION"
+      exit 1
+    fi
+
+  # Android – sprawdzamy, czy zmienna ANDROID_HOME jest ustawiona
+  - |
+    if [ -z "$ANDROID_HOME" ]; then
+      echo "Uwaga: Zmienna ANDROID_HOME nie jest ustawiona. Android SDK może nie być skonfigurowany."
+    else
+      echo "Android SDK znajduje się w: $ANDROID_HOME"
+    fi
+
+  - echo "Wszystkie wersje są zgodne z oczekiwaniami."
