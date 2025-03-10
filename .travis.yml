@@ -1,5 +1,5 @@
 dist: focal
-#group: dev
+group: dev
 
 script:
   - echo "Sprawdzanie wersji narzędzi na maszynie:"
