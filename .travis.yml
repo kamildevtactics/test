@@ -2,6 +2,6 @@ language: android
 dist: bionic
 android:
   components:
-    - build-tools-31
+    - build-tools-31.0
     - android-31
 
