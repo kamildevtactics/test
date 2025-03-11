@@ -1,6 +1,5 @@
 language: android
 dist: focal
-group: dev
 
 android:
   components:
