@@ -10,6 +10,7 @@ android:
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
+  - ant -version || { echo "Ant nie jest zainstalowany lub nie jest w PATH"; exit 1; }
 
 script:
   - echo "Zakończenie kompilacji..."
