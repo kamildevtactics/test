@@ -1,13 +1,12 @@
 language: android
-dist: jammy
-
+dist: focal
 android:
   components:
-    - build-tools-32.0.0
-    - android-32
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
+    - build-tools-30.0.0
+    - android-30
+    - extras;google;google_play_services
+    - extras;google;m2repository
+    - extras;android;m2repository
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
