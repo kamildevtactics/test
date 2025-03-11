@@ -1,5 +1,6 @@
-dist: focal
+dist: bionic
 group: dev
+
 
 
 before_script:
