@@ -1,59 +1,7 @@
-dist: jammy
-#group: dev
+language: android
+dist: bionic
+android:
+  components:
+    - build-tools-31
+    - android-31
 
-script:
-  - echo "Sprawdzanie wersji narzędzi na maszynie:"
-  
-  - echo "==== Version Control ===="
-  - echo "Git:"; git --version
-  - echo "Git LFS:"; git lfs version
-  - echo "Mercurial:"; hg --version | head -n 1
-  - echo "Subversion:"; svn --version | head -n 1
-
-  - echo "==== Build Toolchain ===="
-  - echo "Clang:"; clang --version | head -n 1
-  - echo "CMake:"; cmake --version | head -n 1
-  - echo "GCC:"; gcc --version | head -n 1
-  - echo "ccache:"; ccache --version | head -n 1
-  - echo "ShellCheck:"; shellcheck --version
-  - echo "shfmt:"; shfmt --version
-
-  - echo "==== Docker ===="
-  - echo "Docker:"; docker --version
-  - echo "Docker Compose:"; docker-compose --version
-
-  - echo "==== Ruby ===="
-  - echo "Ruby:"; ruby --version
-
-  - echo "==== Python ===="
-  - echo "Python 3.6:"; python3.6 --version
-  - echo "Python 3.7:"; python3.7 --version
-  - echo "Python 3.8:"; python3.8 --version
-  - echo "Python 3.12:"; python3.12 --version
-
-  - echo "==== Node.js ===="
-  - echo "Node.js:"; node --version
-
-  - echo "==== Go ===="
-  - echo "Go:"; go version
-
-  - echo "==== Java / JVM ===="
-  - echo "Java:"; java -version
-  - echo "Gradle:"; gradle --version | grep "Gradle"
-  - echo "Maven:"; mvn --version | head -n 1
-  - echo "Groovy:"; groovy --version
-
-  - echo "==== Perl ===="
-  - echo "Perl:"; perl -e 'printf "%vd", $^V'
-
-  - echo "==== PHP ===="
-  - echo "PHP:"; php --version | head -n 1
-
-  - echo "==== Databases and Services ===="
-  - echo "MongoDB:"; mongod --version | grep "db version"
-  - echo "MySQL:"; mysql --version
-  - echo "Redis:"; redis-server --version
-  - echo "PostgreSQL:"; psql --version
-
-  - echo "==== Android ===="
- # - if [ -z "$ANDROID_HOME" ]; then echo "Android SDK: ANDROID_HOME nie ustawione"; else echo "Android SDK: $ANDROID_HOME"; fi
