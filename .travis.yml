@@ -1,13 +1,6 @@
-language: android
-dist: focal
+dist: bionic
 group: previous
-android:
-  components:
-    - build-tools-30.0.0
-    - android-30
-    - extras;google;google_play_services
-    - extras;google;m2repository
-    - extras;android;m2repository
+
 
 before_script:
   - echo "Przygotowywanie środowiska przed kompilacją..."
