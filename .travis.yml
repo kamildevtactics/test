@@ -10,7 +10,7 @@ android:
 
 before_script:
   - echo "Rozpoczynam proces budowania aplikacji na Travis CI..."
-  - apt  install ant
+  - sudo apt  install ant
 
 after_script:
   - echo "Proces budowania zakończony!"
