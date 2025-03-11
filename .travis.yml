@@ -2,6 +2,14 @@ language: android
 dist: bionic
 android:
   components:
-    - build-tools-31.0.0
-    - android-31
+    - build-tools-30.0.0
+    - android-30
+    - extras;google;google_play_services
+    - extras;google;m2repository
+    - extras;android;m2repository
 
+before_script:
+  - echo "Rozpoczynam proces budowania aplikacji na Travis CI..."
+
+after_script:
+  - echo "Proces budowania zakończony!"
