@@ -1,17 +1,17 @@
 language: android
-dist: bionic
-
+dist: focal
+group: dev
 
 android:
   components:
-    - build-tools-30.0.0
-    - android-30
-    - extras;google;google_play_services
-    - extras;google;m2repository
-    - extras;android;m2repository
+    - build-tools-32.0.0
+    - android-32
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
 
 before_script:
-  - echo "Rozpoczynam proces budowania aplikacji na Travis CI..."
+  - echo "Przygotowywanie środowiska przed kompilacją..."
 
-after_script:
-  - echo "Proces budowania zakończony!"
+script:
+  - echo "Zakończenie kompilacji..."
