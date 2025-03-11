@@ -1,5 +1,5 @@
 dist: focal
-group: previous
+group: dev
 
 
 before_script:
