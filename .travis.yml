@@ -1,7 +1,6 @@
 jobs:
   include:
   - dist: focal
-    group: dev
     
 services:
 - postgresql
