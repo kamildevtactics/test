@@ -2,6 +2,8 @@ jobs:
   include:
   - dist: bionic
   - dist: bionic
+    group: dev
+  - dist: bionic
     group: previous
 
     
