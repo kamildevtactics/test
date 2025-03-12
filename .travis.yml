@@ -8,6 +8,8 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - system-images;android-30;google_apis;x86
+    - system-images;android-30;google_apis;x86
+    - system-images;android-17;default;armeabi-v7a
 
 install: skip
 script: android list target
