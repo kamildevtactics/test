@@ -1,7 +1,9 @@
 jobs:
   include:
-  - dist: focal
-  - dist: focal
+  - dist: bionic
+  - dist: bionic
+    group: dev
+  - dist: bionic
     group: previous
     
 services:
