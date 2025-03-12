@@ -26,7 +26,7 @@ before_script:
  
   - sudo systemctl start postgresql@12-main
   
-  - sleep 6
+  - sleep 5
 
 script:
  - psql --version
@@ -43,4 +43,3 @@ script:
  - sudo ps aux | grep postgres || true
  - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT version();" || true
 
- 
