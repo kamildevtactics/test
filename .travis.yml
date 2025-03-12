@@ -20,18 +20,6 @@ addons:
     - postgresql-12-postgis-3
     - postgresql-12-postgis-3-scripts
 
-before_script:
-  
-  - sudo systemctl stop postgresql || true
- 
-  - sudo pg_dropcluster --stop 13 main || true
- 
-  - sudo pg_createcluster 12 main
- 
-  - sudo systemctl start postgresql@12-main
-  
-  - sleep 5 
-
 script:
  - psql --version
  - sudo systemctl status postgresql@12-main || true
