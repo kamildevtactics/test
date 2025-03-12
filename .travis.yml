@@ -42,3 +42,5 @@ script:
  - sudo netstat -tulpn | grep 5432 || true
  - sudo ps aux | grep postgres || true
  - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT version();" || true
+
+ 
