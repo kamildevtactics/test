@@ -1,10 +1,9 @@
 jobs:
   include:
-  - dist: focal
-  - dist: focal
-    group: dev
-  - dist: focal
+  - dist: bionic
+  - dist: bionic
     group: previous
+
     
 services:
 - postgresql
