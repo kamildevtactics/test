@@ -1,10 +1,6 @@
 jobs:
   include:
   - dist: focal
-  - dist: focal
-    group: dev
-  - dist: focal
-    group: previous
 
     
 services:
