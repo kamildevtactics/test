@@ -2,7 +2,6 @@ jobs:
   include:
   - dist: focal
 
-    
 services:
 - postgresql
 
