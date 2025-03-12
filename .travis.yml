@@ -29,7 +29,7 @@ before_script:
  
   - sudo systemctl start postgresql@12-main
   
-  - sleep 5
+  - sleep 5 
 
 script:
  - psql --version
