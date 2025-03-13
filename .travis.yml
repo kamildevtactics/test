@@ -9,22 +9,22 @@ services:
 - postgresql
 
 addons:
-  postgresql: '15'
+  postgresql: '16'
   apt:
     packages:
-    - postgresql-15
-    - postgresql-client-15
-    - postgresql-server-dev-15
-    - postgresql-15-postgis-3
-    - postgresql-15-postgis-3-scripts
+    - postgresql-16
+    - postgresql-client-16
+    - postgresql-server-dev-16
+    - postgresql-16-postgis-3
+    - postgresql-16-postgis-3-scripts
 
 script:
  - psql --version
- - sudo systemctl status postgresql@15-main || true
- - sudo journalctl -u postgresql@15-main --no-pager | tail -n 100 || true
- - sudo ls -la /var/lib/postgresql/15/main/ || true
- - sudo ls -la /etc/postgresql/15/main/ || true
- - sudo cat /etc/postgresql/15/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
+ - sudo systemctl status postgresql@16-main || true
+ - sudo journalctl -u postgresql@16-main --no-pager | tail -n 100 || true
+ - sudo ls -la /var/lib/postgresql/16/main/ || true
+ - sudo ls -la /etc/postgresql/16/main/ || true
+ - sudo cat /etc/postgresql/16/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
  - sudo pg_lsclusters || true
  - sudo systemctl list-units | grep postgres || true
  - sudo du -sh /var/lib/postgresql/15/main/ || true
