@@ -20,16 +20,16 @@ addons:
 
 script:
  - psql --version
- - sudo systemctl status postgresql@12-main || true
- - sudo journalctl -u postgresql@12-main --no-pager | tail -n 100 || true
- - sudo ls -la /var/lib/postgresql/12/main/ || true
- - sudo ls -la /etc/postgresql/12/main/ || true
- - sudo cat /etc/postgresql/12/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
+ - sudo systemctl status postgresql@14-main || true
+ - sudo journalctl -u postgresql@14-main --no-pager | tail -n 100 || true
+ - sudo ls -la /var/lib/postgresql/14/main/ || true
+ - sudo ls -la /etc/postgresql/14/main/ || true
+ - sudo cat /etc/postgresql/14/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
  - sudo pg_lsclusters || true
  - sudo systemctl list-units | grep postgres || true
  - sudo du -sh /var/lib/postgresql/12/main/ || true
  - df -h || true
- - sudo netstat -tulpn | grep 5432 || true
+ - sudo netstat -tulpn | grep 5433 || true
  - sudo ps aux | grep postgres || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT version();" || true
+ - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5433 -c "SELECT version();" || true
 
