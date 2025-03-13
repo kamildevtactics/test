@@ -22,7 +22,7 @@ android:
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
-    - sys-img-x86_64-google_apis-30
+    - system-images;android-30;google_apis;x86_64
 
 # Cache configuration
 before_cache:
