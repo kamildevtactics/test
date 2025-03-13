@@ -1,6 +1,5 @@
 language: android
 dist: bionic
-group: dev
 jdk: openjdk11
 
 android:
