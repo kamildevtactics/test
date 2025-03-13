@@ -3,6 +3,7 @@ jobs:
   - dist: jammy
   - dist: bionic
   - dist: focal
+  - dist: noble
 
 services:
 - postgresql
