@@ -1,5 +1,5 @@
 language: android
-dist: bionic
+dist: focal
 group: dev
 jdk: openjdk11
 
