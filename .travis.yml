@@ -1,10 +1,9 @@
-jobs:
-  include:
-  - dist: jammy
-  - dist: bionic
-  - dist: focal
-  - dist: noble
+language: android
+dist: bionic
 
+android:
+  components:
+    - build-tools;30.0.0
 
 before_script:
   - echo "Starting Android build process..."
