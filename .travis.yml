@@ -1,8 +1,9 @@
 jobs:
   include:
-  - dist: jammy
   - dist: bionic
+    group: previous
   - dist: focal
+    group: previous
   - dist: noble
 
 services:
