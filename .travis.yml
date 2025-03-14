@@ -1,8 +1,5 @@
 language: android
 dist: focal
-group: dev
-jdk: openjdk11
-
 android:
   components:
     # Uncomment the lines below if you want to
@@ -11,27 +8,12 @@ android:
     # - platform-tools
 
     # The BuildTools version used by your project
-    - build-tools;30.0.0
+    - build-tools-30.0.0
 
     # The SDK version used to compile your project
-    - platforms;android-30
+    - android-30
 
     # Additional components
-    - extras;google;google_play_services
-    - extras;google;m2repository
-    - extras;android;m2repository
-
-    # Specify at least one system image,
-    # if you need to run emulator(s) during your tests
-    - system-images;android-30;google_apis;x86_64
-
-# Cache configuration
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
