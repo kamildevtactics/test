@@ -1,12 +1,10 @@
-language: android
-dist: focal
-android:
-  components:
-    - build-tools-30.0.0
-    - android-30
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
+jobs:
+  include:
+  - dist: jammy
+  - dist: bionic
+  - dist: focal
+  - dist: noble
+
 
 before_script:
   - echo "Starting Android build process..."
