@@ -6,7 +6,12 @@ android:
   components:
     - build-tools;30.0.0
     - platforms;android-30
-    
+    - extras;google;google_play_services
+    - extras;google;m2repository
+    - extras;android;m2repository
+    - system-images;android-30;google_apis;x86_64
+
+
 before_script:
   - echo "Starting Android build process..."
 
