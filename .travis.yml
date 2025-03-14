@@ -1,6 +1,5 @@
 language: android
 dist: focal
-group: dev 
 android:
   components:
     - build-tools-30.0.0
