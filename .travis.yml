@@ -1,6 +1,7 @@
 language: android
 dist: bionic
 group: dev
+jdk: openjdk11
 
 android:
   components:
@@ -11,6 +12,15 @@ android:
     - extras;android;m2repository
     - system-images;android-30;google_apis;x86_64
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+  
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
 
 before_script:
   - echo "Starting Android build process..."
