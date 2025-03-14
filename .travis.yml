@@ -1,5 +1,6 @@
 language: android
 dist: focal
+group: dev
 jdk: openjdk11
 
 android:
