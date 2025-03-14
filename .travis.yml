@@ -1,10 +1,9 @@
 jobs:
   include:
   - dist: bionic
-    group: previous
   - dist: focal
-    group: previous
   - dist: noble
+  - dist: jammy
 
 services:
 - postgresql
@@ -46,6 +45,3 @@ script:
  - dpkg -l | grep postgresql || true
 
 
-env:
-  global:
-  - PGPORT=5432
