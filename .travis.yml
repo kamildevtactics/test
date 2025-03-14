@@ -5,7 +5,8 @@ group: dev
 android:
   components:
     - build-tools;30.0.0
-
+    - platforms;android-30
+    
 before_script:
   - echo "Starting Android build process..."
 
