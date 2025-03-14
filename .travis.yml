@@ -44,3 +44,8 @@ script:
  - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT * FROM pg_stat_activity;" || true
  - sudo cat /etc/postgresql/17/main/pg_hba.conf || true
  - dpkg -l | grep postgresql || true
+
+
+env:
+  global:
+  - PGPORT=5433
