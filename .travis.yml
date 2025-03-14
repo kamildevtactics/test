@@ -1,9 +1,9 @@
 jobs:
   include:
   - dist: bionic
-  - group: previous
+    group: previous
   - dist: focal
-  - group: previous
+    group: previous
   - dist: noble
 
 services:
@@ -48,4 +48,4 @@ script:
 
 env:
   global:
-  - PGPORT=5433
+  - PGPORT=5432
