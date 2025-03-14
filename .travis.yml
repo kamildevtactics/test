@@ -1,9 +1,9 @@
 jobs:
   include:
   - dist: bionic
-    group: previous
+  - group: previous
   - dist: focal
-    group: previous
+  - group: previous
   - dist: noble
 
 services:
