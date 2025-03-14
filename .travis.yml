@@ -12,5 +12,5 @@ before_script:
   - echo "Starting Android build process..."
 
 
-cript:
+script:
   - echo "Finish Android build process..."
