@@ -9,25 +9,25 @@ services:
 - postgresql
 
 addons:
-  postgresql: '13'
+  postgresql: '14'
   apt:
     packages:
-    - postgresql-13
-    - postgresql-client-13
-    - postgresql-server-dev-13
-    - postgresql-13-postgis-3
-    - postgresql-13-postgis-3-scripts
+    - postgresql-14
+    - postgresql-client-14
+    - postgresql-server-dev-14
+    - postgresql-14-postgis-3
+    - postgresql-14-postgis-3-scripts
 
 script:
  - psql --version
- - sudo systemctl status postgresql@13-main || true
- - sudo journalctl -u postgresql@13-main --no-pager | tail -n 100 || true
- - sudo ls -la /var/lib/postgresql/13/main/ || true
- - sudo ls -la /etc/postgresql/13/main/ || true
- - sudo cat /etc/postgresql/13/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
+ - sudo systemctl status postgresql@14-main || true
+ - sudo journalctl -u postgresql@14-main --no-pager | tail -n 100 || true
+ - sudo ls -la /var/lib/postgresql/14/main/ || true
+ - sudo ls -la /etc/postgresql/14/main/ || true
+ - sudo cat /etc/postgresql/14/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
  - sudo pg_lsclusters || true
  - sudo systemctl list-units | grep postgres || true
- - sudo du -sh /var/lib/postgresql/13/main/ || true
+ - sudo du -sh /var/lib/postgresql/14/main/ || true
  - df -h || true
  - sudo netstat -tulpn | grep 5432 || true
  - sudo ps aux | grep postgres || true
