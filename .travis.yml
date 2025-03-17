@@ -1,45 +1,39 @@
-jobs:
-  include:
-  - dist: jammy
-  - dist: bionic
-  - dist: focal
-  - dist: noble
+language: android
+dist: bionic
+group: dev
+jdk: openjdk11
 
-services:
-- postgresql
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - tools
+    # - platform-tools
 
-addons:
-  postgresql: '17'
-  apt:
-    packages:
-    - postgresql-17
-    - postgresql-client-17
-    - postgresql-server-dev-17
-    - postgresql-17-postgis-3
-    - postgresql-17-postgis-3-scripts
+    # The BuildTools version used by your project
+    - build-tools;30.0.0
+
+    # The SDK version used to compile your project
+    - platforms;android-30
+
+    # Additional components
+    - extras;google;google_play_services
+    - extras;google;m2repository
+    - extras;android;m2repository
+
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - system-images;android-30;google_apis;x86_64
 
 script:
- - psql --version
- - sudo systemctl status postgresql@17-main || true
- - sudo journalctl -u postgresql@17-main --no-pager | tail -n 100 || true
- - sudo ls -la /var/lib/postgresql/17/main/ || true
- - sudo ls -la /etc/postgresql/17/main/ || true
- - sudo cat /etc/postgresql/17/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
- - sudo pg_lsclusters || true
- - sudo systemctl list-units | grep postgres || true
- - sudo du -sh /var/lib/postgresql/17/main/ || true
- - df -h || true
- - sudo netstat -tulpn | grep 5432 || true
- - sudo ps aux | grep postgres || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT version();" || true
- # Dodatkowe sprawdzenia:
- - sudo find /var/lib/postgresql -type d -name "main" | sort || true
- - sudo find /etc/postgresql -type d -name "main" | sort || true
- - sudo grep -r "port =" /etc/postgresql/ || true
- - sudo pg_lsclusters -h || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT datname, pg_encoding_to_char(encoding), datcollate FROM pg_database;" || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT name, setting FROM pg_settings WHERE name LIKE 'port' OR name LIKE 'listen%' OR name = 'data_directory';" || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT name, default_version, installed_version FROM pg_available_extensions WHERE name = 'postgis';" || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT * FROM pg_stat_activity;" || true
- - sudo cat /etc/postgresql/17/main/pg_hba.conf || true
- - dpkg -l | grep postgresql || true
+  - ./gradlew build
+
+# Cache configuration
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
