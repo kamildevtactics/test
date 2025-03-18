@@ -15,17 +15,15 @@ android:
     # The SDK version used to compile your project
     - platforms;android-30
 
-    # Additional components
-    - extras;google;google_play_services
-    - extras;google;m2repository
-    - extras;android;m2repository
-    - system-images;android-30;google_apis;x86_64
-
-    # Google Analytics libraries
-    - extras;google;analytics_sdk_v2
-
-    # Google Cloud Messaging libraries
-    - extras;google;gcm
+    - extras;android;m2repository         # Android Support Repository (v47.0.0)
+    - extras;google;auto                  # Android Auto Desktop Head Unit Emulator (v2.0)
+    - extras;google;google_play_services  # Google Play services (v49)
+    - extras;google;instantapps           # Google Play Instant Development SDK (v1.9.0)
+    - extras;google;m2repository          # Google Repository (v58)
+    - extras;google;market_apk_expansion  # Google Play APK Expansion library (v1)
+    - extras;google;market_licensing      # Google Play Licensing Library (v1)
+    - extras;google;simulators            # Android Auto API Simulators (v1)
+    - extras;google;webdriver             # Google WebDriver
 
 
 script:
