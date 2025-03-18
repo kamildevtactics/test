@@ -10,8 +10,6 @@ android:
      - platform-tools
 
     - build-tools;30.0.0                  # The BuildTools version used by your project
-
-
     - platforms;android-30                # The SDK version used to compile your project
 
     - extras;android;m2repository         # Android Support Repository (v47.0.0)
