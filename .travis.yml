@@ -24,7 +24,7 @@ android:
     - extras;google;market_licensing      # Google Play Licensing Library (v1)
     - extras;google;simulators            # Android Auto API Simulators (v1)
     - extras;google;webdriver             # Google WebDriver
-
+    - system-images;android-30;google_apis;x86_64
 before_script:
   # Create an AVD named "test" using a system image for API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
