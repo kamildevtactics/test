@@ -1,45 +1,49 @@
-jobs:
-  include:
-  - dist: jammy
-  - dist: bionic
-  - dist: focal
-  - dist: noble
+language: android
+dist: focal
+jdk: openjdk11
 
-services:
-- postgresql
+android:
+  components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - tools
+    - platform-tools
+    - build-tools;30.0.0                  # The BuildTools version used by your project
+    - platforms;android-30                # The SDK version used to compile your project
 
-addons:
-  postgresql: '14'
-  apt:
-    packages:
-    - postgresql-14
-    - postgresql-client-14
-    - postgresql-server-dev-14
-    - postgresql-14-postgis-3
-    - postgresql-14-postgis-3-scripts
+    - extras;android;m2repository         # Android Support Repository (v47.0.0)
+    - extras;google;auto                  # Android Auto Desktop Head Unit Emulator (v2.0)
+    - extras;google;google_play_services  # Google Play services (v49)
+    - extras;google;instantapps           # Google Play Instant Development SDK (v1.9.0)
+    - extras;google;m2repository          # Google Repository (v58)
+    - extras;google;market_apk_expansion  # Google Play APK Expansion library (v1)
+    - extras;google;market_licensing      # Google Play Licensing Library (v1)
+    - extras;google;simulators            # Android Auto API Simulators (v1)
+    - extras;google;webdriver             # Google WebDriver
+    - system-images;android-30;google_apis;x86_64
+
+before_script:
+  - export PATH=$ANDROID_HOME/emulator:$PATH
+  - source ~/.bashrc
+  # Create an AVD named "test" using a system image for API 30
+  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+  # Start the emulator without audio or window
+  - emulator -avd test -no-audio -no-window &
+  # Wait for the emulator to boot
+  - android-wait-for-emulator
+  # Unlock the emulator screen
+  - adb shell input keyevent 82 &
 
 script:
- - psql --version
- - sudo systemctl status postgresql@14-main || true
- - sudo journalctl -u postgresql@14-main --no-pager | tail -n 100 || true
- - sudo ls -la /var/lib/postgresql/14/main/ || true
- - sudo ls -la /etc/postgresql/14/main/ || true
- - sudo cat /etc/postgresql/14/main/postgresql.conf | grep -E 'port|listen|data_directory' || true
- - sudo pg_lsclusters || true
- - sudo systemctl list-units | grep postgres || true
- - sudo du -sh /var/lib/postgresql/14/main/ || true
- - df -h || true
- - sudo netstat -tulpn | grep 5432 || true
- - sudo ps aux | grep postgres || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT version();" || true
- # Dodatkowe sprawdzenia:
- - sudo find /var/lib/postgresql -type d -name "main" | sort || true
- - sudo find /etc/postgresql -type d -name "main" | sort || true
- - sudo grep -r "port =" /etc/postgresql/ || true
- - sudo pg_lsclusters -h || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT datname, pg_encoding_to_char(encoding), datcollate FROM pg_database;" || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT name, setting FROM pg_settings WHERE name LIKE 'port' OR name LIKE 'listen%' OR name = 'data_directory';" || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT name, default_version, installed_version FROM pg_available_extensions WHERE name = 'postgis';" || true
- - sudo PGPASSWORD=postgres psql -U postgres -h localhost -p 5432 -c "SELECT * FROM pg_stat_activity;" || true
- - sudo cat /etc/postgresql/14/main/pg_hba.conf || true
- - dpkg -l | grep postgresql || true
+  - ./gradlew build
+  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=/usr/local/android-sdk --list
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
