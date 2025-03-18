@@ -21,6 +21,24 @@ android:
     - extras;android;m2repository
     - system-images;android-30;google_apis;x86_64
 
+    # Google Play services
+    - extras;google;google_play_services
+
+    # Android Support Library
+    - extras;android;support
+
+    # Google Analytics libraries
+    - extras;google;analytics_sdk_v2
+
+    # Google Cloud Messaging libraries
+    - extras;google;gcm
+
+    # Google USB Driver (for Windows)
+    - extras;google;usb_driver
+
+    # Intel x86 Emulator Accelerator (HAXM installer)
+    - extras;intel;Hardware_Accelerated_Execution_Manager
+
 script:
   - ./gradlew build
 
