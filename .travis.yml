@@ -22,7 +22,6 @@ android:
     - extras;google;simulators            # Android Auto API Simulators (v1)
     - extras;google;webdriver             # Google WebDriver
     - system-images;android-30;google_apis;x86_64
-    - emulator
 
 before_script:
   - export PATH=$ANDROID_HOME/emulator:$PATH
