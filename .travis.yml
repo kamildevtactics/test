@@ -30,14 +30,12 @@ android:
     # Google Cloud Messaging libraries
     - extras;google;gcm
 
-    # Google USB Driver (for Windows)
-    - extras;google;usb_driver
-
     # Intel x86 Emulator Accelerator (HAXM installer)
     - extras;intel;Hardware_Accelerated_Execution_Manager
 
 script:
   - ./gradlew build
+  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=/usr/local/android-sdk --list
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
