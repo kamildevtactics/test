@@ -24,9 +24,6 @@ android:
     # Google Play services
     - extras;google;google_play_services
 
-    # Android Support Library
-    - extras;android;support
-
     # Google Analytics libraries
     - extras;google;analytics_sdk_v2
 
