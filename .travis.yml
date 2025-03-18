@@ -1,19 +1,15 @@
 language: android
-dist: bionic
-group: dev
-jdk: openjdk11
-
+dist: focal
 android:
   components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
+    # (Optional) Uncomment these if you want to use the latest Android SDK Tools
     # - tools
     # - platform-tools
 
-    # The BuildTools version used by your project
-    - build-tools;30.0.0
+    # BuildTools version recommended for API 30
+    - build-tools;30.0.3
 
-    # The SDK version used to compile your project
+    # Android SDK Platform for API 30
     - platforms;android-30
 
     # Additional components
@@ -21,19 +17,5 @@ android:
     - extras;google;m2repository
     - extras;android;m2repository
 
-    # Specify at least one system image,
-    # if you need to run emulator(s) during your tests
+    # System images for running emulators during tests
     - system-images;android-30;google_apis;x86_64
-
-script:
-  - ./gradlew build
-
-# Cache configuration
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
