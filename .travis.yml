@@ -24,12 +24,12 @@ before_script:
   - export ANDROID_HOME=/usr/local
   - export ANDROID_SDK_ROOT=/usr/local
   # Tworzymy dowiązania symboliczne z preinstalowanego Android SDK (w /usr/local/android-sdk) do /usr/local
-  - ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
-  - ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
-  - ln -s /usr/local/android-sdk/emulator /usr/local/emulator
-  - ln -s /usr/local/android-sdk/extras /usr/local/extras
-  - ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
-  - ln -s /usr/local/android-sdk/system-images /usr/local/system-images
+  - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
+  - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
+  - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
+  - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
+  - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
+  - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
   # Aktualizujemy PATH, aby korzystać z narzędzi znajdujących się w nowej strukturze
   - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
   # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
