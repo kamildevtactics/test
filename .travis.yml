@@ -1,7 +1,6 @@
 language: android
 sudo: true
 dist: focal
-install: ant deps
 jdk: openjdk11
 
 android:
