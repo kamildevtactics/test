@@ -1,7 +1,5 @@
 language: android
-sudo: true
 dist: focal
-jdk: openjdk11
 
 android:
   components:
@@ -19,19 +17,6 @@ android:
     - extras;google;webdriver
     - system-images;android-30;google_apis;x86_64
 
-before_script:
-  - export ANDROID_HOME=/usr/local
-  - export ANDROID_SDK_ROOT=/usr/local
-  - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
-  - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
-  - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
-  - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
-  - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
-  - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
-  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
-  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  - adb shell input keyevent 82 &
-
 script:
   - ./gradlew build
   - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
@@ -40,8 +25,3 @@ before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
