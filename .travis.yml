@@ -8,5 +8,7 @@ android:
     - platforms;android-30
 
 script:
+  - env
   - ls -ld /usr/local/android-sdk/cmdline-tools/latest/bin
   - which sdkmanager
+  - sdkmanager --version
