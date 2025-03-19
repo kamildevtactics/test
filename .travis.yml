@@ -37,7 +37,7 @@ before_script:
   # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
   - emulator -avd test -no-audio -no-window -accel off &
   # Czekamy na pełne uruchomienie emulatora
-  - android-wait-for-emulator
+  #- android-wait-for-emulator
   # Odblokowujemy ekran emulatora
   - adb shell input keyevent 82 &
 
