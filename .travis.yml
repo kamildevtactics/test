@@ -4,40 +4,45 @@ jdk: openjdk11
 
 android:
   components:
-    # Możesz odkomentować poniższą linię, aby używać najnowszej wersji Android SDK Tools
-    # - tools
     - platform-tools
-    - build-tools;30.0.0                  # Wersja BuildTools używana w projekcie
-    - platforms;android-30                # Wersja SDK używana do kompilacji
-
-    - extras;android;m2repository         # Android Support Repository
-    - extras;google;auto                  # Android Auto Desktop Head Unit Emulator
-    - extras;google;google_play_services  # Google Play Services
-    - extras;google;instantapps           # Google Play Instant Development SDK
-    - extras;google;m2repository          # Google Repository
-    - extras;google;market_apk_expansion  # Google Play APK Expansion library
-    - extras;google;market_licensing      # Google Play Licensing Library
-    - extras;google;simulators            # Android Auto API Simulators
-    - extras;google;webdriver             # Google WebDriver
+    - build-tools;30.0.0
+    - platforms;android-30
+    - extras;android;m2repository
+    - extras;google;auto
+    - extras;google;google_play_services
+    - extras;google;instantapps
+    - extras;google;m2repository
+    - extras;google;market_apk_expansion
+    - extras;google;market_licensing
+    - extras;google;simulators
+    - extras;google;webdriver
     - system-images;android-30;google_apis;x86_64
 
 before_script:
-  # Ustawienie zmiennych środowiskowych wskazujących na lokalizację SDK
-  - export ANDROID_HOME=/usr/local/android-sdk
-  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  - export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
-  # Tworzenie AVD o nazwie "test" z wykorzystaniem obrazu systemowego dla API 30
+  # Ustawiamy zmienne środowiskowe na /usr/local – oczekiwana lokalizacja SDK
+  - export ANDROID_HOME=/usr/local
+  - export ANDROID_SDK_ROOT=/usr/local
+  # Tworzymy dowiązania symboliczne z preinstalowanego Android SDK (w /usr/local/android-sdk) do /usr/local
+  - ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
+  - ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
+  - ln -s /usr/local/android-sdk/emulator /usr/local/emulator
+  - ln -s /usr/local/android-sdk/extras /usr/local/extras
+  - ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
+  - ln -s /usr/local/android-sdk/system-images /usr/local/system-images
+  # Aktualizujemy PATH, aby korzystać z narzędzi znajdujących się w nowej strukturze
+  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
+  # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  # Uruchomienie emulatora bez audio i interfejsu graficznego, z wyłączonym przyspieszeniem sprzętowym
+  # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
   - emulator -avd test -no-audio -no-window -accel off &
-  # Czekamy aż emulator się uruchomi
+  # Czekamy na pełne uruchomienie emulatora
   - android-wait-for-emulator
-  # Odblokowanie ekranu emulatora
+  # Odblokowujemy ekran emulatora
   - adb shell input keyevent 82 &
 
 script:
   - ./gradlew build
-  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
+  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
