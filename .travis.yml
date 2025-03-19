@@ -7,6 +7,6 @@ android:
     - build-tools;30.0.0
     - platforms;android-30
 
-
-
-
+script:
+  - ls -ld /usr/local/android-sdk/cmdline-tools/latest/bin
+  - which sdkmanager
