@@ -1,37 +1,45 @@
 language: android
-dist: bionic
-group: dev
+sudo: true
+dist: focal
 jdk: openjdk11
 
 android:
   components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
-    # - tools
-    # - platform-tools
-
-    # The BuildTools version used by your project
+    - platform-tools
     - build-tools;30.0.0
-
-    # The SDK version used to compile your project
     - platforms;android-30
-
-    # Additional components
-    - extras;google;google_play_services
-    - extras;google;m2repository
     - extras;android;m2repository
-
-    # Specify at least one system image,
-    # if you need to run emulator(s) during your tests
+    - extras;google;auto
+    - extras;google;google_play_services
+    - extras;google;instantapps
+    - extras;google;m2repository
+    - extras;google;market_apk_expansion
+    - extras;google;market_licensing
+    - extras;google;simulators
+    - extras;google;webdriver
     - system-images;android-30;google_apis;x86_64
+
+before_script:
+  - export ANDROID_HOME=/usr/local
+  - export ANDROID_SDK_ROOT=/usr/local
+  - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
+  - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
+  - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
+  - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
+  - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
+  - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
+  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
+  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+  - adb shell input keyevent 82 &
 
 script:
   - ./gradlew build
+  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
 
-# Cache configuration
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
     - $HOME/.gradle/caches/
