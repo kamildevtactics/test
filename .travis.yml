@@ -1,5 +1,12 @@
+language: android
 dist: focal
 
+android:
+  components:
+    - platform-tools
+    - build-tools;30.0.0
+    - platforms;android-30
 
-script:
-  - echo "test"
+
+
+
