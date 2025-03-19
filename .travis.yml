@@ -9,6 +9,7 @@ android:
 
 script:
   - export SDK_ROOT=/usr/local/android-sdk
+  - export PATH="$SDK_ROOT/cmdline-tools/latest/bin:$PATH"
   - ls -ld /usr/local/android-sdk/cmdline-tools/latest/bin
   - which sdkmanager
   - sdkmanager --version
