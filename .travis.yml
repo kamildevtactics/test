@@ -21,25 +21,16 @@ android:
     - system-images;android-30;google_apis;x86_64
 
 before_script:
-  # Ustawiamy zmienne środowiskowe na /usr/local – oczekiwana lokalizacja SDK
   - export ANDROID_HOME=/usr/local
   - export ANDROID_SDK_ROOT=/usr/local
-  # Tworzymy dowiązania symboliczne z preinstalowanego Android SDK (w /usr/local/android-sdk) do /usr/local
   - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
   - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
   - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
   - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
   - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
   - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
-  # Aktualizujemy PATH, aby korzystać z narzędzi znajdujących się w nowej strukturze
   - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
-  # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
-
-  # Czekamy na pełne uruchomienie emulatora
-  #- android-wait-for-emulator
-  # Odblokowujemy ekran emulatora
   - adb shell input keyevent 82 &
 
 script:
