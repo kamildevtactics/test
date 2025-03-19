@@ -4,51 +4,36 @@ jdk: openjdk11
 
 android:
   components:
-    - tools
+    # Możesz odkomentować poniższą linię, aby używać najnowszej wersji Android SDK Tools
+    # - tools
     - platform-tools
-    - cmdline-tools;latest
-    - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
-    - system-images;android-30;google_apis;x86_64
-  licenses:
-    - 'android-sdk-preview-license-.+'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+    - build-tools;30.0.0                  # Wersja BuildTools używana w projekcie
+    - platforms;android-30                # Wersja SDK używana do kompilacji
 
-before_install:
-  #- yes | sdkmanager "system-images;android-30;google_apis;x86_64"
-  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --update
+    - extras;android;m2repository         # Android Support Repository
+    - extras;google;auto                  # Android Auto Desktop Head Unit Emulator
+    - extras;google;google_play_services  # Google Play Services
+    - extras;google;instantapps           # Google Play Instant Development SDK
+    - extras;google;m2repository          # Google Repository
+    - extras;google;market_apk_expansion  # Google Play APK Expansion library
+    - extras;google;market_licensing      # Google Play Licensing Library
+    - extras;google;simulators            # Android Auto API Simulators
+    - extras;google;webdriver             # Google WebDriver
+    - system-images;android-30;google_apis;x86_64
 
 before_script:
   - export ANDROID_HOME=/usr/local/android-sdk
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+  - ln -s $ANDROID_HOME $ANDROID_HOME/android-sdk
   - export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
-  
-  # Check if system images exist in the correct location
-  - ls -la $ANDROID_SDK_ROOT/system-images/android-30/google_apis/x86_64 || echo "System images directory not found"
-  
-  # Create an AVD named "test"
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  
-  # Use more explicit paths for the emulator
-  - $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-audio -no-window &
-  
-  # Wait for the emulator to boot (with increased timeout)
-  - travis_wait 20 android-wait-for-emulator
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
 script:
   - ./gradlew build
-  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=/usr/local/android-sdk --list
+  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
