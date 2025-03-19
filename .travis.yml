@@ -22,13 +22,17 @@ android:
     - system-images;android-30;google_apis;x86_64
 
 before_script:
+  # Ustawienie zmiennych środowiskowych wskazujących na lokalizację SDK
   - export ANDROID_HOME=/usr/local/android-sdk
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  - ln -s $ANDROID_HOME $ANDROID_HOME/android-sdk
   - export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+  # Tworzenie AVD o nazwie "test" z wykorzystaniem obrazu systemowego dla API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  - emulator -avd test -no-audio -no-window &
+  # Uruchomienie emulatora bez audio i interfejsu graficznego, z wyłączonym przyspieszeniem sprzętowym
+  - emulator -avd test -no-audio -no-window -accel off &
+  # Czekamy aż emulator się uruchomi
   - android-wait-for-emulator
+  # Odblokowanie ekranu emulatora
   - adb shell input keyevent 82 &
 
 script:
