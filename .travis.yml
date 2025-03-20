@@ -1,4 +1,4 @@
-
+language: android
 dist: jammy
 jdk: openjdk11
 
