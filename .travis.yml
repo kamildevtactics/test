@@ -1,16 +1,44 @@
-language: android
-dist: jammy
+
+dist: focal
+jdk: openjdk11
 
 android:
   components:
     - platform-tools
     - build-tools;30.0.0
     - platforms;android-30
+    - extras;android;m2repository
+    - extras;google;auto
+    - extras;google;google_play_services
+    - extras;google;instantapps
+    - extras;google;m2repository
+    - extras;google;market_apk_expansion
+    - extras;google;market_licensing
+    - extras;google;simulators
+    - extras;google;webdriver
+    - system-images;android-30;google_apis;x86_64
+
+before_script:
+  # Ustawiamy zmienne środowiskowe na /usr/local – oczekiwana lokalizacja SDK
+  - export ANDROID_HOME=/usr/local
+  - export ANDROID_SDK_ROOT=/usr/local
+  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
+  # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
+  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+  # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
+  - emulator -avd test -no-audio -no-window -accel off &
+  - adb shell input keyevent 82 &
 
 script:
-  - export SDK_ROOT=/usr/local/android-sdk
-  - export PATH="$SDK_ROOT/cmdline-tools/latest/bin:$PATH"
-  - ls -ld /usr/local/android-sdk/cmdline-tools/latest/bin
-  - which sdkmanager
-  - ls -ltr /usr/local/
-  - sdkmanager --sdk_root=/usr/local/android-sdk --version
+  - ./gradlew build
+  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
