@@ -20,9 +20,6 @@ android:
 
 before_script:
   # Ustawiamy zmienne środowiskowe na /usr/local – oczekiwana lokalizacja SDK
-  - export ANDROID_HOME=/usr/local
-  - export ANDROID_SDK_ROOT=/usr/local
-  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
   # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
   # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
