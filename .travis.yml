@@ -12,4 +12,5 @@ script:
   - export PATH="$SDK_ROOT/cmdline-tools/latest/bin:$PATH"
   - ls -ld /usr/local/android-sdk/cmdline-tools/latest/bin
   - which sdkmanager
-  - sdkmanager --version
+  - ls -la /usr/local/android-sdk
+  - sdkmanager --sdk_root=/usr/local/android-sdk --version

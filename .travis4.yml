@@ -1,47 +1,49 @@
 language: android
-sudo: true
 dist: focal
 jdk: openjdk11
 
 android:
   components:
+    # Uncomment the lines below if you want to
+    # use the latest revision of Android SDK Tools
+    # - tools
     - platform-tools
-    - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
+    - build-tools;30.0.0                  # The BuildTools version used by your project
+    - platforms;android-30                # The SDK version used to compile your project
+
+    - extras;android;m2repository         # Android Support Repository (v47.0.0)
+    - extras;google;auto                  # Android Auto Desktop Head Unit Emulator (v2.0)
+    - extras;google;google_play_services  # Google Play services (v49)
+    - extras;google;instantapps           # Google Play Instant Development SDK (v1.9.0)
+    - extras;google;m2repository          # Google Repository (v58)
+    - extras;google;market_apk_expansion  # Google Play APK Expansion library (v1)
+    - extras;google;market_licensing      # Google Play Licensing Library (v1)
+    - extras;google;simulators            # Android Auto API Simulators (v1)
+    - extras;google;webdriver             # Google WebDriver
     - system-images;android-30;google_apis;x86_64
 
 before_script:
-  - export ANDROID_HOME=/usr/local
-  - export ANDROID_SDK_ROOT=/usr/local
-  - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
-  - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
-  - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
-  - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
-  - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
-  - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
-  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
+  - export PATH=$ANDROID_HOME/emulator:$PATH
+  - source ~/.bashrc
+  # Create an AVD named "test" using a system image for API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+  # Start the emulator without audio or window
+  - emulator -avd test -no-audio -no-window &
+  # Wait for the emulator to boot
+  - android-wait-for-emulator
+  # Unlock the emulator screen
   - adb shell input keyevent 82 &
 
 script:
   - ./gradlew build
-  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
+  - /usr/local/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=/usr/local/android-sdk --list
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+
