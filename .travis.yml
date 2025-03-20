@@ -1,5 +1,5 @@
 language: android
-dist: focal
+dist: bionic
 jdk: openjdk11
 
 android:
@@ -19,7 +19,7 @@ android:
     - system-images;android-30;google_apis;x86_64
 
 before_script:
-  - - echo "before script start"
+  - echo "before script start"
 
 script:
   - echo "script start"
