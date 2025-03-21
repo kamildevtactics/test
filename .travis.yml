@@ -1,26 +1,35 @@
-language: android
-dist: jammy
-jdk: openjdk11
+sudo: required
+dist: xenial
+language: minimal
 
-android:
-  components:
-    - platform-tools
-    - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
-    - system-images;android-30;google_apis;x86_64
+jobs:
+  include:
+    - name: "Stable Image"
+      env:
+        IMAGE_TYPE=stable
+    - name: "Development Image"
+      env:
+        IMAGE_TYPE=dev
+      group: dev
 
-before_script:
-  - echo "before script start"
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y libguestfs-tools
 
 script:
-  - echo "script start"
+  - if [[ "$IMAGE_TYPE" == "stable" ]]; then dpkg --list > stable_packages.txt; fi
+  - if [[ "$IMAGE_TYPE" == "dev" ]]; then dpkg --list > dev_packages.txt; fi
 
+after_script:
+  - if [[ "$IMAGE_TYPE" == "stable" ]]; then cat stable_packages.txt; fi
+  - if [[ "$IMAGE_TYPE" == "dev" ]]; then cat dev_packages.txt; fi
+
+after_success:
+  - |
+    if [[ -f stable_packages.txt && -f dev_packages.txt ]]; then
+      diff stable_packages.txt dev_packages.txt > diff-report.txt || true;
+      echo "=== DIFFERENCES BETWEEN IMAGES ===";
+      cat diff-report.txt;
+    else
+      echo "One of the files does not exist - ensure both builds completed successfully.";
+    fi
