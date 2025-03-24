@@ -1,5 +1,5 @@
 language: android 
-dist: xenial
+dist: jammy
 jdk: openjdk11
 
 android:
