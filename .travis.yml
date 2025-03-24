@@ -10,5 +10,5 @@ android:
 
 script:
   - export ANDROID_HOME=/usr/local/android-sdk
-  - env
+  - ls -la /usr/local/android-sdk/cmdline-tools/latest/
   - sdkmanager --version
