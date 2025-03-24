@@ -1,27 +1,7 @@
-language: android 
-dist: jammy
-jdk: openjdk11
-
-android:
-  components:
-    - platform-tools
-
-
-before_script:
-- touch $HOME/.android/repositories.cfg
-- yes | sdkmanager --verbose "build-tools;30.0.2"
-- yes | sdkmanager --verbose "platforms;android-30"
+dist: focal
 
 script:
-  - ./gradlew build
-  - sdkmanager --list
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+  - lsb_release -a > ubuntu_version.txt
+  - dpkg -l > installed_packages.txt
+  - cat ubuntu_version.txt
+  - cat installed_packages.txt
