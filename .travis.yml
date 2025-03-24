@@ -10,4 +10,5 @@ android:
 
 script:
   - export ANDROID_HOME=/usr/local/android-sdk
+  - env
   - sdkmanager --version
