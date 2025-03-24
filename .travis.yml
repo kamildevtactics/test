@@ -8,6 +8,7 @@ android:
 
 
 before_script:
+- touch $HOME/.android/repositories.cfg
 - yes | sdkmanager --verbose "build-tools;30.0.2"
 - yes | sdkmanager --verbose "platforms;android-30"
 
