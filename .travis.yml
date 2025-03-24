@@ -5,12 +5,11 @@ jdk: openjdk11
 android:
   components:
     - platform-tools
-    - build-tools;30.0.0
 
 
 before_script:
-- yes | sdkmanager "platforms;android-30"
-- yes | sdkmanager "build-tools;30.0.2"
+- yes | sdkmanager --verbose "build-tools;30.0.2"
+- yes | sdkmanager --verbose "platforms;android-30"
 
 script:
   - ./gradlew build
