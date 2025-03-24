@@ -10,6 +10,11 @@ android:
     - extras;android;m2repository
     - extras;google;auto
 
+before_install:
+  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+  - ln -s /usr/local/android-sdk/cmdline-tools/latest
 
 script:
+  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+  - export PATH=${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
   - sdkmanager --version
