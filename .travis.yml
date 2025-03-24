@@ -1,4 +1,4 @@
-
+language: android 
 dist: focal
 jdk: openjdk11
 
@@ -19,7 +19,7 @@ android:
     - system-images;android-30;google_apis;x86_64
 
 before_script:
-
+  # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
   - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
   # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
   - emulator -avd test -no-audio -no-window -accel off &
@@ -30,7 +30,7 @@ before_script:
 
 script:
   - ./gradlew build
-  - sdkmanager --list
+  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
