@@ -11,8 +11,8 @@ android:
     - extras;google;auto
 
 script:
-  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  - export PATH=${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
-  - sdkmanager --sdk_root=/usr/local/android-sdk --version
-
-
+  - export ANDROID_SDK_ROOT=$HOME/android-sdk
+  - mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
+  - mv $ANDROID_SDK_ROOT/cmdline-tools/* $ANDROID_SDK_ROOT/cmdline-tools/latest
+  - export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --version
