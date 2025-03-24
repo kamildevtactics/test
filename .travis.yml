@@ -13,4 +13,5 @@ script:
   - export ANDROID_HOME=$HOME/android-sdk
   - export ANDROID_SDK_ROOT=$HOME/android-sdk
   - ls -la $HOME/android-sdk/cmdline-tools/latest/
+  - ls -la /usr/local/
   - sdkmanager --version
