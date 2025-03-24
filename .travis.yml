@@ -11,7 +11,11 @@ android:
     - extras;google;auto
 
 before_install:
-  - sudo cp -r /usr/local/android-sdk/cmdline-tools/{bin,lib,NOTICE.txt,source.properties} /usr/local/android-sdk/cmdline-tools/latest/
+  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+  - sudo rsync -a ${ANDROID_SDK_ROOT}/cmdline-tools/bin/ ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/
+  - sudo rsync -a ${ANDROID_SDK_ROOT}/cmdline-tools/lib/ ${ANDROID_SDK_ROOT}/cmdline-tools/latest/lib/
+  - sudo cp -n ${ANDROID_SDK_ROOT}/cmdline-tools/NOTICE.txt ${ANDROID_SDK_ROOT}/cmdline-tools/latest/
+  - sudo cp -n ${ANDROID_SDK_ROOT}/cmdline-tools/source.properties ${ANDROID_SDK_ROOT}/cmdline-tools/latest/
 
 script:
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
