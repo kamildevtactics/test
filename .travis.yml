@@ -6,22 +6,11 @@ android:
   components:
     - platform-tools
     - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
-    - system-images;android-30;google_apis;x86_64
+
 
 before_script:
-  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  - emulator -avd test -no-audio -no-window -accel off &
-  - adb shell input keyevent 82 &
+- yes | sdkmanager "platforms;android-30"
+- yes | sdkmanager "build-tools;30.0.2"
 
 script:
   - ./gradlew build
