@@ -1,5 +1,6 @@
 language: android
 dist: jammy
+sudo: required
 jdk: openjdk11
 
 android:
@@ -13,6 +14,6 @@ android:
 script:
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
   - mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
-  - ln -sfn $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
+  - sudo ln -sfn $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
   - export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
   - sdkmanager --version
