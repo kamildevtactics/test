@@ -1,18 +1,19 @@
 language: android
 dist: jammy
-sudo: required
 jdk: openjdk11
 
 android:
   components:
     - platform-tools
     - build-tools;30.0.0
+    - platforms;android-30
+    - extras;android;m2repository
+    - extras;google;auto
+
+before_install:
+  - cp -r /usr/local/android-sdk/cmdline-tools/{bin,lib,NOTICE.txt,source.properties} /usr/local/android-sdk/cmdline-tools/latest/
 
 script:
-  - cp -R /usr/local/android-sdk $HOME/android-sdk
-  - export ANDROID_HOME=$HOME/android-sdk
-  - export ANDROID_SDK_ROOT=$HOME/android-sdk
-  - ls -la $HOME/android-sdk/cmdline-tools/latest/
-  - ls -la /usr/local/android-sdk/cmdline-tools
-  - ls -la /usr/local/android-sdk
+  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
+  - export PATH=${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
   - sdkmanager --version
