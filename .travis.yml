@@ -11,7 +11,7 @@ android:
     - extras;google;auto
 
 before_install:
-  - cp -r /usr/local/android-sdk/cmdline-tools/{bin,lib,NOTICE.txt,source.properties} /usr/local/android-sdk/cmdline-tools/latest/
+  - sudo cp -r /usr/local/android-sdk/cmdline-tools/{bin,lib,NOTICE.txt,source.properties} /usr/local/android-sdk/cmdline-tools/latest/
 
 script:
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
