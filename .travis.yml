@@ -13,6 +13,6 @@ android:
 script:
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
   - export PATH=${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
-  - sdkmanager --version
+  - sdkmanager --sdk_root=/usr/local/android-sdk --version
 
 
