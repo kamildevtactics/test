@@ -11,8 +11,7 @@ android:
     - extras;google;auto
 
 before_install:
-  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  - ln -s /usr/local/android-sdk/cmdline-tools/latest
+  - ls -la /usr/local/android-sdk/cmdline-tools/latest
 
 script:
   - sdkmanager --version
