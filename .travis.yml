@@ -1,5 +1,5 @@
 language: android 
-dist: focal
+dist: jammy
 jdk: openjdk11
 
 android:
