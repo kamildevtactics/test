@@ -1,5 +1,5 @@
-language: android
-dist: jammy
+
+dist: focal
 jdk: openjdk11
 
 android:
@@ -9,10 +9,35 @@ android:
     - platforms;android-30
     - extras;android;m2repository
     - extras;google;auto
+    - extras;google;google_play_services
+    - extras;google;instantapps
+    - extras;google;m2repository
+    - extras;google;market_apk_expansion
+    - extras;google;market_licensing
+    - extras;google;simulators
+    - extras;google;webdriver
+    - system-images;android-30;google_apis;x86_64
 
-before_install:
-  - ls -la /usr/local/android-sdk/cmdline-tools/latest
+before_script:
+
+  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+  # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
+  - emulator -avd test -no-audio -no-window -accel off &
+  # Czekamy na pełne uruchomienie emulatora
+  #- android-wait-for-emulator
+  # Odblokowujemy ekran emulatora
+  - adb shell input keyevent 82 &
 
 script:
-  - export PATH=${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:$PATH
-  - sdkmanager --version
+  - ./gradlew build
+  - sdkmanager --list
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
