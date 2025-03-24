@@ -7,9 +7,6 @@ android:
   components:
     - platform-tools
     - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
 
 script:
   - export ANDROID_SDK_ROOT=/usr/local/android-sdk
