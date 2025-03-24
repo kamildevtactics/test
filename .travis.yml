@@ -9,8 +9,5 @@ android:
     - build-tools;30.0.0
 
 script:
-  - export ANDROID_SDK_ROOT=/usr/local/android-sdk
-  - mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/latest
-  - sudo ln -sfn $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
-  - export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+  - export ANDROID_HOME=/usr/local/android-sdk
   - sdkmanager --version
