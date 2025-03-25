@@ -1,6 +1,8 @@
 jobs:
   include:
    - dist: xenial
+   - dist: xenial
+   - group: dev
    - dist: bionic
    - dist: focal
 
