@@ -1,23 +1,11 @@
 jobs:
   include:
-    - dist: xenial
-      env:
-        - TARGET_ENV=stable_xenial
-    - group: dev
-      env:
-        - TARGET_ENV=dev_xenial
     - dist: bionic
       env:
         - TARGET_ENV=stable_bionic
     - group: dev
       env:
         - TARGET_ENV=dev_bionic
-    - dist: focal
-      env:
-        - TARGET_ENV=stable_focal
-    - group: dev
-      env:
-        - TARGET_ENV=dev_focal
 
 script:
   - distro=$(lsb_release -c -s)
