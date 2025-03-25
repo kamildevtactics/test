@@ -3,7 +3,8 @@ jobs:
     - dist: bionic
       env:
         - TARGET_ENV=stable_bionic
-    - group: dev
+    - dist: bionic
+      group: dev
       env:
         - TARGET_ENV=dev_bionic
 
