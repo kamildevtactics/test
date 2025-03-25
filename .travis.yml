@@ -3,24 +3,21 @@ jobs:
     - dist: xenial
       env:
         - TARGET_ENV=stable_xenial
-    - dist: xenial
     - group: dev
       env:
         - TARGET_ENV=dev_xenial
     - dist: bionic
       env:
         - TARGET_ENV=stable_bionic
-    - dist: bionic
     - group: dev
       env:
         - TARGET_ENV=dev_bionic
     - dist: focal
+      env:
+        - TARGET_ENV=stable_focal
     - group: dev
       env:
         - TARGET_ENV=dev_focal
-    - dist: focal
-      env:
-        - TARGET_ENV=stable_focal
 
 script:
   - distro=$(lsb_release -c -s)
@@ -35,5 +32,5 @@ after_success:
   - mkdir -p $distro
   - cp ../$distro/${TARGET_ENV}_installed_packages.txt $distro/${TARGET_ENV}_installed_packages.txt
   - git add $distro/${TARGET_ENV}_installed_packages.txt
-  - git commit -m "Update Ubuntu version and installed packages from Travis CI ($TARGET_ENV)"
+  - git commit -m "Update installed packages from Travis CI ($TARGET_ENV)"
   - git push origin main
