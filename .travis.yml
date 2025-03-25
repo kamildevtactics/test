@@ -1,16 +1,33 @@
 jobs:
   include:
-   - dist: xenial
-   - dist: xenial
-   - group: dev
-   - dist: bionic
-   - dist: focal
+    - dist: xenial
+      env:
+        - TARGET_ENV=stable_xenial
+    - dist: xenial
+    - group: dev
+      env:
+        - TARGET_ENV=dev_xenial
+    - dist: bionic
+      env:
+        - TARGET_ENV=stable_bionic
+    - dist: bionic
+    - group: dev
+      env:
+        - TARGET_ENV=dev_bionic
+    - dist: focal
+    - group: dev
+      env:
+        - TARGET_ENV=dev_focal
+    - dist: focal
+      env:
+        - TARGET_ENV=stable_focal
 
 script:
   - distro=$(lsb_release -c -s)
   - mkdir -p $distro
   - lsb_release -a > $distro/stable_ubuntu_version.txt
   - apt list --installed > $distro/stable_installed_packages.txt
+  - echo "Current environment: $TARGET_ENV"
 
 after_success:
   - git config --global user.name "kamildevtactics"
@@ -21,5 +38,5 @@ after_success:
   - cp ../$distro/stable_ubuntu_version.txt $distro/stable_ubuntu_version.txt
   - cp ../$distro/stable_installed_packages.txt $distro/stable_installed_packages.txt
   - git add $distro/stable_ubuntu_version.txt $distro/stable_installed_packages.txt
-  - git commit -m "Update Ubuntu version and installed packages from Travis CI"
+  - git commit -m "Update Ubuntu version and installed packages from Travis CI ($TARGET_ENV)"
   - git push origin main
