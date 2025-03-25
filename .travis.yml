@@ -1,4 +1,7 @@
-dist: focal
+include:
+ - dist: focal
+ - dist: bionic
+ - dist: xenial
 
 script:
   - distro=$(lsb_release -c -s)
