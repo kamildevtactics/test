@@ -27,7 +27,6 @@ script:
   - mkdir -p $distro
   - lsb_release -a > $distro/${TARGET_ENV}_ubuntu_version.txt
   - apt list --installed > $distro/${TARGET_ENV}_installed_packages.txt
-  - echo "Current environment: $TARGET_ENV"
 
 after_success:
   - git config --global user.name "kamildevtactics"
