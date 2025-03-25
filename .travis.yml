@@ -3,10 +3,8 @@ dist: focal
 script:
   - distro=$(lsb_release -c -s)
   - mkdir -p $distro
-  - lsb_release -a > $distro/ubuntu_version.txt
-  - apt list --installed > $distro/installed_packages.txt
-  - cat $distro/ubuntu_version.txt
-  - cat $distro/installed_packages.txt
+  - lsb_release -a > $distro/stable_ubuntu_version.txt
+  - apt list --installed > $distro/stable_installed_packages.txt
 
 after_success:
   - git config --global user.name "kamildevtactics"
