@@ -1,28 +1,13 @@
----
 language: android
-before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -rf $HOME/.gradle/caches/*/plugin-resolution/
-before_install:
-- touch $HOME/.android/repositories.cfg
-- yes | sdkmanager --verbose "platforms;android-30"
-- yes | sdkmanager --verbose "build-tools;30.0.2"
-cache:
-  directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-  - "$HOME/.android/build-cache"
+dist: jammy
+jdk: oraclejdk17
+
+rvm:
+  - 3.1.4
+
 android:
   components:
-  - tools
-  - tools
-  - platform-tools
-git:
-  quiet: true
-  submodules: false
-os: linux
-group: stable
-dist: jammy
-script:
-- echo "test pass"
-stage: Detekt
+    - tools
+    - platform-tools
+    - tools
+    - extra-android-m2repository
