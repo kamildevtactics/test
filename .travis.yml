@@ -1,7 +1,8 @@
-include:
- - dist: focal
- - dist: bionic
- - dist: xenial
+jobs:
+  include:
+   - dist: xenial
+   - dist: bionic
+   - dist: focal
 
 script:
   - distro=$(lsb_release -c -s)
