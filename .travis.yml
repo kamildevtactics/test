@@ -31,8 +31,13 @@ after_success:
       if [[ -f "$distro/${DEV_ENV}_installed_packages.txt" ]]; then
         echo "Found $DEV_ENV installed package list, generating diff report...";
         DIFF_REPORT="${distro}/${TARGET_ENV}_vs_${DEV_ENV}_diff.txt";
+        
         echo "=== Packages present in $DEV_ENV but missing in $TARGET_ENV ===" > $DIFF_REPORT;
-        diff --new-line-format="+ %L" --old-line-format="- %L" --unchanged-line-format="" $distro/${DEV_ENV}_installed_packages.txt $distro/${TARGET_ENV}_installed_packages.txt >> $DIFF_REPORT;
+        diff --new-line-format="+ %L" --old-line-format="" --unchanged-line-format="" $distro/${DEV_ENV}_installed_packages.txt $distro/${TARGET_ENV}_installed_packages.txt >> $DIFF_REPORT;
+
+        echo "=== Packages present in $TARGET_ENV but missing in $DEV_ENV ===" >> $DIFF_REPORT;
+        diff --new-line-format="" --old-line-format="- %L" --unchanged-line-format="" $distro/${DEV_ENV}_installed_packages.txt $distro/${TARGET_ENV}_installed_packages.txt >> $DIFF_REPORT;
+
         echo "Comparison complete. Saving report to $DIFF_REPORT";
         cat $DIFF_REPORT;
         git add $DIFF_REPORT;
