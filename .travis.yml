@@ -1,18 +1,23 @@
-language: minimal
-services:
-  - docker
-before_install:
-  - echo "Pulling nginx image..."
-  - docker pull nginx
+os: linux
+dist: jammy 
 
-script:
-  - echo "Running nginx container..."
-  - docker run -d -p 8080:80 --name mynginx nginx
-  - sleep 5
-  - curl -I http://localhost:8080
+jobs:
+  include:
+    - name: "Check Podman Installation on Ubuntu"
+      script:
+        # Check if podman is installed
+        - echo "Checking if Podman is installed..."
+        - command -v podman >/dev/null 2>&1 && echo "Podman is installed" || echo "Podman is NOT installed"
+        
+        # Try to get podman version
+        - podman --version || echo "Cannot get Podman version"
+        
+        # Check if podman service exists
+        - systemctl list-unit-files | grep podman || echo "No Podman service found"
+        
+        # Check package information if installed
+        - dpkg -l | grep -i podman || echo "No Podman package found"
+        
+        # Check if podman is available in repositories without installing
+        - apt-cache policy podman || echo "Podman not found in repositories"
 
-after_script:
-  - docker ps -a
-  - docker logs mynginx
-  - docker stop mynginx
-  - docker rm mynginx
