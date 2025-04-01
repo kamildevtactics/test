@@ -1,5 +1,4 @@
-language: android
-sudo: true
+
 dist: focal
 jdk: openjdk11
 

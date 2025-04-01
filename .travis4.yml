@@ -1,47 +1,18 @@
-language: android
-sudo: true
 dist: focal
-jdk: openjdk11
-
-android:
-  components:
-    - platform-tools
-    - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
-    - system-images;android-30;google_apis;x86_64
-
-before_script:
-  - export ANDROID_HOME=/usr/local
-  - export ANDROID_SDK_ROOT=/usr/local
-  - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
-  - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
-  - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
-  - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
-  - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
-  - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
-  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
-  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  - adb shell input keyevent 82 &
 
 script:
-  - ./gradlew build
-  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
+  - lsb_release -a > ubuntu_version.txt
+  - apt list --installed > installed_packages.txt
+  - cat ubuntu_version.txt
+  - cat installed_packages.txt
 
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+after_success:
+  - git config --global user.name "Travis CI"
+  - git config --global user.email "your-email@example.com"
+  - git clone https://$GITHUB_TOKEN@github.com/kamildevtactics/travis_build_test.git
+  - cd travis_build_test
+  - cp ../ubuntu_version.txt .
+  - cp ../installed_packages.txt .
+  - git add ubuntu_version.txt installed_packages.txt
+  - git commit -m "Update Ubuntu version and installed packages from Travis CI"
+  - git push origin main

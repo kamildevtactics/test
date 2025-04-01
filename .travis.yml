@@ -1,23 +1,20 @@
-language: android
-dist: focal
+language: minimal
 
-android:
-  components:
-    - platform-tools
-    - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
-    - system-images;android-30;google_apis;x86_64
+services:
+  - docker
+
+before_install:
+  - echo "Pulling nginx image..."
+  - docker pull nginx
 
 script:
-  - ./gradlew build
-  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
+  - echo "Running nginx container..."
+  - docker run -d -p 8080:80 --name mynginx nginx
+  - sleep 5
+  - curl -I http://localhost:8080
 
+after_script:
+  - docker ps -a
+  - docker logs mynginx
+  - docker stop mynginx
+  - docker rm mynginx
