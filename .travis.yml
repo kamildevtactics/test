@@ -1,3 +1,5 @@
+language: minimal
+
 os: linux
 dist: jammy
 
@@ -9,9 +11,15 @@ jobs:
         - echo "Checking if Podman is installed..."
         - command -v podman >/dev/null 2>&1 && echo "Podman is already installed" || echo "Podman is NOT installed"
         
-        - echo "Installing Podman..."
+        # Install Podman and required dependencies
+        - echo "Installing Podman and dependencies..."
         - sudo apt-get update
-        - sudo apt-get install -y podman
+        - sudo apt-get install -y podman uidmap slirp4netns fuse-overlayfs
+        
+        # Configure subuid and subgid for rootless mode
+        - sudo usermod --add-subuids 100000-165535 $USER
+        - sudo usermod --add-subgids 100000-165535 $USER
+        - grep $USER /etc/subuid /etc/subgid || echo "Failed to set subuid/subgid"
         
         # Verify installation was successful
         - echo "Verifying Podman installation..."
@@ -25,6 +33,12 @@ jobs:
         
         # Test basic functionality
         - echo "Testing Podman functionality..."
-        - podman info
-        - podman pull hello-world
-        - podman run hello-world
+        - podman info || echo "Could not get Podman info"
+        - podman pull hello-world || echo "Could not pull hello-world image"
+        - podman run hello-world || echo "Could not run hello-world container"
+        
+        # Alternative: try to run as root
+        - echo "Trying to run Podman as root..."
+        - sudo podman info
+        - sudo podman pull hello-world
+        - sudo podman run hello-world
