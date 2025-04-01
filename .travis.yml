@@ -1,8 +1,6 @@
 language: minimal
-
 services:
   - docker
-
 before_install:
   - echo "Pulling nginx image..."
   - docker pull nginx
