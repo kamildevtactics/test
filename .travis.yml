@@ -1,23 +1,30 @@
 os: linux
-dist: jammy 
+dist: jammy
 
 jobs:
   include:
-    - name: "Check Podman Installation on Ubuntu"
+    - name: "Check Podman Installation and Install if Not Present"
       script:
-        # Check if podman is installed
+        # Check if podman is installed initially
         - echo "Checking if Podman is installed..."
-        - command -v podman >/dev/null 2>&1 && echo "Podman is installed" || echo "Podman is NOT installed"
+        - command -v podman >/dev/null 2>&1 && echo "Podman is already installed" || echo "Podman is NOT installed"
         
-        # Try to get podman version
-        - podman --version || echo "Cannot get Podman version"
+        - echo "Installing Podman..."
+        - sudo apt-get update
+        - sudo apt-get install -y podman
         
-        # Check if podman service exists
+        # Verify installation was successful
+        - echo "Verifying Podman installation..."
+        - podman --version
+        
+        # Check podman service
         - systemctl list-unit-files | grep podman || echo "No Podman service found"
         
-        # Check package information if installed
-        - dpkg -l | grep -i podman || echo "No Podman package found"
+        # Check package information
+        - dpkg -l | grep -i podman
         
-        # Check if podman is available in repositories without installing
-        - apt-cache policy podman || echo "Podman not found in repositories"
-
+        # Test basic functionality
+        - echo "Testing Podman functionality..."
+        - podman info
+        - podman pull hello-world
+        - podman run hello-world
