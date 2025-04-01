@@ -1,44 +1,51 @@
 language: minimal
 
 os: linux
-dist: jammy
+dist: focal  # Ubuntu 20.04 (Focal Fossa)
+
+services:
+  - docker
 
 jobs:
   include:
-    - name: "Check Podman Installation and Install if Not Present"
+    - name: "Verify Docker Installation and Run Tests"
       script:
-        # Check if podman is installed initially
-        - echo "Checking if Podman is installed..."
-        - command -v podman >/dev/null 2>&1 && echo "Podman is already installed" || echo "Podman is NOT installed"
+        # Check Docker installation
+        - echo "Verifying Docker installation..."
+        - docker --version
+        - docker info
         
-        # Install Podman and required dependencies
-        - echo "Installing Podman and dependencies..."
-        - sudo apt-get update
-        - sudo apt-get install -y podman uidmap slirp4netns fuse-overlayfs
+        # Check Docker service status
+        - systemctl status docker || true
         
-        # Configure subuid and subgid for rootless mode
-        - sudo usermod --add-subuids 100000-165535 $USER
-        - sudo usermod --add-subgids 100000-165535 $USER
-        - grep $USER /etc/subuid /etc/subgid || echo "Failed to set subuid/subgid"
+        # Check Docker package information
+        - dpkg -l | grep -i docker
         
-        # Verify installation was successful
-        - echo "Verifying Podman installation..."
-        - podman --version
+        # Test Docker functionality
+        - echo "Testing Docker functionality..."
+        - docker pull hello-world
+        - docker run hello-world
         
-        # Check podman service
-        - systemctl list-unit-files | grep podman || echo "No Podman service found"
+        # Test Docker Compose if needed
+        - echo "Checking Docker Compose..."
+        - docker-compose --version || echo "Docker Compose not installed"
         
-        # Check package information
-        - dpkg -l | grep -i podman
+        # Run a more complex container as a test
+        - echo "Running Nginx container as a test..."
+        - docker run -d -p 8080:80 --name nginx-test nginx:alpine
+        - docker ps | grep nginx-test
+        - curl -s localhost:8080 | grep -i "Welcome to nginx" || echo "Nginx test failed"
+        - docker stop nginx-test
+        - docker rm nginx-test
         
-        # Test basic functionality
-        - echo "Testing Podman functionality..."
-        - podman info || echo "Could not get Podman info"
-        - podman pull hello-world || echo "Could not pull hello-world image"
-        - podman run hello-world || echo "Could not run hello-world container"
+        # Check Docker network and volume functionality
+        - echo "Testing Docker network functionality..."
+        - docker network create test-network
+        - docker network ls | grep test-network
+        - docker network rm test-network
         
-        # Alternative: try to run as root
-        - echo "Trying to run Podman as root..."
-        - sudo podman info
-        - sudo podman pull hello-world
-        - sudo podman run hello-world
+        - echo "Testing Docker volume functionality..."
+        - docker volume create test-volume
+        - docker volume ls | grep test-volume
+        - docker volume rm test-volume
+
