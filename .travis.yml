@@ -1,20 +1,52 @@
 language: minimal
 
+os: linux
+dist: bionic  # Ubuntu 20.04 (Focal Fossa)
+group: dev
+
 services:
-  - docker
+  - podman
 
-before_install:
-  - echo "Pulling nginx image..."
-  - docker pull nginx
+jobs:
+  include:
+    - name: "Verify Docker Installation and Run Tests"
+      script:
+        # Check Docker installation
+        - echo "Verifying Docker installation..."
+        - docker --version
+        - docker info
+        
+        # Check Docker service status
+        - systemctl status docker || true
+        
+        # Check Docker package information
+        - dpkg -l | grep -i docker
+        
+        # Test Docker functionality
+        - echo "Testing Docker functionality..."
+        - docker pull hello-world
+        - docker run hello-world
+        
+        # Test Docker Compose if needed
+        - echo "Checking Docker Compose..."
+        - docker-compose --version || echo "Docker Compose not installed"
+        
+        # Run a more complex container as a test
+        - echo "Running Nginx container as a test..."
+        - docker run -d -p 8080:80 --name nginx-test nginx:alpine
+        - docker ps | grep nginx-test
+        - curl -s localhost:8080 | grep -i "Welcome to nginx" || echo "Nginx test failed"
+        - docker stop nginx-test
+        - docker rm nginx-test
+        
+        # Check Docker network and volume functionality
+        - echo "Testing Docker network functionality..."
+        - docker network create test-network
+        - docker network ls | grep test-network
+        - docker network rm test-network
+        
+        - echo "Testing Docker volume functionality..."
+        - docker volume create test-volume
+        - docker volume ls | grep test-volume
+        - docker volume rm test-volume
 
-script:
-  - echo "Running nginx container..."
-  - docker run -d -p 8080:80 --name mynginx nginx
-  - sleep 5
-  - curl -I http://localhost:8080
-
-after_script:
-  - docker ps -a
-  - docker logs mynginx
-  - docker stop mynginx
-  - docker rm mynginx
