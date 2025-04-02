@@ -5,11 +5,6 @@ group: dev
 services:
   - podman
 
-before_install:
-  # Zainstaluj Podman jeśli jeszcze nie jest zainstalowany
-  - sudo apt-get update
-  - sudo apt-get install -y podman || true
-
 script:
   # Sprawdź wersję Podman
   - echo "==== SPRAWDZENIE INSTALACJI PODMAN ===="
