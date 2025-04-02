@@ -4,7 +4,7 @@ group: dev
 
 before_install:
   - echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4D64390375060AA4
+  - curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/libcontainers.gpg > /dev/null
   - sudo apt-get update
   - sudo apt-get install -y podman
 
