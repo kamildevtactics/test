@@ -7,6 +7,7 @@ before_install:
   - curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/libcontainers.gpg > /dev/null
   - sudo apt-get update
   - sudo apt-get install -y podman
+  - sudo sed -i 's/driver = "overlay"/driver = "vfs"/g' /etc/containers/storage.conf
 
 script:
   - podman --version
