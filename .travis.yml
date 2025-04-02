@@ -7,4 +7,30 @@ jobs:
   include:
     - name: "Verify Podman Installation and Run Tests"
       script:
-        - sudo systemctl start podman
+        - echo "Verifying Podman installation..."
+        - podman --version
+        - podman info
+        
+        # Test Podman functionality
+        - echo "Testing Podman functionality..."
+        - podman pull docker.io/library/hello-world
+        - podman run hello-world
+        
+        # Run a more complex container as a test
+        - echo "Running Nginx container as a test..."
+        - podman run -d -p 8080:80 --name nginx-test docker.io/library/nginx:alpine
+        - podman ps | grep nginx-test
+        - curl -s localhost:8080 | grep -i "Welcome to nginx" || echo "Nginx test failed"
+        - podman stop nginx-test
+        - podman rm nginx-test
+        
+        # Check Podman network and volume functionality
+        - echo "Testing Podman network functionality..."
+        - podman network create test-network
+        - podman network ls | grep test-network
+        - podman network rm test-network
+        
+        - echo "Testing Podman volume functionality..."
+        - podman volume create test-volume
+        - podman volume ls | grep test-volume
+        - podman volume rm test-volume
