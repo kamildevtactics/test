@@ -3,10 +3,10 @@ dist: bionic
 group: dev
 
 before_install:
-  - echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-  - curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_18.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/libcontainers.gpg > /dev/null
   - sudo apt-get update
-  - sudo apt-get install -y podman
+  - sudo apt-get install -y software-properties-common uidmap slirp4netns
+  - curl -LO https://github.com/containers/podman/releases/download/v4.9.0/podman_4.9.0~ubuntu18.04_amd64.deb
+  - sudo dpkg -i podman_4.9.0~ubuntu18.04_amd64.deb || sudo apt-get install -f -y
 
 script:
   - podman --version
