@@ -1,5 +1,5 @@
 os: linux
-dist: jammy
+dist: focal
 group: dev
 
 services:
