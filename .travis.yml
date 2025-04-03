@@ -1,6 +1,5 @@
 os: linux
 dist: noble
-group: dev
 
 services:
   - podman
