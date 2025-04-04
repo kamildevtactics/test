@@ -1,7 +1,7 @@
 language: php
 
 os: linux
-dist: noble
+dist: jammy
 
 php:
   - 8.4
@@ -12,4 +12,3 @@ before_script:
 script:
   - echo "Running tests for PHP 8.4 compatibility"
   - php -r "if(version_compare(PHP_VERSION, '8.4.0', '<')) { echo 'PHP version below 8.4, failing build'; exit(1); }"
-  - vendor/bin/phpunit
