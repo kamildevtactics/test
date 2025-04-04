@@ -1,7 +1,7 @@
 language: php
 
 os: linux
-dist: jammy
+dist: bionic
 
 php:
   - 8.4
