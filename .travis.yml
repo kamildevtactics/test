@@ -1,10 +1,10 @@
 language: php
 
 os: linux
-dist: jammy
+dist: bionic
 
 php:
-  - 8.3
+  - 8.4
 
 before_script:
   - php -v
