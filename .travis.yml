@@ -15,5 +15,5 @@ before_install:
 script:
   - podman --version
   - echo "Checking Podman info:"
-  - STORAGE_DRIVER=vfs podman info
-  - STORAGE_DRIVER=vfs podman run --rm hello-world
+  - podman info
+  - podman run --rm hello-world
