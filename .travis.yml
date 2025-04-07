@@ -1,15 +1,23 @@
 os: linux
-dist: focal
+dist: jammy
 group: dev
 
-services:
-  - podman
+service:
+ -podman
 
+jobs:
+  include:
+    - name: "Check Podman Version on Ubuntu Focal"
+      
 before_install:
-- sudo podman pull docker.io/nginx:latest
-- sudo podman run --privileged -d docker.io/nginx:latest
-- podman ps -a
-- podman run --rm docker.io/nginx:latest /bin/sh -c "nginx -v"
+  - sudo apt-get update
+
+install:
+  - sudo apt-get install -y podman
 
 script:
-  - echo "test"
+  - podman --version
+  - echo "Checking Podman info:"
+  - podman info
+  
+  - podman run --rm hello-world
