@@ -5,6 +5,15 @@ group: dev
 service:
  -podman
 
+
+addons:
+  apt:
+    packages:
+      - buildah
+
+before_install:
+  - buildah bud -t myimage .
+  - podman run myimage test.sh
 jobs:
   include:
     - name: "Check Podman Version on Ubuntu Focal"
