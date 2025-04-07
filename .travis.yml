@@ -12,12 +12,6 @@ jobs:
 before_install:
   - sudo apt-get update
 
-install:
-  - sudo sysctl -w kernel.unprivileged_userns_clone=1
-  - sudo usermod --add-subuids 100000-165535 $(whoami)
-  - sudo usermod --add-subgids 100000-165535 $(whoami)
-  - sudo apt-get install -y uidmap slirp4netns fuse-overlayfs
-
 script:
   - podman --version
   - rm -rf ~/.local/share/containers/
