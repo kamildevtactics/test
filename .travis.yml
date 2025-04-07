@@ -8,6 +8,7 @@ services:
 before_install:
   - sudo podman pull docker.io/nginx:latest
   - sudo podman run --privileged -d nginx
+  - podman ps -a
 
 script:
   - echo "test"
