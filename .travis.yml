@@ -6,9 +6,10 @@ services:
   - podman
 
 before_install:
-  - sudo podman pull docker.io/nginx:latest
-  - sudo podman run --privileged -d nginx
-  - podman ps -a
+- sudo podman pull quay.io/example/webapp
+- sudo podman run --privileged -d -p 127.0.0.1:80:8080 quay.io/example/example /bin/sh -c "cd /app; ./start.sh;"
+- podman ps -a
+- podman run quay.io/example/example /bin/sh -c "cd /app; ./run_tests.sh"
 
 script:
   - echo "test"
