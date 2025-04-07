@@ -6,7 +6,8 @@ services:
   - podman
 
 before_install:
-  - pip install podman-compose
+  - sudo podman pull docker.io/nginx:latest
+  - sudo podman run --privileged -d nginx
 
 script:
   - echo "test"
