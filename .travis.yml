@@ -1,5 +1,5 @@
 os: linux
-dist: bionic
+dist: noble
 group: dev
 
 service:
