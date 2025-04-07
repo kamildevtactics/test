@@ -3,7 +3,7 @@ dist: noble
 group: dev
 
 service:
-  - podman
+  - docker
 
 jobs:
   include:
@@ -13,10 +13,6 @@ before_install:
   - sudo apt-get update
 
 script:
-  - podman --version
-  - rm -rf ~/.local/share/containers/
-  - mkdir -p ~/.config/containers/
-  - echo -e "[storage]\ndriver = \"vfs\"" > ~/.config/containers/storage.conf
-  - cat ~/.config/containers/storage.conf
-  - sudo podman info
-  - sudo podman run --rm hello-world
+  - docker --version
+  - docker info
+  - docker run --rm hello-world
