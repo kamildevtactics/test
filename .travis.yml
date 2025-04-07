@@ -1,14 +1,22 @@
-language: php
-
 os: linux
-dist: noble
+dist: focal
 
-php:
-  - 8.4
+service:
+ -podman
+ 
+jobs:
+  include:
+    - name: "Check Podman Version on Ubuntu Focal"
+      
+before_install:
+  - sudo apt-get update
 
-before_script:
-  - php -v
+install:
+  - sudo apt-get install -y podman
 
 script:
-  - echo "Running tests for PHP 8.4 compatibility"
-  - php -r "if(version_compare(PHP_VERSION, '8.4.0', '<')) { echo 'PHP version below 8.4, failing build'; exit(1); }"
+  - podman --version
+  - echo "Checking Podman info:"
+  - podman info
+  
+  - podman run --rm hello-world
