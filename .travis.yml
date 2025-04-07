@@ -20,4 +20,4 @@ script:
   - echo "Checking Podman info:"
   - podman info
   
-  - podman run --rm hello-world
+  - podman --storage-driver=vfs run --rm hello-world
