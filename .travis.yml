@@ -2,31 +2,14 @@ os: linux
 dist: focal
 group: dev
 
-service:
- -podman
-
-
-addons:
-  apt:
-    packages:
-      - buildah
+services:
+  - podman
 
 before_install:
-  - buildah bud -t myimage .
-  - podman run myimage test.sh
-jobs:
-  include:
-    - name: "Check Podman Version on Ubuntu Focal"
-      
-before_install:
-  - sudo apt-get update
-
-install:
-  - sudo apt-get install -y podman
+- podman pull quay.io/example/webapp
+- podman run -d -p 127.0.0.1:80:8080 quay.io/example/webapp /bin/sh -c "cd /app; ./start.sh;"
+- podman ps -a
+- podman run quay.io/example/webapp /bin/sh -c "cd /app; ./run_tests.sh"
 
 script:
-  - podman --version
-  - echo "Checking Podman info:"
-  - podman info
-  
-  - podman run --rm hello-world
+- bundle exec rake test
