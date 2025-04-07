@@ -3,7 +3,7 @@ dist: bionic
 group: dev
 
 service:
-  - docker
+  - podman
 
 jobs:
   include:
@@ -13,6 +13,6 @@ before_install:
   - sudo apt-get update
 
 script:
-  - docker --version
-  - docker info
-  - docker run --rm hello-world
+  - podman --version
+  - podman info
+  - podman run --rm hello-world
