@@ -6,10 +6,10 @@ services:
   - podman
 
 before_install:
-- podman pull quay.io/example/example
-- podman run -d -p 127.0.0.1:80:8080 quay.io/example/example /bin/sh -c "cd /app; ./start.sh;"
-- podman ps -a
-- podman run quay.io/example/example /bin/sh -c "cd /app; ./run_tests.sh"
+  - podman pull docker.io/nginx:latest
+  - podman run -d -p 127.0.0.1:80:80 docker.io/nginx:latest
+  - podman ps -a
+  - podman run --rm docker.io/nginx:latest /bin/sh -c "nginx -v"
 
 script:
-- bundle exec rake test
+  - bundle exec rake test
