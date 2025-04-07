@@ -13,7 +13,34 @@ before_install:
   - sudo apt-get update
 
 script:
+  # Check Podman version
   - podman --version
-  - echo "Checking Podman info:"
-  - podman info
-  - podman run --rm hello-world
+  
+  # Check current storage driver configuration
+  - echo "== Current Storage Driver Configuration =="
+  - podman info | grep -i "graphdriver\|storage driver" || echo "No driver info found"
+  
+  # Check configuration files
+  - echo "== Storage Configuration Files =="
+  - cat /etc/containers/storage.conf | grep -i driver || echo "No global config found"
+  - cat ~/.config/containers/storage.conf | grep -i driver 2>/dev/null || echo "No user config found"
+  
+  # Check environment variables
+  - echo "== Environment Variables =="
+  - echo "STORAGE_DRIVER=$STORAGE_DRIVER"
+  
+  # Check kernel capabilities
+  - echo "== Kernel Capabilities =="
+  - grep -i overlay /proc/filesystems || echo "Overlay filesystem not supported"
+  - cat /proc/sys/kernel/unprivileged_userns_clone || echo "Cannot read unprivileged_userns_clone"
+  
+  # Create user storage configuration to use VFS
+  - echo "== Setting up VFS Storage Driver =="
+  - mkdir -p ~/.config/containers/
+  - echo -e "[storage]\ndriver = \"vfs\"" > ~/.config/containers/storage.conf
+  - cat ~/.config/containers/storage.conf
+  
+  # Try with VFS driver
+  - echo "== Testing with VFS Storage Driver =="
+  - STORAGE_DRIVER=vfs podman info || echo "Failed even with VFS"
+  - STORAGE_DRIVER=vfs podman run --rm hello-world || echo "Cannot run container with VFS"
