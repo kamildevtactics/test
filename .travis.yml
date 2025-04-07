@@ -6,10 +6,7 @@ services:
   - podman
 
 before_install:
-  - podman pull docker.io/nginx:latest
-  - podman run -d -p 127.0.0.1:80:80 docker.io/nginx:latest
-  - podman ps -a
-  - podman run --rm docker.io/nginx:latest /bin/sh -c "nginx -v"
+  - pip install podman-compose
 
 script:
   - echo "test"
