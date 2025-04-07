@@ -11,8 +11,6 @@ jobs:
 
 before_install:
   - sudo apt-get update
-  - mkdir -p ~/.config/containers/
-  - echo -e "[storage]\ndriver = \"vfs\"" > ~/.config/containers/storage.conf
 
 script:
   - podman --version
