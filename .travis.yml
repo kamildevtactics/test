@@ -3,17 +3,19 @@ dist: bionic
 group: dev
 
 service:
- -podman
+  - podman
 
 jobs:
   include:
-    - name: "Check Podman Version on Ubuntu Focal"
-      
+    - name: "Check Podman Version on Ubuntu Bionic"
+
 before_install:
   - sudo apt-get update
+  - mkdir -p ~/.config/containers/
+  - echo -e "[storage]\ndriver = \"vfs\"" > ~/.config/containers/storage.conf
 
 script:
   - podman --version
   - echo "Checking Podman info:"
-  - podman info
-  - podman run --rm hello-world
+  - STORAGE_DRIVER=vfs podman info
+  - STORAGE_DRIVER=vfs podman run --rm hello-world
