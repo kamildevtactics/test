@@ -1,5 +1,5 @@
 os: linux
-dist: noble
+dist: bionic
 group: dev
 
 service:
@@ -12,12 +12,8 @@ jobs:
 before_install:
   - sudo apt-get update
 
-install:
-  - sudo apt-get install -y podman
-
 script:
   - podman --version
   - echo "Checking Podman info:"
   - podman info
-  
-  - podman --storage-driver=vfs run --rm hello-world
+  - podman run --rm hello-world
