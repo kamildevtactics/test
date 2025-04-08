@@ -1,7 +1,7 @@
 language: minimal
 
 dist: jammy
-   arch: ppc64le
+  arch: ppc64le
 
 env:
   global:
