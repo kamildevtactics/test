@@ -2,48 +2,50 @@ arch: ppc64le         # The IBM Power LXD container based build for OSS only
 os: linux             # required for arch different than amd64
 dist: noble           # or jammy | focal | bionic | xenial | trusty | precise with xenial as default
 
-env:
-  global:
-    - LXD_IMAGE=ubuntu:22.04
-    - CONTAINER_NAME=jammy-test-container
-
-before_install:
-  - sudo lxd init --auto
-  - sudo lxc network list | grep -q lxdbr0 || sudo lxc network create lxdbr0
-  - sudo lxc profile show default | grep -q 'lxdbr0' || sudo lxc network attach-profile lxdbr0 default eth0
-  - sudo lxc image list | grep -q ${LXD_IMAGE} || sudo lxc image copy ubuntu:22.04 local: --alias=${LXD_IMAGE}
-
-install:
-  - echo "Przygotowanie środowiska zakończone"
-
 script:
-  - echo "Uruchamiam kontener LXD..."
-  - sudo lxc launch ${LXD_IMAGE} ${CONTAINER_NAME}
-  - for i in {1..10}; do sudo lxc info ${CONTAINER_NAME} | grep -q 'Status: Running' && break || sleep 1; done
+  - echo "== SYSTEM INFO =="
+  - uname -a
+  - lsb_release -a
 
-  # Sprawdzanie wersji i instalacja narzędzi
-  - sudo lxc exec ${CONTAINER_NAME} -- lsb_release -a
-  - sudo lxc exec ${CONTAINER_NAME} -- apt update
-  - sudo lxc exec ${CONTAINER_NAME} -- apt install -y curl wget git build-essential python3 stress-ng
+  - echo "== VERSION CONTROL =="
+  - git --version
+  - git lfs version || echo "git-lfs not found"
+  - hg --version || echo "hg not found"
+  - svn --version || echo "svn not found"
 
-  # Test działania aplikacji i środowiska
-  - sudo lxc exec ${CONTAINER_NAME} -- bash -c "echo -e '#!/usr/bin/env python3\nprint(\"Hello from Ubuntu Jammy LXD container!\")' > /root/test_app.py"
-  - sudo lxc exec ${CONTAINER_NAME} -- chmod +x /root/test_app.py
-  - sudo lxc exec ${CONTAINER_NAME} -- python3 /root/test_app.py
+  - echo "== BUILD TOOLS =="
+  - clang --version
+  - cmake --version
+  - gcc --version
+  - ccache --version || echo "ccache not found"
+  - shellcheck --version || echo "shellcheck not found"
+  - shfmt --version || echo "shfmt not found"
 
-  # Test połączenia sieciowego i prosty test wydajności
-  - sudo lxc exec ${CONTAINER_NAME} -- ping -c 3 8.8.8.8
-  - sudo lxc exec ${CONTAINER_NAME} -- curl -s https://ifconfig.me
-  - sudo lxc exec ${CONTAINER_NAME} -- stress-ng --cpu 1 --timeout 5s --metrics-brief
+  - echo "== CONTAINER TOOLS =="
+  - docker --version
+  - docker compose version
+  - podman --version || echo "podman not found"
 
-after_script:
-  - sudo lxc stop ${CONTAINER_NAME} || true
-  - sudo lxc delete ${CONTAINER_NAME} || true
-  - sudo lxc image delete ${LXD_IMAGE} || true
+  - echo "== LANGUAGES =="
+  - ruby --version
+  - python3 --version
+  - pyenv versions
+  - node -v
+  - go version
+  - java -version
+  - javac -version
+  - groovy --version || echo "groovy not found"
+  - mvn -v
+  - gradle -v
 
-notifications:
-  email:
-    recipients:
-      - admin@example.com
-    on_success: change
-    on_failure: always
+  - echo "== OTHER RUNTIMES =="
+  - perl -v
+  - php -v || echo "php not found"
+
+  - echo "== DATABASES & SERVICES (installed, not running) =="
+  - mongod --version || echo "mongodb not found"
+  - mysql --version
+  - psql --version
+  - redis-server --version
+
+  - echo "✅ Wszystkie testy zakończone"
