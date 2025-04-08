@@ -1,10 +1,5 @@
-language: minimal
-
 dist: jammy
-virt: lxd
-
-arch:
-  - amd64
+   arch: ppc64le
 
 env:
   global:
