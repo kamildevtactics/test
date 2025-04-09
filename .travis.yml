@@ -1,0 +1,44 @@
+language: python
+python: 3.12
+services:
+  - mysql
+  - rabbitmq
+  - postgresql
+  - docker
+
+script:
+  - python --version
+  - python3 --version
+  - echo "Docker version:"
+  - docker version
+  - echo "Docker Compose version:"
+  - docker compose version
+  - echo "Docker Buildx version:"
+  - docker buildx version
+  - echo "Git version:"
+  - git -v
+  - echo "Google Chrome version:"
+  - google-chrome --version || true
+  - echo "MongoDB version:"
+  - mongod --version || true
+  - echo "Elasticsearch version:"
+  - curl -s localhost:9200 || true
+  - echo "Kernel version:"
+  - uname -r
+  - echo "Checking for Podman:"
+  - command -v podman && podman --version || echo "Podman not installed"
+  - echo "Timezone info:"
+  - timedatectl || true
+  - echo "System packages report:"
+  - echo "witam"
+
+jobs:
+  include:
+  - dist: bionic
+    group: dev
+  - dist: focal
+    group: dev
+  - dist: jammy
+    group: dev
+  - dist: noble
+    group: dev
