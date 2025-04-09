@@ -25,8 +25,22 @@ script:
   - curl -s localhost:9200 || true
   - echo "Kernel version:"
   - uname -r
-  - echo "Checking for Podman:"
+  
+
+  - echo "=== Podman tests ==="
   - command -v podman && podman --version || echo "Podman not installed"
+  - podman info --format "{{.Version.Version}}" || echo "Podman info not available"
+  - podman system info || echo "Podman system info not available"
+
+  - echo "=== Android SDK tests ==="
+  - echo "Android SDK location:"
+  - echo $ANDROID_HOME
+  - if [ -d "$ANDROID_HOME" ]; then ls -la $ANDROID_HOME; else echo "Android SDK not found at ANDROID_HOME"; fi
+  - if [ -f "$ANDROID_HOME/tools/bin/sdkmanager" ]; then $ANDROID_HOME/tools/bin/sdkmanager --list | head -20; else echo "sdkmanager not found"; fi
+  - if [ -d "$ANDROID_HOME/platform-tools" ]; then $ANDROID_HOME/platform-tools/adb --version; else echo "adb not found"; fi
+  - command -v sdkmanager && sdkmanager --version || echo "sdkmanager not in PATH"
+  - command -v adb && adb --version || echo "adb not in PATH"
+  
   - echo "Timezone info:"
   - timedatectl || true
   - echo "System packages report:"
