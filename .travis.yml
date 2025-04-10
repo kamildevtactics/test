@@ -1,5 +1,6 @@
 os: linux
 dist: jammy
+group: dev
 arch: arm64-graviton2
 virt: lxd
 group: edge
