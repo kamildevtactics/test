@@ -1,10 +1,15 @@
-os: linux
-dist: jammy
-group: dev
-arch: arm64-graviton2
-virt: lxd
-group: edge
 language: shell
 
-install: skip
-script: true
+os: osx
+
+script:
+  - ls -la
+  - python3 -V
+  - python -V
+
+jobs:
+  include:
+    - osx_image: xcode13.1
+    - osx_image: xcode13.2
+    - osx_image: xcode13.3
+    - osx_image: xcode14.2
