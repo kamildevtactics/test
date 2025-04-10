@@ -1,9 +1,7 @@
-
 os: linux
 dist: jammy
 arch: arm64
 language: shell
 
 install: skip
-script: 
-  - echo "test"
+script: true
