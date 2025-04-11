@@ -1,15 +1,42 @@
-language: shell
+language: generic
 
-os: osx
+dist: jammy
+os: linux
+
+services:
+  - docker
+
+arch:
+  - ppc64le
+
+env:
+  global:
+    - CONTAINER_NAME="lxd-ppc64le"
+    - CONTAINER_IMAGE="ubuntu:20.04"
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y snapd
+  - sudo snap install lxd --channel=4.0/stable
+  - sudo lxd init --auto
+  - sudo lxc network create lxdbr0
+  - sudo lxc network attach-profile lxdbr0 default eth0
+  
+  - sudo lxc launch images:ubuntu/20.04/ppc64el ${CONTAINER_NAME}
+  - sudo lxc exec ${CONTAINER_NAME} -- apt-get update
+  - sudo lxc exec ${CONTAINER_NAME} -- apt-get upgrade -y
+  - sudo lxc exec ${CONTAINER_NAME} -- apt-get install -y build-essential git cmake autoconf automake libtool pkg-config
 
 script:
-  - ls -la
-  - python3 -V
-  - python -V
+  - sudo lxc exec ${CONTAINER_NAME} -- bash -c "git clone https://github.com/YOUR_REPOSITORY/YOUR_PROJECT.git"
+  - sudo lxc exec ${CONTAINER_NAME} -- bash -c "cd YOUR_PROJECT && mkdir build && cd build && cmake .. && make"
+  - sudo lxc exec ${CONTAINER_NAME} -- bash -c "cd YOUR_PROJECT/build && ctest -V"
 
-jobs:
-  include:
-    - osx_image: xcode13.1
-    - osx_image: xcode13.2
-    - osx_image: xcode13.3
-    - osx_image: xcode14.2
+after_script:
+  - sudo lxc stop ${CONTAINER_NAME}
+  - sudo lxc delete ${CONTAINER_NAME}
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
