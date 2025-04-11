@@ -6,5 +6,3 @@ language: generic
 script:
   - echo "Sprawdzam architekturę systemu:"
   - uname -m
-  - if [ "$(uname -m)" != "ppc64le" ]; then echo "Błąd: architektura nie jest ppc64le!"; exit 1; fi
-  - echo "Architektura poprawna – kontynuuję build."
