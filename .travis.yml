@@ -1,9 +1,10 @@
 os: windows
-language: go
-
-go:
-- "1.20" # or any Go version you prefer
-
+language: shell
+before_install:
+  - choco install golang --version=1.20.0
+  - export GOROOT="/c/Go"
+  - export PATH="$GOROOT/bin:$PATH"
 script:
-- go version
-- go build -v ./...
+  - go version
+  - go build
+  - go test ./...
