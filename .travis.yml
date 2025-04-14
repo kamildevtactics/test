@@ -13,7 +13,12 @@ script:
   - go version
 
   - echo ">>> Budowanie projektu (go build -v):"
-  - go build -v -o app.exe main.go
+  - go build -v -o app.exe main.go 2>&1 || (
+      echo "❌ Błąd kompilacji!" &&
+      echo ">>> Zawartość main.go:" &&
+      cat main.go &&
+      exit 1
+    )
 
   - echo ">>> Pliki po buildzie:"
   - ls -la
