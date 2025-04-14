@@ -1,55 +1,580 @@
+# language: php
 
-dist: focal
-jdk: openjdk11
+jobs:
+  include:
+    - dist: noble
+      env:
+        - RELEASE=noble
+      name: noble
+      #php: "8.3"
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php build-essential libpq-dev libxml2-dev libssl-dev libcurl4-openssl-dev libjpeg-dev libpng-dev libfreetype6-dev libonig-dev libzip-dev libbz2-dev libreadline-dev libxslt1-dev pkg-config
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear php-dev libonig-dev; fi
+        - sudo ln -s /usr/include/x86_64-linux-gnu/curl/ /usr/local/include
+        - command -v expect || sudo apt-get install expect
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - dist: jammy
+      env:
+        - RELEASE=jammy
+      name: jammy
+      php: "8.1"
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - sudo ln -s /usr/include/x86_64-linux-gnu/curl/ /usr/local/include
+        - command -v expect || sudo apt-get install expect
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - dist: focal
+      env:
+        - RELEASE=focal
+      name: focal
+      php: "7.4"
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - sudo ln -s /usr/include/x86_64-linux-gnu/curl/ /usr/local/include
+        - command -v expect || sudo apt-get install expect
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - dist: bionic
+      group: stable
+      php: "7.4"
+      env:
+        - RELEASE=bionic
+      name: bionic
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev re2c
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev re2c php-dev libonig-dev; fi
+        - sudo ln -s /usr/include/x86_64-linux-gnu/curl/ /usr/local/include
+        - command -v expect || sudo apt-get install expect
+        # Install re2c required by PHP8.3 and above
+        - wget https://github.com/skvadrik/re2c/releases/download/3.1/re2c-3.1.tar.xz
+        - tar -xf ./re2c-3.1.tar.xz
+        - ./re2c-3.1/configure && make && sudo make install
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    # - dist: xenial
+    #   group: stable
+    #   env:
+    #     - RELEASE=xenial
+    #   name: xenial
+    #   php: "7.4"
+    #   before_install:
+    #     - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+    #     - sudo apt-get update
+    #     - sudo apt-get install -y libicu-dev re2c
+    #     - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install php-pear php-dev re2c libonig-dev build-essential; fi
+    #     - command -v expect || sudo apt-get install expect
+    #     # Install re2c required by PHP8.3 and above
+    #     - wget https://github.com/skvadrik/re2c/releases/download/3.1/re2c-3.1.tar.xz
+    #     - tar -xf ./re2c-3.1.tar.xz
+    #     - ./re2c-3.1/configure && make && sudo make install
+    #     - |
+    #       if ! command -v phpenv; then
+    #         pushd $HOME
+    #         curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+    #         popd
+    #         export PHPENV_ROOT="/home/travis/.phpenv"
+    #         if [ -d "${PHPENV_ROOT}" ]; then
+    #           export PATH="${PHPENV_ROOT}/bin:${PATH}"
+    #           eval "$(phpenv init -)"
+    #         fi
+    #       fi
+    - arch: ppc64le
+      dist: noble
+      php: "8.3"
+      env:
+        - RELEASE=noble
+      name: noble-ppc64le
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - arch: ppc64le
+      dist: jammy
+      php: "8.2"
+      env:
+        - RELEASE=jammy
+      name: jammy-ppc64le
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - arch: ppc64le
+      dist: focal
+      php: "7.4"
+      env:
+        - RELEASE=focal
+      name: focal-ppc64le
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - arch: ppc64le
+      dist: bionic
+      php: "7.4"
+      env:
+        - RELEASE=bionic
+      name: bionic-ppc64le
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    # - arch: ppc64le
+    #   dist: xenial
+    #   php: "7.4"
+    #   env:
+    #     - RELEASE=xenial
+    #   name: xenial-ppc64le
+    #   before_install:
+    #     - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+    #     - sudo apt-get update
+    #     - sudo apt-get install -y libicu-dev
+    #     - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install php-pear php-dev libonig-dev build-essential; fi
+    #     - |
+    #       if ! command -v phpenv; then
+    #         pushd $HOME
+    #         curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+    #         popd
+    #         export PHPENV_ROOT="/home/travis/.phpenv"
+    #         if [ -d "${PHPENV_ROOT}" ]; then
+    #           export PATH="${PHPENV_ROOT}/bin:${PATH}"
+    #           eval "$(phpenv init -)"
+    #         fi
+    #       fi
+    - arch: s390x
+      dist: noble
+      php: "8.3"
+      env:
+        - RELEASE=noble
+      name: noble-s390x
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+        - 'echo "--without-pcre-jit" >> $TRAVIS_BUILD_DIR/custom_configure_options'
+    - arch: s390x
+      dist: jammy
+      php: "8.2"
+      env:
+        - RELEASE=jammy
+      name: jammy-s390x
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+        - 'echo "--without-pcre-jit" >> $TRAVIS_BUILD_DIR/custom_configure_options'
+    - arch: s390x
+      dist: focal
+      php: "7.4"
+      env:
+        - RELEASE=focal
+      name: focal-s390x
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+        - 'echo "--without-pcre-jit" >> $TRAVIS_BUILD_DIR/custom_configure_options'
+    - arch: s390x
+      dist: bionic
+      php: "7.4"
+      env:
+        - RELEASE=bionic
+      name: bionic-s390x
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+        - 'echo "--without-pcre-jit" >> $TRAVIS_BUILD_DIR/custom_configure_options'
+    # - arch: s390x
+    #   dist: xenial
+    #   php: "7.4"
+    #   env:
+    #     - RELEASE=xenial
+    #   name: xenial-s390x
+    #   before_install:
+    #     - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+    #     - sudo apt-get update
+    #     - sudo apt-get install -y libicu-dev
+    #     - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install php-pear php-dev libonig-dev build-essential; fi
+    #     - |
+    #       if ! command -v phpenv; then
+    #         pushd $HOME
+    #         curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+    #         popd
+    #         export PHPENV_ROOT="/home/travis/.phpenv"
+    #         if [ -d "${PHPENV_ROOT}" ]; then
+    #           export PATH="${PHPENV_ROOT}/bin:${PATH}"
+    #           eval "$(phpenv init -)"
+    #         fi
+    #       fi
+    #     - 'echo "--without-pcre-jit" >> $TRAVIS_BUILD_DIR/custom_configure_options'
+    - arch: arm64
+      dist: noble
+      php: "8.3"
+      env:
+        - RELEASE=noble
+      name: noble-arm64
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - arch: arm64
+      dist: jammy
+      php: "8.2"
+      env:
+        - RELEASE=jammy
+      name: jammy-arm64
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-dev libicu-dev php-pear php
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 libargon2-0 php-pear libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - arch: arm64
+      dist: focal
+      php: "7.4"
+      env:
+        - RELEASE=focal
+      name: focal-arm64
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    - arch: arm64
+      dist: bionic
+      php: "7.4"
+      env:
+        - RELEASE=bionic
+      name: bionic-arm64
+      before_install:
+        - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+        - sudo apt-get update
+        - sudo apt-get -y install libcurl4-openssl-dev php-pear php-dev libicu-dev
+        - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install argon2 php-pear libargon2-0 libargon2-0-dev php-dev libonig-dev; fi
+        - |
+          if ! command -v phpenv; then
+            pushd $HOME
+            curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+            popd
+            export PHPENV_ROOT="/home/travis/.phpenv"
+            if [ -d "${PHPENV_ROOT}" ]; then
+              export PATH="${PHPENV_ROOT}/bin:${PATH}"
+              eval "$(phpenv init -)"
+            fi
+          fi
+    # - arch: arm64
+    #   dist: xenial
+    #   php: "7.4"
+    #   env:
+    #     - RELEASE=xenial
+    #   name: xenial-arm64
+    #   before_install:
+    #     - sudo rm -rf /var/lib/apt/lists/lock /var/cache/apt/archives/lock /var/lib/dpkg/lock
+    #     - sudo apt-get update
+    #     - sudo apt-get install -y libicu-dev
+    #     - if [[ $VERSION =~ ^8.* ]]; then sudo apt-get -y install php-pear php-dev libonig-dev build-essential; fi
+    #     - |
+    #       if ! command -v phpenv; then
+    #         pushd $HOME
+    #         curl -L https://raw.githubusercontent.com/phpenv/phpenv-installer/master/bin/phpenv-installer | bash
+    #         popd
+    #         export PHPENV_ROOT="/home/travis/.phpenv"
+    #         if [ -d "${PHPENV_ROOT}" ]; then
+    #           export PATH="${PHPENV_ROOT}/bin:${PATH}"
+    #           eval "$(phpenv init -)"
+    #         fi
+    #       fi
+env:
+  global:
+    - VERSION=master ALIAS=nightly
+    - ICU_RELEASE=74.2
+    - ICU_INSTALL_DIR=$HOME/.phpenv/versions/$VERSION
+    - PATH="$HOME/.phpenv/bin:$HOME/.php-build/bin:$PATH"
 
-android:
-  components:
-    - platform-tools
-    - build-tools;30.0.0
-    - platforms;android-30
-    - extras;android;m2repository
-    - extras;google;auto
-    - extras;google;google_play_services
-    - extras;google;instantapps
-    - extras;google;m2repository
-    - extras;google;market_apk_expansion
-    - extras;google;market_licensing
-    - extras;google;simulators
-    - extras;google;webdriver
-    - system-images;android-30;google_apis;x86_64
+before_install:
+  - php -f test.php || true
+
+install:
+  - if [[ ! -d $HOME/.php-build ]]; then git clone https://github.com/php-build/php-build.git $HOME/.php-build; fi
+  - ~/.php-build/install-dependencies.sh
+  - rm -rf $HOME/.phpenv
+  - git clone 'https://github.com/phpenv/phpenv.git' $HOME/.phpenv
+  - eval "$($HOME/.phpenv/bin/phpenv init -)"
+  - pushd $HOME/.php-build
+  - git reset --hard HEAD
+  - git checkout master
+  - git pull
+  - popd
+  - if [[ $RELEASE != precise ]]; then unset ICU_RELEASE; fi # disable ICU installation for Trusty; see https://github.com/travis-ci/travis-ci/issues/3616#issuecomment-286302387
+  - | # older distros don't ship a libjpeg.pc, add our own to pkg-config path
+    if ! pkg-config --exists libjpeg libsasl2; then
+      export PKG_CONFIG_PATH=$PWD:$PKG_CONFIG_PATH
+    fi
+  - ./bin/install-icu
+  - export PKG_CONFIG_PATH=$ICU_INSTALL_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+  - touch custom_configure_options
+  - ./bin/install-libzip
+  - ./bin/install-libsodium
+  - sudo ./bin/install-password-argon2
+  - . ./bin/install-onig # sourced to export ONIG_LIBS
+  - MINOR_VERSION=`echo $VERSION | sed -E 's/^([0-9]+\.[0-9]+).*$/\1/'` # Rewrites 7.2, 7.2snapshot, 7.2.13 => '7.2'. Leaves 'master' as-is
+  - |
+    if [[ -f default_configure_options.$RELEASE-$MINOR_VERSION ]]; then
+      cp default_configure_options.$RELEASE-$MINOR_VERSION $HOME/.php-build/share/php-build/default_configure_options
+    else
+      cp default_configure_options.$RELEASE $HOME/.php-build/share/php-build/default_configure_options
+    fi
+  - cat custom_configure_options >> $HOME/.php-build/share/php-build/default_configure_options
+  - |
+    if [[ $(lsb_release -cs) = "trusty" || $(lsb_release -cs) = "xenial" || $(lsb_release -cs) = "bionic" ]]; then
+      if [[ $HOSTTYPE == "powerpc64le" ]]; then
+        sudo ln /usr/include/powerpc64le-linux-gnu/gmp.h /usr/include/gmp.h
+        sudo ln -s /usr/lib/powerpc64le-linux-gnu/libldap_r-2.4.so.2 /usr/lib/libldap_r.so
+        sudo ln -s /usr/lib/powerpc64le-linux-gnu/liblber-2.4.so.2 /usr/lib/liblber.so
+      else
+        sudo ln /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h
+        sudo ln -s /usr/lib/x86_64-linux-gnu/libldap_r.so /usr/lib/libldap_r.so
+        sudo ln -s /usr/lib/x86_64-linux-gnu/libldap.so /usr/lib/libldap.so
+        sudo ln -s /usr/lib/x86_64-linux-gnu/libldap.a /usr/lib/libldap.a
+        sudo ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so
+      fi
+    fi
 
 before_script:
-  # Ustawiamy zmienne środowiskowe na /usr/local – oczekiwana lokalizacja SDK
-  - export ANDROID_HOME=/usr/local
-  - export ANDROID_SDK_ROOT=/usr/local
-  # Tworzymy dowiązania symboliczne z preinstalowanego Android SDK (w /usr/local/android-sdk) do /usr/local
-  - sudo ln -s /usr/local/android-sdk/cmdline-tools /usr/local/cmdline-tools
-  - sudo ln -s /usr/local/android-sdk/build-tools /usr/local/build-tools
-  - sudo ln -s /usr/local/android-sdk/emulator /usr/local/emulator
-  - sudo ln -s /usr/local/android-sdk/extras /usr/local/extras
-  - sudo ln -s /usr/local/android-sdk/platform-tools /usr/local/platform-tools
-  - sudo ln -s /usr/local/android-sdk/system-images /usr/local/system-images
-  # Aktualizujemy PATH, aby korzystać z narzędzi znajdujących się w nowej strukturze
-  - export PATH=/usr/local/cmdline-tools/bin:/usr/local/emulator:/usr/local/platform-tools:$PATH
-  # Tworzymy AVD o nazwie "test" na podstawie system-image dla API 30
-  - echo no | avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-  # Uruchamiamy emulator (bez audio, bez okna, przyspieszenie wyłączone)
-  - emulator -avd test -no-audio -no-window -accel off &
-  # Czekamy na pełne uruchomienie emulatora
-  #- android-wait-for-emulator
-  # Odblokowujemy ekran emulatora
-  - adb shell input keyevent 82 &
+  - "export COMPOSER_ALLOW_SUPERUSER=1"
+  - "export LSB_RELEASE=${LSB_RELEASE:-$(lsb_release -rs || echo ${$(sw_vers -productVersion)%*.*})}"
+  - 'export OS_NAME=${OS_NAME:-$(lsb_release -is | tr "A-Z" "a-z" || echo "osx")}'
+  - "export ARCH=${ARCH:-$(uname -m)}"
+  - "export INSTALL_DEST=${INSTALL_DEST:-$HOME/.phpenv/versions}"
+  - __dots() { while true ; do echo -en . ; sleep 30 ; done } ; __dots &
 
 script:
-  - ./gradlew build
-  - sdkmanager --sdk_root=$ANDROID_SDK_ROOT --list
+  - echo "--enable-option-checking=fatal" >> $HOME/.php-build/share/php-build/default_configure_options
+  - cat $HOME/.php-build/share/php-build/default_configure_options
+  - export PKG_CONFIG_PATH="$HOME/.phpenv/versions/$VERSION/lib/pkgconfig:$PKG_CONFIG_PATH"
+  - ./bin/compile
+  - | # disable 3rd-party extension builds on master
+    if [[ $VERSION =~ ^7.3.* ]]; then
+      (yes '' | ./bin/compile-extension-redis) &&
+      (./bin/compile-extension-mongo) &&
+      ./bin/compile-extension-amqp &&
+      ./bin/compile-extension-apcu &&
+      ./bin/compile-extension-zmq &&
+      (./bin/compile-extension-memcache;
+      ./bin/compile-extension-memcached) &&
+      ./bin/compile-extension-ssh2 &&
+      sed -i '/^extension=/d' $INSTALL_DEST/$VERSION/etc/php.ini
+    else 
+      if [[ ! $VERSION =~ ^master$ ]]; then
+        (yes '' | ./bin/compile-extension-redis) &&
+        (./bin/compile-extension-mongo;
+        ./bin/compile-extension-mongodb) &&
+        ./bin/compile-extension-amqp &&
+        ./bin/compile-extension-apcu &&
+        ./bin/compile-extension-zmq &&
+        (./bin/compile-extension-memcache;
+        ./bin/compile-extension-memcached) &&
+        ./bin/compile-extension-ssh2 &&
+        sed -i '/^extension=/d' $INSTALL_DEST/$VERSION/etc/php.ini
+      fi
+    fi
 
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+after_success:
+  - ARTIFACTS_KEY='' ARTIFACTS_SECRET='' ARTIFACTS_BUCKET='' ARTIFACTS_PERMISSIONS='' GITHUB_TOKEN='' $INSTALL_DEST/$VERSION/bin/php -i
+  - $INSTALL_DEST/$VERSION/bin/php -m
+  - $INSTALL_DEST/$VERSION/bin/php -f test.php
+  - ldd $INSTALL_DEST/$VERSION/bin/php
+  - $INSTALL_DEST/$VERSION/bin/pecl config-show
+  - ./bin/archive
 
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+after_failure:
+  - cat /tmp/php-build.*.log
+
+addons:
+  artifacts:
+    paths:
+      - $LSB_RELEASE/
+    target_paths: /binaries/$OS_NAME/$LSB_RELEASE/$ARCH
+  apt:
+    packages:
+      - libcurl4-openssl-dev
+      - libzip-dev
+      - libgmp3-dev
+      - expect
