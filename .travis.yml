@@ -3,10 +3,11 @@ language: shell
 
 before_install:
   - choco install golang --version=1.20.0 -y
-  - export GOROOT="C:\\Go"
-  - export PATH="$GOROOT\\bin:$PATH"
+  - export GOROOT="C:\\Program Files\\Go"
+  - export PATH="/c/Program Files/Go/bin:$PATH"
 
 script:
+  - which go
   - go version
   - go build
   - go test ./...
