@@ -1,5 +1,5 @@
 os: windows
-language: shell
+
 before_install:
   - choco install golang --version=1.20.0
   - export GOROOT="/c/Go"
