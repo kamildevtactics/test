@@ -7,7 +7,19 @@ before_install:
   - export PATH="/c/Program Files/Go/bin:$PATH"
 
 script:
+  - echo ">>> Ścieżka do Go:"
   - which go
+  - echo ">>> Wersja Go:"
   - go version
-  - go build
-  - go test ./...
+
+  - echo ">>> Budowanie projektu (go build -v):"
+  - go build -v -o app.exe main.go
+
+  - echo ">>> Pliki po buildzie:"
+  - ls -la
+
+  - echo ">>> Uruchamianie aplikacji:"
+  - ./app.exe
+
+  - echo ">>> Testy jednostkowe:"
+  - go test -v ./...
