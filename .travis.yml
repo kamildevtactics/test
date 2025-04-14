@@ -1,36 +1,9 @@
-jobs:
-  include:
-    - dist: jammy
-      script:
-        - echo "witam"
-        - java --version
-        - sudo systemctl status mysql.service
-        - sudo systemctl status rabbitmq-server.service
-        - sudo systemctl status postgresql.service
-        - sudo rabbitmqctl status
-        - mysqld --version
-        - postgres --version
-        - mysqld --print-defaults
-        - psql -U postgres -c 'SHOW config_file'
-        - cosign version
-        - git -v
-        - git-lfs
-        - hg --version
-        - svn --version
-        - clang --version
-        - cmake --version
-        - gcc --version
-        - ccache -V
-        - shellcheck --version
-        - shfmt -version
-        - docker version
-        - docker run hello-world
-        - docker compose version
-        - docker buildx version
-        - mongod --version
-        - gradle -version
-        - groovy -version
-        - ant -version
-        - perl -v
-        - php -v
-        - redis-server --version
+os: windows
+language: go
+
+go:
+- "1.20" # or any Go version you prefer
+
+script:
+- go version
+- go build -v ./...
