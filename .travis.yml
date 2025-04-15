@@ -1,9 +1,9 @@
 os: windows
-language: go
+language: bash
 
-go:
-- "1.20" # or any Go version you prefer
+
 
 script:
+- ./travis_setup_go.bash 
 - go version
 - go build -v ./...
