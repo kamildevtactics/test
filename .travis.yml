@@ -6,10 +6,9 @@ arch: amd64           # optional, this is default, routes to a full VM
 os: linux             # optional, this is default
 dist: jammy    
 
-
-
 before_install:
-  - npm install 
+  - npm config set loglevel verbose
+  - npm install --verbose
 
 script:
-  - echo "test" 
+  - echo "test"
