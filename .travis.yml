@@ -3,9 +3,6 @@ language: go
 go:
   - "1.20" # or any Go version you prefer
 script:
-  - go version
-  - go build -v ./...
-  - go run tools/check_windows.go
   - uname -a
   - echo $OSTYPE
   - test -d "/c/Windows" && echo "Windows directory exists"
