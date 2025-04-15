@@ -2,6 +2,6 @@ os: windows
 language: bash
 
 script:
-  - ./travis_setup_go.bash
+  - which go
   - go version
   - go build -v ./...
