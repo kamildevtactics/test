@@ -1,20 +1,16 @@
 os: windows
-language: bash
+language: go
+go:
+  - "1.20" # or any Go version you prefer
 script:
-  - echo "=== Testing Windows Environment ==="
   - uname -a
-  - echo "OSTYPE: $OSTYPE"
-  - echo "MSYSTEM: $MSYSTEM"
-  - test -d "/c/Windows" && echo "✓ Windows directory exists" || echo "✗ Windows directory not found"
-  - test -d "/c/Program Files" && echo "✓ Program Files directory exists" || echo "✗ Program Files not found"
-  - test -d "/c/Users" && echo "✓ Users directory exists" || echo "✗ Users directory not found"
-  - test -f "/c/Windows/System32/cmd.exe" && echo "✓ cmd.exe exists" || echo "✗ cmd.exe not found"
-  - echo "System drive: $(echo $SYSTEMDRIVE)"
-  - echo "Windows directory: $(echo $WINDIR)"
+  - echo $OSTYPE
+  - test -d "/c/Windows" && echo "Windows directory exists"
+  - test -d "/c/Program Files" && echo "Program Files directory exists"
+  - grep -q "Microsoft\|MINGW\|MSYS" /proc/version && echo "Running on Windows environment"
   - cat /proc/version
-  - which cygpath && echo "✓ cygpath available (typical in Windows Git Bash)" || echo "✗ cygpath not found"
-  - which cmd.exe && echo "✓ cmd.exe in PATH" || echo "✗ cmd.exe not in PATH"
-  - pwd | grep -i "/c/" && echo "✓ Current directory uses Windows-style paths" || echo "✗ Not using Windows paths"
-  - systeminfo 2>/dev/null || echo "systeminfo command not available"
-  - cmd.exe /c "ver" 2>/dev/null || echo "ver command not available"
-  - echo "=== Windows Environment Test Complete ==="
+  - echo "System drive $SYSTEMDRIVE"
+  - echo "Windows directory $WINDIR"
+  - go version
+  - go build -v ./...
+  - go run tools/check_windows.go
