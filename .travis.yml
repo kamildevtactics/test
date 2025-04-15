@@ -1,9 +1,8 @@
 os: windows
 language: bash
 
-
-
 script:
-- bash -x ./travis_setup_go.bash 
-- go version
-- go build -v ./...
+  - set -x
+  - source ./travis_setup_go.bash
+  - go version
+  - go build -v ./...
