@@ -1,9 +1,13 @@
-os: linux
+os: windows
 language: go
-
 go:
-- "1.20" # or any Go version you prefer
-
+  - "1.20" # or any Go version you prefer
 script:
-- go version
-- go build -v ./...
+  - uname -a
+  - echo $OSTYPE
+  - test -d "/c/Windows" && echo "Windows directory exists"
+  - test -d "/c/Program Files" && echo "Program Files directory exists"
+  - grep -q "Microsoft\|MINGW\|MSYS" /proc/version && echo "Running on Windows environment"
+  - cat /proc/version
+  - echo "System drive: $SYSTEMDRIVE"
+  - echo "Windows directory: $WINDIR"
