@@ -1,8 +1,6 @@
-os: windows
+os: linux
 language: bash
 
 script:
-  - where go
-  - which go
   - go version
-  - go build -v ./...
+
