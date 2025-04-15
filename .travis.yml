@@ -2,6 +2,7 @@ os: windows
 language: bash
 
 script:
+  - where go
   - which go
   - go version
   - go build -v ./...
