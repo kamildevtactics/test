@@ -7,8 +7,7 @@ os: linux             # optional, this is default
 dist: jammy    
 
 before_install:
-  - npm config set loglevel verbose
-  - npm install --verbose
+  - npm install
 
 script:
   - echo "test"
