@@ -1,7 +1,6 @@
 os: windows
-language: go
-go:
-  - "1.20" # or any Go version you prefer
+
+
 script:
   - uname -a
   - echo $OSTYPE
