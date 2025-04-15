@@ -1,6 +1,28 @@
-os: linux
-language: bash
+language: go
+
+jobs:
+  include:
+    - name: "Ubuntu Bionic (18.04)"
+      dist: bionic
+    
+    - name: "Ubuntu Focal (20.04)"
+      dist: focal
+    
+    - name: "Ubuntu Jammy (22.04)"
+      dist: jammy
+    
+    - name: "Ubuntu Noble (24.04)"
+      dist: noble
+env:
+  global:
+    - GO111MODULE=on
+
+cache:
+  directories:
+    - $HOME/.cache/go-build
+    - $HOME/gopath/pkg/mod
 
 script:
   - go version
   - go build -v ./...
+
