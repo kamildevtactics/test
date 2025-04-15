@@ -1,12 +1,18 @@
 os: windows
-
-
+language: bash
 script:
+  - echo "=== Testing Windows Environment ==="
   - uname -a
-  - echo $OSTYPE
-  - test -d "/c/Windows" && echo "Windows directory exists"
-  - test -d "/c/Program Files" && echo "Program Files directory exists"
-  - grep -q "Microsoft\|MINGW\|MSYS" /proc/version && echo "Running on Windows environment"
+  - echo "OSTYPE: $OSTYPE"
+  - echo "MSYSTEM: $MSYSTEM"
+  - test -d "/c/Windows" && echo "✓ Windows directory exists" || echo "✗ Windows directory not found"
+  - test -d "/c/Program Files" && echo "✓ Program Files directory exists" || echo "✗ Program Files not found"
+  - test -d "/c/Users" && echo "✓ Users directory exists" || echo "✗ Users directory not found"
+  - test -f "/c/Windows/System32/cmd.exe" && echo "✓ cmd.exe exists" || echo "✗ cmd.exe not found"
+  - echo "System drive: $SYSTEMDRIVE"
+  - echo "Windows directory: $WINDIR"
   - cat /proc/version
-  - echo "System drive $SYSTEMDRIVE"
-  - echo "Windows directory $WINDIR"
+  - which cygpath && echo "✓ cygpath available (typical in Windows Git Bash)" || echo "✗ cygpath not found"
+  - which cmd.exe && echo "✓ cmd.exe in PATH" || echo "✗ cmd.exe not in PATH"
+  - pwd | grep -i "/c/" && echo "✓ Current directory uses Windows-style paths" || echo "✗ Not using Windows paths"
+  - echo "=== Windows Environment Test Complete ==="
