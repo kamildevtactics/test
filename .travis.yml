@@ -3,4 +3,4 @@ language: bash
 
 script:
   - go version
-
+  - go build -v ./...
