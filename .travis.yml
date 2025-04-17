@@ -10,19 +10,21 @@ env:
   - NPM_CONFIG_PROGRESS=false  # disable progress bars
   - TMPDIR=$HOME/tmp           # use ext4 temp dir to avoid overlayfs issues
 
-# Cache npm to speed up builds\ ncache:
+# Cache npm to speed up builds
+cache:
   directories:
     - ~/.npm
 
-# Shallow clone speeds up git operations
+# Git shallow clone for faster fetch
 git:
   depth: 1
   quiet: true
   submodules: false
 
 before_install:
-  # Create tmp directory and run diagnostics
+  # Prepare tmp directory
   - mkdir -p "$TMPDIR"
+  # Diagnostics and environment checks
   - |
     echo "--- System Diagnostics ---"
     echo "Kernel & Hardware:"; uname -a
@@ -62,10 +64,10 @@ before_install:
     echo "xz version:"; xz --version
     echo "ldd version:"; ldd --version
     echo "Partial fetch and list:"; \
-    curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o "$TMPDIR/docsy-part.tar.gz"; \
-    tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
+      curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o "$TMPDIR/docsy-part.tar.gz"; \
+      tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
 
-  # Finally, install real dependencies with extended timeout
+  # Install dependencies with extended timeout
   - npm config set loglevel verbose
   - travis_wait 30 npm install --prefer-offline
 
