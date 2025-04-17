@@ -14,6 +14,14 @@ cache:
   directories:
     - ~/.npm
 
+# Use a dedicated tmp directory on ext4 to avoid overlayfs issues
+env:
+  - NPM_CONFIG_PROGRESS=false
+  - TMPDIR=$HOME/tmp
+cache:
+  directories:
+    - ~/.npm
+
 # Shallow clone speeds up git operations
 git:
   depth: 1
