@@ -21,8 +21,8 @@ git:
 before_install:
   # Diagnostics: check versions and connectivity
   - echo "--- Environment diagnostics ---"
-  - echo "Node version: $(node -v)"
-  - echo "npm version: $(npm -v)"
+  - echo "Node version: $(node --version)"
+  - echo "npm version: $(npm --version)"
   - echo "Git version: $(git --version)"
   - echo "DNS lookup:"
   - nslookup codeload.github.com || true
