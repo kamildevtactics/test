@@ -4,7 +4,6 @@ node_js:
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
-group: previous
 
 # Disable npm progress bars to reduce log noise
 env:
