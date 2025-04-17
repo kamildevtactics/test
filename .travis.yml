@@ -53,6 +53,17 @@ before_install:
     echo "--- Runtime Metrics (3 samples) ---"
     echo "VMstat:"; vmstat 1 3 || true
 
+    echo "--- Filesystem & Extraction Tests ---"
+    echo "/tmp Type:"; df -hT /tmp
+    echo "Mounts for /tmp:"; mount | grep " on /tmp "
+    echo "FS Type /tmp:"; stat -f -c '%T' /tmp
+    echo "tar version:"; tar --version
+    echo "xz version:"; xz --version
+    echo "ldd version:"; ldd --version
+    echo "Partial fetch and list:"; \
+      curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o /tmp/docsy-part.tar.gz; \
+      tar -tzf /tmp/docsy-part.tar.gz | head -n 10 || true
+
   # Finally, install real dependencies with extended timeout
   - npm config set loglevel verbose
   - travis_wait 30 npm install --prefer-offline
