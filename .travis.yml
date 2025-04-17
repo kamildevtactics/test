@@ -2,7 +2,8 @@ dist: focal
 language: php
 php: 8.2
 
-install: skip
+install: 
+- rvm use 3 --fuzzy do ruby -S gem install dpl -v
 script:
   - ruby -v
 
