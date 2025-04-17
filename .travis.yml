@@ -1,72 +1,14 @@
-language: node_js
-node_js:
-  - 20.9             # LTS version
-os: linux
-arch: amd64
-dist: jammy        # Ubuntu 22.04
+language: php
+php: 8.2
+dist: bionic
 
-# Cache npm to speed up builds
-cache:
-  directories:
-    - ~/.npm
-
-# Git shallow clone for faster fetch
-git:
-  depth: 1
-  quiet: true
-  submodules: false
-
-before_install:
-  - export NPM_CONFIG_PROGRESS=false  # disable progress bars
-  - export TMPDIR=$HOME/tmp  
-  # Prepare tmp directory
-  - mkdir -p "$TMPDIR"
-  # Diagnostics and environment checks
-  - |
-    echo "--- System Diagnostics ---"
-    echo "Kernel & Hardware:"; uname -a
-    echo "OS Release:"; lsb_release -a 2>/dev/null || true
-    echo "Ulimits:"; ulimit -a
-    echo "Memory Usage:"; free -h
-    echo "Disk Usage:"; df -h
-    echo "DNS Config:"; cat /etc/resolv.conf
-    echo "npm Config:"; npm config list
-
-    echo "--- Network & GitHub Tests ---"
-    echo "DNS Lookup:"; nslookup codeload.github.com || true
-    echo "Ping Test:"; ping -c 3 codeload.github.com || true
-    echo "HTTP HEAD:"; curl -I https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e || true
-    echo "Partial Download Speed Test:"; curl -s --range 0-1023 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e | wc -c
-
-    echo "--- TLS & Certificates ---"
-    echo "OpenSSL Version:"; openssl version
-    echo "TLS handshake dump:"; openssl s_client -connect codeload.github.com:443 -servername codeload.github.com < /dev/null | head -n 20
-    echo "CA Certificates Installed:"; dpkg -l | grep ca-certificates || true
-
-    echo "--- System Settings & Limits ---"
-    echo "File-max:"; cat /proc/sys/fs/file-max
-    echo "IPv4 Port Range:"; cat /proc/sys/net/ipv4/ip_local_port_range
-    echo "TCP Tw Reuse:"; cat /proc/sys/net/ipv4/tcp_tw_reuse
-    echo "Mounted Overlays:"; mount | grep overlay || true
-    echo "Recent dmesg entries:"; dmesg | tail -n 20 || true
-
-    echo "--- Runtime Metrics (3 samples) ---"
-    echo "VMstat:"; vmstat 1 3 || true
-
-    echo "--- Filesystem & Extraction Tests ---"
-    echo "/tmp Type:"; df -hT "$TMPDIR"
-    echo "Mounts for $TMPDIR:"; mount | grep " on $TMPDIR " || true
-    echo "FS Type $TMPDIR:"; stat -f -c '%T' "$TMPDIR"
-    echo "tar version:"; tar --version
-    echo "xz version:"; xz --version
-    echo "ldd version:"; ldd --version
-    echo "Partial fetch and list:"; \
-      curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o "$TMPDIR/docsy-part.tar.gz"; \
-      tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
-
-  # Install dependencies with extended timeout
-  - npm config set loglevel verbose
-  - npm install --verbose
-
+install: skip
 script:
-  - echo "npm install completed successfully"
+  - ruby -v
+
+deploy:
+  provider: script
+  script: sleep 10
+  skip_cleanup: true
+  on:
+    all_branches: true
