@@ -17,6 +17,8 @@ git:
   submodules: false
 
 before_install:
+  - export NPM_CONFIG_PROGRESS=false  # disable progress bars
+  - export TMPDIR=$HOME/tmp  
   # Prepare tmp directory
   - mkdir -p "$TMPDIR"
   # Diagnostics and environment checks
@@ -63,8 +65,6 @@ before_install:
       tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
 
   # Install dependencies with extended timeout
-  - export NPM_CONFIG_PROGRESS=false  # disable progress bars
-  - export TMPDIR=$HOME/tmp  
   - npm config set loglevel verbose
   - npm install --verbose
 
