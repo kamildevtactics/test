@@ -1,15 +1,41 @@
-dist: focal
+# .travis.yml
 language: php
-php: 8.2
+php:
+  - '8.2'
 
-install: 
-- rvm use 3 --fuzzy do ruby -S gem install dpl
+install:
+  - rvm use 3 --fuzzy do gem install dpl -v 1.10.16
+
 script:
   - ruby -v
 
-deploy:
-  provider: script
-  script: sleep 10
-  skip_cleanup: true
-  on:
-    all_branches: true
+stages:
+  - test
+  - deploy
+
+jobs:
+  include:
+    - name: "Test on Ubuntu 18.04 (Bionic)"
+      stage: test
+      dist: bionic
+
+    - name: "Test on Ubuntu 20.04 (Focal)"
+      stage: test
+      dist: focal
+
+    - name: "Test on Ubuntu 22.04 (Jammy)"
+      stage: test
+      dist: jammy
+
+    - name: "Test on Ubuntu 24.04 (Noble)"
+      stage: test
+      dist: noble
+
+    - name: "Deploy script"
+      stage: deploy
+      deploy:
+        provider: script
+        script: sleep 10
+        skip_cleanup: true
+        on:
+          all_branches: true
