@@ -1,9 +1,19 @@
-os: windows
-language: go
+language: node_js
+node_js:
+  - 20.9             # use the same LTS version as in your project
+essential: true  # skip unnecessary matrix builds
+os: linux
+arch: amd64
+dist: jammy        # match your Ubuntu 22.04 environment
 
-go:
-- "1.20" # or any Go version you prefer
+# Prevent Travis from running `npm install` twice
+install:
+  - echo "Skipping default install"
+
+before_install:
+  - npm config set loglevel verbose
+  - npm install --verbose  # reproduces the hanging issue
 
 script:
-- go version
-- go build -v ./...
+  - echo "Test build completed."
+  # You can also run `npm test` or `hugo` here if needed

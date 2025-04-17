@@ -1,19 +1,8 @@
 {
-  "name": "test",
+  "name": "reproduce-docsy-timeout",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github-devtactics:kamildevtactics/test.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "private": true,
+  "dependencies": {
+    "docsy": "git+https://github.com/google/docsy.git#712aa05897c1abe239786522131e83d69e5e1b4e"
+  }
 }
