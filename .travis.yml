@@ -1,29 +1,14 @@
-# .travis.yml
 language: php
-php:
-  - '8.2'
+php: 8.2
+dist: bionic
 
+install: skip
 script:
   - ruby -v
 
-stages:
-  - test
-  - deploy
-
-jobs:
-  include:
-    - name: "Test on Ubuntu 18.04 (Bionic)"
-      stage: test
-      dist: bionic
-
-    - name: "Test on Ubuntu 20.04 (Focal)"
-      stage: test
-      dist: focal
-
-    - name: "Test on Ubuntu 22.04 (Jammy)"
-      stage: test
-      dist: jammy
-
-    - name: "Test on Ubuntu 24.04 (Noble)"
-      stage: test
-      dist: noble
+deploy:
+  provider: script
+  script: sleep 10
+  skip_cleanup: true
+  on:
+    all_branches: true
