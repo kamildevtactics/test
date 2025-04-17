@@ -5,11 +5,6 @@ os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
 
-# Environment variables
-env:
-  - NPM_CONFIG_PROGRESS=false  # disable progress bars
-  - TMPDIR=$HOME/tmp           # use ext4 temp dir to avoid overlayfs issues
-
 # Cache npm to speed up builds
 cache:
   directories:
@@ -68,6 +63,8 @@ before_install:
       tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
 
   # Install dependencies with extended timeout
+  - export NPM_CONFIG_PROGRESS=false  # disable progress bars
+  - export TMPDIR=$HOME/tmp  
   - npm config set loglevel verbose
   - npm install --verbose
 
