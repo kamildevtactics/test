@@ -3,9 +3,6 @@ language: php
 php:
   - '8.2'
 
-install:
-  - rvm use 3 --fuzzy do gem install dpl -v 1.10.16
-
 script:
   - ruby -v
 
