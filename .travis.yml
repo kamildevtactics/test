@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-  - 20.9             # use the same LTS version as your project
+  - 20.9             # LTS version
 os: linux
 arch: amd64
-dist: jammy        # match Ubuntu 22.04
+dist: jammy        # Ubuntu 22.04
 
 # Cache npm to speed up builds
 env:
@@ -19,17 +19,17 @@ git:
   submodules: false
 
 before_install:
-  # Diagnostics: check versions and connectivity
-  - echo "--- Environment diagnostics ---"
-  - echo "Node version: $(node --version)"
-  - echo "npm version: $(npm --version)"
-  - echo "Git version: $(git --version)"
-  - echo "DNS lookup:"
-  - nslookup codeload.github.com || true
-  - echo "Ping test (3 packets):"
-  - ping -c 3 codeload.github.com || true
-  - echo "HTTP HEAD request to Docsy tarball:"
-  - curl -I https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e || true
+  # Diagnostics: run all checks in one shell block to avoid YAML parsing issues
+  - |
+    echo "--- Environment diagnostics ---"
+    echo "Platform: $(uname -a)"
+    echo "OS release: $(lsb_release -a 2>/dev/null || true)"
+    echo "Node version: $(node -v)"
+    echo "npm version: $(npm -v)"
+    echo "Git version: $(git --version)"
+    echo "DNS lookup (codeload.github.com):"; nslookup codeload.github.com || true
+    echo "Ping test (codeload.github.com, 3 packets):"; ping -c 3 codeload.github.com || true
+    echo "HTTP HEAD (Docsy tarball):"; curl -I https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e || true
 
   # Install dependencies with extended timeout
   - npm config set loglevel verbose
@@ -37,4 +37,4 @@ before_install:
 
 script:
   - echo "npm install completed successfully"
-  # możesz tutaj dodać ./node_modules/.bin/hugo lub npm test
+  # dalej np. npm test lub ./node_modules/.bin/hugo
