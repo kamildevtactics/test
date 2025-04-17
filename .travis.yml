@@ -1,5 +1,4 @@
-dist: bionic
-group: previous
+dist: focal
 language: php
 php: 8.2
 
