@@ -62,8 +62,8 @@ before_install:
     echo "xz version:"; xz --version
     echo "ldd version:"; ldd --version
     echo "Partial fetch and list:"; \
-      curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o "$TMPDIR/docsy-part.tar.gz"; \
-      tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
+    curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o "$TMPDIR/docsy-part.tar.gz"; \
+    tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
 
   # Finally, install real dependencies with extended timeout
   - npm config set loglevel verbose
