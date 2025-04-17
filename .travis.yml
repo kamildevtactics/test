@@ -30,12 +30,3 @@ jobs:
     - name: "Test on Ubuntu 24.04 (Noble)"
       stage: test
       dist: noble
-
-    - name: "Deploy script"
-      stage: deploy
-      deploy:
-        provider: script
-        script: sleep 10
-        skip_cleanup: true
-        on:
-          all_branches: true
