@@ -1,20 +1,40 @@
 language: node_js
 node_js:
-  - 20.9             # use the same LTS version as in your project
-essential: true  # skip unnecessary matrix builds
+  - 20.9             # use the same LTS version as your project
 os: linux
 arch: amd64
-dist: jammy        # match your Ubuntu 22.04 environment
-group: previous
+dist: jammy        # match Ubuntu 22.04
 
-# Prevent Travis from running `npm install` twice
-install:
-  - echo "Skipping default install"
+# Cache npm to speed up builds
+env:
+  - NPM_CONFIG_PROGRESS=false  # disable progress bars
+cache:
+  directories:
+    - ~/.npm
+
+# Shallow clone speeds up git operations
+git:
+  depth: 1
+  quiet: true
+  submodules: false
 
 before_install:
+  # Diagnostics: check versions and connectivity
+  - echo "--- Environment diagnostics ---"
+  - echo "Node version: $(node -v)"
+  - echo "npm version: $(npm -v)"
+  - echo "Git version: $(git --version)"
+  - echo "DNS lookup:"
+  - nslookup codeload.github.com || true
+  - echo "Ping test (3 packets):"
+  - ping -c 3 codeload.github.com || true
+  - echo "HTTP HEAD request to Docsy tarball:"
+  - curl -I https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e || true
+
+  # Install dependencies with extended timeout
   - npm config set loglevel verbose
-  - npm install --verbose  # reproduces the hanging issue
+  - travis_wait 30 npm install --prefer-offline
 
 script:
-  - echo "Test build completed."
-  # You can also run `npm test` or `hugo` here if needed
+  - echo "npm install completed successfully"
+  # możesz tutaj dodać ./node_modules/.bin/hugo lub npm test
