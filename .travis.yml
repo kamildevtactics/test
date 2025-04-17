@@ -4,7 +4,6 @@ node_js:
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
-group: previous
 
 # Disable npm progress bars to reduce log noise
 env:
@@ -31,7 +30,6 @@ before_install:
     echo "Memory Usage:"; free -h
     echo "Disk Usage:"; df -h
     echo "DNS Config:"; cat /etc/resolv.conf
-    echo "Environment Variables:"; env
     echo "npm Config:"; npm config list
 
     echo "--- Network & GitHub Tests ---"
@@ -43,17 +41,17 @@ before_install:
     echo "--- TLS & Certificates ---"
     echo "OpenSSL Version:"; openssl version
     echo "TLS handshake dump:"; openssl s_client -connect codeload.github.com:443 -servername codeload.github.com < /dev/null | head -n 20
-    echo "CA Packages:"; dpkg -l | grep ca-certificates || true
+    echo "CA Certificates Installed:"; dpkg -l | grep ca-certificates || true
 
-    echo "--- npm Fetch Dry Run (HTTP2 vs HTTP1) ---"
-    npm config set prefer-http1 true
-    npm install docsy --dry-run
-    npm config set prefer-http1 false
+    echo "--- System Settings & Limits ---"
+    echo "File-max:"; cat /proc/sys/fs/file-max
+    echo "IPv4 Port Range:"; cat /proc/sys/net/ipv4/ip_local_port_range
+    echo "TCP Tw Reuse:"; cat /proc/sys/net/ipv4/tcp_tw_reuse
+    echo "Mounted Overlays:"; mount | grep overlay || true
+    echo "Recent dmesg entries:"; dmesg | tail -n 20 || true
 
-    echo "--- Single Socket Test ---"
-    npm config set maxsockets 1
-    travis_wait 10 npm install --prefer-offline --dry-run || true
-    npm config delete maxsockets
+    echo "--- Runtime Metrics (3 samples) ---"
+    echo "VMstat:"; vmstat 1 3 || true
 
   # Finally, install real dependencies with extended timeout
   - npm config set loglevel verbose
