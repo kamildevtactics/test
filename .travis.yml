@@ -5,6 +5,7 @@ essential: true  # skip unnecessary matrix builds
 os: linux
 arch: amd64
 dist: jammy        # match your Ubuntu 22.04 environment
+group: previous
 
 # Prevent Travis from running `npm install` twice
 install:
