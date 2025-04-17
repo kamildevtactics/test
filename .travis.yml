@@ -69,7 +69,7 @@ before_install:
 
   # Install dependencies with extended timeout
   - npm config set loglevel verbose
-  - travis_wait 30 npm install --prefer-offline
+  - npm install --verbose
 
 script:
   - echo "npm install completed successfully"
