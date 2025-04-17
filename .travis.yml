@@ -3,7 +3,7 @@ language: php
 php: 8.2
 
 install: 
-- rvm use 3 --fuzzy do ruby -S gem install dpl -v
+- rvm use 3 --fuzzy do ruby -S gem install dpl
 script:
   - ruby -v
 
