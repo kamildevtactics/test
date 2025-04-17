@@ -1,6 +1,7 @@
 language: php
 php: 8.2
 dist: bionic
+group: previous
 
 install: skip
 script:
