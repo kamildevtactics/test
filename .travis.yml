@@ -5,20 +5,12 @@ os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
 
-# Disable npm progress bars to reduce log noise
+# Environment variables
 env:
-  - NPM_CONFIG_PROGRESS=false
+  - NPM_CONFIG_PROGRESS=false  # disable progress bars
+  - TMPDIR=$HOME/tmp           # use ext4 temp dir to avoid overlayfs issues
 
-# Cache npm to speed up builds
-cache:
-  directories:
-    - ~/.npm
-
-# Use a dedicated tmp directory on ext4 to avoid overlayfs issues
-env:
-  - NPM_CONFIG_PROGRESS=false
-  - TMPDIR=$HOME/tmp
-cache:
+# Cache npm to speed up builds\ ncache:
   directories:
     - ~/.npm
 
@@ -29,7 +21,8 @@ git:
   submodules: false
 
 before_install:
-  # Comprehensive diagnostics to compare environments
+  # Create tmp directory and run diagnostics
+  - mkdir -p "$TMPDIR"
   - |
     echo "--- System Diagnostics ---"
     echo "Kernel & Hardware:"; uname -a
@@ -62,15 +55,15 @@ before_install:
     echo "VMstat:"; vmstat 1 3 || true
 
     echo "--- Filesystem & Extraction Tests ---"
-    echo "/tmp Type:"; df -hT /tmp
-    echo "Mounts for /tmp:"; mount | grep " on /tmp "
-    echo "FS Type /tmp:"; stat -f -c '%T' /tmp
+    echo "/tmp Type:"; df -hT "$TMPDIR"
+    echo "Mounts for $TMPDIR:"; mount | grep " on $TMPDIR " || true
+    echo "FS Type $TMPDIR:"; stat -f -c '%T' "$TMPDIR"
     echo "tar version:"; tar --version
     echo "xz version:"; xz --version
     echo "ldd version:"; ldd --version
     echo "Partial fetch and list:"; \
-      curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o /tmp/docsy-part.tar.gz; \
-      tar -tzf /tmp/docsy-part.tar.gz | head -n 10 || true
+      curl -s --range 0-50000000 https://codeload.github.com/google/docsy/tar.gz/712aa05897c1abe239786522131e83d69e5e1b4e -o "$TMPDIR/docsy-part.tar.gz"; \
+      tar -tzf "$TMPDIR/docsy-part.tar.gz" | head -n 10 || true
 
   # Finally, install real dependencies with extended timeout
   - npm config set loglevel verbose
