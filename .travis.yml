@@ -4,8 +4,7 @@ node_js:
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
-service:
-  -podman
+group: dev
 
 # Cache npm to speed up builds
 cache:
@@ -19,11 +18,7 @@ git:
   submodules: false
 
 before_install:
-  - podman --version
-  # Check if Podman is working properly
-  - podman info
-  - npm config set loglevel verbose
-  - npm install --verbose
+  - npm ci
 
 script:
   - echo "npm install completed successfully"
