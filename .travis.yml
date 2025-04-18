@@ -16,7 +16,7 @@ git:
 
 before_install:
   - npm --version
-  - npm install -g npm@latest
+  - npm install -g npm@10.7.0
   - npm --version
   - node --version
   - nvm --version
