@@ -18,6 +18,12 @@ git:
   submodules: false
 
 before_install:
+  # Check if Podman is installed
+  - command -v podman || { echo "Podman is not installed. Please install Podman before proceeding."; exit 1; }
+  # Display Podman version
+  - podman --version
+  # Check if Podman is working properly
+  - podman info
   - npm config set loglevel verbose
   - npm install --verbose
 
