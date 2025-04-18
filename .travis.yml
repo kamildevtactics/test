@@ -1,38 +1,21 @@
-          # LTS versioos: linux
+node_js:
+  - 20.9
+os: linux
 arch: amd64
-dist: jammy        # Ubuntu 22.04
+dist: jammy
+group: dev
 
-# Cache npm to speed up builds (you can disable it if you suspect cache corruption)
 cache:
   directories:
     - ~/.npm
-# cache: false  # uncomment to disable cache entirely
-
-# Git shallow clone for faster fetch
 git:
   depth: 1
   quiet: true
   submodules: false
 
 before_install:
-  # 1) turn on the most verbose npm output
-  - npm config set loglevel silly
-
-  # 2) adjust retry/timeouts in case of flaky network
-  - npm config set fetch-retries 5
-  - npm config set fetch-retry-mintimeout 20000
-  - npm config set fetch-retry-maxtimeout 120000
-
-  # 3) network diagnostics for codeload.github.com to catch DNS / routing issues
-  - ping -c 4 codeload.github.com || true
-  - traceroute codeload.github.com || true
 
 install:
-  # wrap npm install in travis_wait so we get longer before “no output” kill,
-  # and tee the full verbose log for post-mortem
-  - travis_wait 20 bash -lc "npm install --loglevel=silly 2>&1 | tee npm-install.log"
-
+  - npm install
 script:
   - echo "npm install completed successfully"
-  # optionally show last lines of the install log for quick inspection
-  - tail -n 30 npm-install.log || true
