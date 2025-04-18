@@ -4,6 +4,7 @@ node_js:
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
+group: previous
 
 cache:
   directories:
@@ -15,8 +16,6 @@ git:
   submodules: false
 
 before_install:
-  - npm --version
-  - npm install -g npm@10.7.0 --loglevel silly
   - npm --version
   - node --version
   - nvm --version
