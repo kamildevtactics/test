@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - 19       # LTS version
+  - 22       # LTS version
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
