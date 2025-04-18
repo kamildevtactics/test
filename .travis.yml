@@ -5,7 +5,9 @@ os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
 group: dev
-
+service:
+  -podman
+  
 # Cache npm to speed up builds
 cache:
   directories:
