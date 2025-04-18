@@ -7,7 +7,7 @@ dist: jammy        # Ubuntu 22.04
 group: dev
 service:
   -podman
-  
+
 # Cache npm to speed up builds
 cache:
   directories:
@@ -20,9 +20,6 @@ git:
   submodules: false
 
 before_install:
-  # Check if Podman is installed
-  - command -v podman || { echo "Podman is not installed. Please install Podman before proceeding."; exit 1; }
-  # Display Podman version
   - podman --version
   # Check if Podman is working properly
   - podman info
