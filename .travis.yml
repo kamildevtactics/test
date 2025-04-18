@@ -1,10 +1,9 @@
 language: node_js
 node_js:
-  - 20.9             # LTS version
+  - 21.0        # LTS version
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
-group: previous
 
 cache:
   directories:
