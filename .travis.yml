@@ -1,6 +1,3 @@
-language: node_js
-node_js:
-  - 20.9             # LTS version
 os: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
@@ -15,6 +12,9 @@ git:
   submodules: false
 
 before_install:
+  - npm --version
+  - node --version
+  - nvm --version
   - npm config set loglevel verbose
   - npm install --verbose
 
