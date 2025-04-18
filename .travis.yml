@@ -1,14 +1,25 @@
-language: php
-php: 8.2
-dist: bionic
+language: node_js
+node_js:
+  - 20.9             # LTS version
+os: linux
+arch: amd64
+dist: jammy        # Ubuntu 22.04
+group: dev
 
-install: skip
+# Cache npm to speed up builds
+cache:
+  directories:
+    - ~/.npm
+
+# Git shallow clone for faster fetch
+git:
+  depth: 1
+  quiet: true
+  submodules: false
+
+before_install:
+  - npm config set loglevel verbose
+  - npm install --verbose
+
 script:
-  - ruby -v
-
-deploy:
-  provider: script
-  script: sleep 10
-  skip_cleanup: true
-  on:
-    all_branches: true
+  - echo "npm install completed successfully"
