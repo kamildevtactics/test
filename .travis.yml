@@ -15,7 +15,7 @@ git:
   submodules: false
 
 before_install:
-  - npm --verions
+  - npm --version
   - npm install -g npm@latest
   - npm --version
   - node --version
