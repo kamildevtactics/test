@@ -1,7 +1,6 @@
           # LTS versioos: linux
 arch: amd64
 dist: jammy        # Ubuntu 22.04
-group: dev
 
 # Cache npm to speed up builds (you can disable it if you suspect cache corruption)
 cache:
