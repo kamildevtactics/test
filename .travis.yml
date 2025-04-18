@@ -17,8 +17,11 @@ git:
   quiet: true
   submodules: false
 
+install:
+  - npm install      # Use npm install instead of the default npm ci
+
 before_install:
-  - npm ci
+  - npm config set loglevel verbose
 
 script:
   - echo "npm install completed successfully"
