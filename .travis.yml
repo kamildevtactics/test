@@ -3,10 +3,8 @@ dist: jammy
 group: dev
 
 services:
-  - elasticserach
+  - elasticsearch  
 before_install:
-  - cat /etc/elasticsearch/elasticsearch.yml
-  - sudo systemctl restart elasticsearch
   - sleep 30
   - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
 install: skip
