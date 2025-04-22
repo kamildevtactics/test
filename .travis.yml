@@ -4,27 +4,8 @@ group: dev
 
 services:
   - elasticserach
-
+  
 before_install:
-  # 1) Uruchom lub restart usługi
-  - sudo systemctl restart elasticsearch
-
-  # 2) Kilka sekund na rozruch
-  - sleep 10
-
-  # 3) Debug: status i proces
-  - sudo systemctl status elasticsearch
-  - ps aux | grep [e]lasticsearch
-
-  # 4) Debug: port 9200
-  - netstat -tlnp | grep 9200
-
-  # 5) Czekaj, aż HTTP API odpowie
-  - |
-    until curl --silent --fail http://localhost:9200/_cluster/health?pretty; do
-      echo "⏳ czekam na Elasticsearch…"
-      sleep 2
-    done
-
+  - until curl --silent -XGET --fail https://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
 install: skip
 script: true
