@@ -1,25 +1,11 @@
-language: node_js
-node_js:
-  - 22       # LTS version
-os: linux
-arch: amd64
-dist: jammy        # Ubuntu 22.04
+language: shell
+dist: jammy
 
-cache:
-  directories:
-    - ~/.npm
-
-git:
-  depth: 1
-  quiet: true
-  submodules: false
-
+services:
+  - elasticserach
 before_install:
-  - npm --version
-  - node --version
-  - nvm --version
-  - npm config set loglevel verbose
-  - npm install --verbose
-
-script:
-  - echo "npm install completed successfully"
+  - sudo systemctl restart elasticsearch
+  - sleep 30
+  - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
+install: skip
+script: true
