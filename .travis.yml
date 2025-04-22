@@ -1,10 +1,12 @@
 language: shell
-dist: noble
+dist: jammy
+group: dev
 
 services:
   - elasticserach
-  
 before_install:
-  - until curl --silent -XGET --fail https://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
+  - sudo systemctl restart elasticsearch
+  - sleep 30
+  - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
 install: skip
 script: true
