@@ -1,33 +1,10 @@
 language: shell
-dist: jammy
-group: dev
+dist: noble
 
-# jeśli chcesz zostać przy systemowym Elasticsearch, popraw nazwę:
 services:
-  - elasticsearch
-
+  - elasticserach
+  
 before_install:
-  # 1) dopisz konfigurację do /etc/elasticsearch/elasticsearch.yml
-  - |
-      sudo tee -a /etc/elasticsearch/elasticsearch.yml <<EOF
-      network.host: 127.0.0.1
-      discovery.type: single-node
-      xpack.security.enabled: false
-      xpack.security.transport.ssl.enabled: false
-      EOF
-
-  # 2) uruchom lub zrestartuj usługę
-  - sudo systemctl restart elasticsearch
-
-  # 3) daj ES chwilę na start
-  - sleep 10
-
-  # 4) czekaj aż API odpowie (teraz już czystym HTTP, bo wyłączyliśmy TLS)
-  - |
-      until curl --silent --fail http://localhost:9200/_cluster/health?pretty; do
-        printf '…\n'
-        sleep 2
-      done
-
+  - until curl --silent -XGET --fail https://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
 install: skip
 script: true
