@@ -1,6 +1,6 @@
 language: shell
 dist: jammy
-group: previous
+group: dev
 
 services:
   - elasticserach
