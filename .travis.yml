@@ -6,15 +6,17 @@ services:
   - elasticserach
   
 before_install:
-  - |
-  sudo tee -a /etc/elasticsearch/elasticsearch.yml <<EOF
-  network.host: 127.0.0.1
-  discovery.type: single-node
-  xpack.security.enabled: false
-  xpack.security.transport.ssl.enabled: false
-  EOF
+    - |
+    sudo tee -a /etc/elasticsearch/elasticsearch.yml <<EOF
+    network.host: 127.0.0.1
+    discovery.type: single-node
+    xpack.security.enabled: false
+    xpack.security.transport.ssl.enabled: false
+    EOF
   - sudo systemctl restart elasticsearch
   - sleep 10
   - until curl --silent -XGET --fail https://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
 install: skip
 script: true
+
+
