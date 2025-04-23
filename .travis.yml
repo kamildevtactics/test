@@ -6,7 +6,12 @@ services:
   - elasticsearch  
 
 before_install:
-  - sudo cat /etc/elasticsearch/elasticsearch.yml
-  - until curl --silent -XGET --fail https://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
+  - sudo systemctl status elasticsearch || true
+  - sudo journalctl -xeu elasticsearch.service || true
+  - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
+
 install: skip
-script: true
+
+script:
+  - curl -s http://localhost:9200
+  - curl -s http://localhost:9200/_cluster/health?pretty
