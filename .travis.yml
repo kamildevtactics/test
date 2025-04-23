@@ -9,7 +9,7 @@ services:
 before_install:
   - sudo cat /etc/elasticsearch/elasticsearch.yml
   - sleep 30
-  - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
+  - until curl --silent -XGET --fail https://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
   - sudo cat /etc/elasticsearch/elasticsearch.yml
 install: skip
 script: true
