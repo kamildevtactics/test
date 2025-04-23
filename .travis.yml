@@ -1,5 +1,6 @@
 language: shell
-dist: focal
+dist: bionic
+group: dev
 
 
 services:
