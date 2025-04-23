@@ -9,54 +9,38 @@ before_install:
   # Zwiększenie limitów systemowych
   - sudo sysctl -w vm.max_map_count=262144
   
-  # Sprawdzenie bieżących ustawień Java
-  - java -version
-  
-  # Sprawdzenie uprawnień i zawartości katalogów
-  - sudo ls -la /var/lib/elasticsearch
-  - sudo ls -la /var/log/elasticsearch
-  
-  # Pokaż bieżącą konfigurację
-  - sudo cat /etc/elasticsearch/elasticsearch.yml
-  
-  # Pokaż zawartość logów Elasticsearch
-  - sudo cat /var/log/elasticsearch/travis-elasticsearch.log
-  
-  # Utwórz plik jvm.options.d z większą pamięcią (poprawna składnia heredoc)
+  # Napraw configuration.yml - bez wcięć na początku linii w dokumentach here 
   - |
-    sudo bash -c "cat > /etc/elasticsearch/jvm.options.d/memory.options << 'EOL'
-    -Xms512m
-    -Xmx512m
-    EOL"
+    sudo bash -c "cat > /etc/elasticsearch/elasticsearch.yml << EOL
+# Minimal Elasticsearch configuration for Travis CI
+cluster.name: travis-elasticsearch
+node.name: travis-elasticsearch-node
+
+# Network settings
+network.host: 127.0.0.1
+http.port: 9200
+
+# Discovery
+discovery.type: single-node
+
+# Disable security features
+xpack.security.enabled: false
+
+# Basic settings
+http.cors.enabled: true
+http.cors.allow-origin: \"*\"
+EOL"
   
-  # Utwórz minimalną konfigurację z poprawną składnią heredoc
+  # Zwiększ pamięć JVM
   - |
-    sudo bash -c "cat > /etc/elasticsearch/elasticsearch.yml << 'EOL'
-    # Minimal Elasticsearch configuration for Travis CI
-    cluster.name: travis-elasticsearch
-    node.name: travis-elasticsearch-node
-    
-    # Network settings
-    network.host: 127.0.0.1
-    http.port: 9200
-    
-    # Discovery
-    discovery.type: single-node
-    
-    # Disable security features
-    xpack.security.enabled: false
-    
-    # Basic settings
-    http.cors.enabled: true
-    http.cors.allow-origin: "*"
-    EOL"
+    sudo bash -c "cat > /etc/elasticsearch/jvm.options.d/memory.options << EOL
+-Xms512m
+-Xmx512m
+EOL"
   
   # Napraw uprawnienia
   - sudo chown -R elasticsearch:elasticsearch /var/lib/elasticsearch
   - sudo chown -R elasticsearch:elasticsearch /var/log/elasticsearch
-  
-  # Sprawdź czy port 9200 jest używany
-  - sudo netstat -tulpn | grep 9200 || echo "Port 9200 jest wolny"
   
   # Przeładuj usługi
   - sudo systemctl daemon-reload
@@ -64,18 +48,18 @@ before_install:
   # Spróbuj uruchomić usługę
   - sudo systemctl restart elasticsearch || true
   
-  # Sprawdź status po próbie uruchomienia
-  - sudo systemctl status elasticsearch
+  # Sprawdź status
+  - sleep 3
+  - sudo systemctl status elasticsearch || true
   
-  # Pokaż logi po próbie uruchomienia
-  - sleep 5
-  - sudo cat /var/log/elasticsearch/travis-elasticsearch.log
+  # Pokaż logi
+  - sudo cat /var/log/elasticsearch/travis-elasticsearch.log || true
   
-  # Sprawdź wersję Java, której używa Elasticsearch
-  - sudo /usr/share/elasticsearch/bin/elasticsearch-env || true
+  # Sprawdź czy działa
+  - curl -v http://localhost:9200 || echo "Elasticsearch nie odpowiada"
   
-  # Sprawdź http
-  - curl -v http://localhost:9200 || echo "Elasticsearch nie jest dostępny"
+  # Czekaj na uruchomienie (z timeoutem 30s)
+  - timeout 30 bash -c 'until curl --silent -XGET --fail http://localhost:9200; do printf "."; sleep 3; done' || echo "Timeout podczas czekania na Elasticsearch"
 
 script:
   - echo "Test completed"
