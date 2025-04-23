@@ -1,7 +1,6 @@
 language: shell
 dist: jammy
 group: dev
-
 services:
   - elasticsearch  
 before_install:
