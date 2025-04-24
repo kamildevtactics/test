@@ -2,11 +2,44 @@ language: shell
 dist: focal
 group: dev
 
-
 services:
-  - elasticsearch  
+  - elasticsearch
 
 before_install:
-  - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
-install: skip
-script: true
+  # Check Elasticsearch status
+  - curl -s -XGET http://localhost:9200/_cluster/health || echo "Elasticsearch is not responding"
+  - ps aux | grep elasticsearch
+  - netstat -tulpn | grep 9200 || echo "Port 9200 is not open"
+  
+  # Check Elasticsearch logs
+  - sudo journalctl -u elasticsearch.service --no-pager || echo "Cannot get systemd logs"
+  - sudo cat /var/log/elasticsearch/elasticsearch.log || echo "Cannot access log file"
+
+script:
+  # Test checking Elasticsearch status with timeout
+  - |
+    MAX_RETRIES=10
+    RETRY_COUNT=0
+    until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
+      echo "Attempt $RETRY_COUNT of $MAX_RETRIES - Elasticsearch still unavailable..."
+      RETRY_COUNT=$((RETRY_COUNT+1))
+      sleep 5
+    done
+    
+    if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+      echo "Elasticsearch failed to start properly within the specified time"
+      exit 1
+    else
+      echo "Elasticsearch is working properly"
+    fi
+  
+  # Check system resources
+  - free -m
+  - df -h
+  - ulimit -a
+
+after_failure:
+  # Additional diagnostics in case of failure
+  - sudo cat /var/log/elasticsearch/elasticsearch_deprecation.log || echo "Deprecation log file not found"
+  - sudo tail -n 100 /var/log/syslog || echo "Cannot access system logs"
+  - sudo systemctl status elasticsearch.service || echo "No status information available"
