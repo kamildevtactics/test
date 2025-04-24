@@ -7,7 +7,6 @@ services:
 
 before_install:
   # Check Elasticsearch status
-  - curl -s -XGET http://localhost:9200/_cluster/health || echo "Elasticsearch is not responding"
   - ps aux | grep elasticsearch
   - netstat -tulpn | grep 9200 || echo "Port 9200 is not open"
   
