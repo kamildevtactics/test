@@ -6,7 +6,7 @@ services:
   - elasticsearch
 
 before_install:
-  - sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
+  - 'sudo bash -c "echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
   - sudo systemctl restart elasticsearch
   - sleep 20
 
