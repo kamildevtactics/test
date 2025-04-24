@@ -6,14 +6,7 @@ services:
   - elasticsearch
 
 before_install:
-  # Fix master node discovery issue - Option 1: Set single-node mode
   - sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
-  
-  # Fix master node discovery issue - Option 2: Update node name to match config
-  # (Use either Option 1 OR Option 2, not both)
-  #- sudo bash -c 'echo "node.name: packer-67ed5627-475d-8373-5bba-592c1f1f289b" >> /etc/elasticsearch/elasticsearch.yml'
-  
-  # Restart Elasticsearch with new settings
   - sudo systemctl restart elasticsearch
   - sleep 20
 
