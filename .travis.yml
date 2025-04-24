@@ -6,30 +6,28 @@ services:
   - elasticsearch
 
 before_install:
-  # Dodaj discovery.type: single-node w sekcji Discovery
-  - sudo sed -i '/# --------------------------------- Discovery ----------------------------------/a discovery.type: single-node' /etc/elasticsearch/elasticsearch.yml
-  
-  # Wykomentuj linię cluster.initial_master_nodes
-  - sudo sed -i 's/cluster.initial_master_nodes: \["packer-67ed5627-475d-8373-5bba-592c1f1f289b"\]/#cluster.initial_master_nodes: \["packer-67ed5627-475d-8373-5bba-592c1f1f289b"\]/' /etc/elasticsearch/elasticsearch.yml
-  
-  # Zrestartuj Elasticsearch z nowymi ustawieniami
-  - sudo systemctl restart elasticsearch
-  - sleep 20
+  - |
+    # Enable single-node discovery to avoid master node issues
+    sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
+    # Restart Elasticsearch with the new configuration
+    sudo systemctl restart elasticsearch
+    # Wait for Elasticsearch to initialize
+    sleep 20
 
 script:
-  # Test dostępności Elasticsearch
   - |
+    # Retry logic to wait for Elasticsearch cluster to become green
     MAX_RETRIES=10
     RETRY_COUNT=0
-    until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
-      echo "Próba $RETRY_COUNT z $MAX_RETRIES - Elasticsearch nadal niedostępny..."
+    until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ "$RETRY_COUNT" -eq "$MAX_RETRIES" ]; do
+      echo "Attempt $RETRY_COUNT of $MAX_RETRIES - Elasticsearch still unavailable..."
       RETRY_COUNT=$((RETRY_COUNT+1))
       sleep 5
     done
-    
-    if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-      echo "Elasticsearch nie uruchomił się poprawnie w określonym czasie"
+
+    if [ "$RETRY_COUNT" -eq "$MAX_RETRIES" ]; then
+      echo "Elasticsearch failed to start properly within the specified time"
       exit 1
     else
-      echo "Elasticsearch działa poprawnie"
+      echo "Elasticsearch is working properly"
     fi
