@@ -6,38 +6,30 @@ services:
   - elasticsearch
 
 before_install:
-  - sudo cat /etc/elasticsearch/elasticsearch.yml
-  # Update Elasticsearch configuration for single-node operation
-  - sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
-  - sudo bash -c 'echo "node.name: travis-test-node" >> /etc/elasticsearch/elasticsearch.yml'
-  - sudo bash -c 'echo "cluster.name: travis-test-cluster" >> /etc/elasticsearch/elasticsearch.yml'
+  # Get current node name
+  - CURRENT_NODE_NAME=$(hostname)
+  - echo "Current node name: $CURRENT_NODE_NAME"
   
-  # Increase heap size (your current settings show only 128MB)
-  - sudo sed -i 's/-Xms128m/-Xms512m/' /etc/elasticsearch/jvm.options
-  - sudo sed -i 's/-Xmx128m/-Xmx512m/' /etc/elasticsearch/jvm.options
+  # Fix the master node discovery issue with proper syntax
+  - sudo bash -c "echo 'discovery.type: single-node' >> /etc/elasticsearch/elasticsearch.yml"
+  # OR match the initial_master_nodes with current hostname
+  - sudo sed -i "s/cluster.initial_master_nodes: \[\"packer-67ed5627-475d-8373-5bba-592c1f1f289b\"\]/cluster.initial_master_nodes: \[\"$CURRENT_NODE_NAME\"\]/" /etc/elasticsearch/elasticsearch.yml
   
   # Restart Elasticsearch with new settings
   - sudo systemctl restart elasticsearch
-  - sleep 30  # Give Elasticsearch more time to start with new settings
+  - sleep 20
 
 script:
-  # Test Elasticsearch availability with diagnostics
+  # Test Elasticsearch availability
   - |
-    MAX_RETRIES=15
+    MAX_RETRIES=10
     RETRY_COUNT=0
     until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
       echo "Attempt $RETRY_COUNT of $MAX_RETRIES - Elasticsearch still unavailable..."
-      
-      # Get more diagnostic info on each attempt
-      echo "Current error response:"
+      echo "Current error:"
       curl -s http://localhost:9200/_cluster/health
-      
-      # Check JVM memory status
-      echo "JVM memory status:"
-      curl -s http://localhost:9200/_nodes/stats/jvm | grep -A 10 "heap" || echo "Cannot access JVM stats"
-      
       RETRY_COUNT=$((RETRY_COUNT+1))
-      sleep 10
+      sleep 5
     done
     
     if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
@@ -46,18 +38,11 @@ script:
     else
       echo "Elasticsearch is working properly"
       curl -s http://localhost:9200/_cat/nodes?v
-      curl -s http://localhost:9200/_cluster/health?pretty
     fi
 
 after_failure:
-  # Additional diagnostics in case of failure
+  # Verify our changes were applied
   - echo "Current Elasticsearch configuration:"
-  - sudo grep -v "^#" /etc/elasticsearch/elasticsearch.yml | grep .
-  - echo "JVM options:"
-  - sudo grep -v "^#" /etc/elasticsearch/jvm.options | grep .
+  - sudo grep -A2 -B2 "discovery.type\|cluster.initial_master_nodes" /etc/elasticsearch/elasticsearch.yml
   - echo "Recent logs:"
-  - sudo tail -n 200 /var/log/elasticsearch/elasticsearch.log
-  - echo "Memory usage:"
-  - free -m
-  - echo "Running processes (sorted by memory usage):"
-  - ps aux --sort=-%mem | head -n 15
+  - sudo tail -n 100 /var/log/elasticsearch/elasticsearch.log
