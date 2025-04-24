@@ -6,29 +6,30 @@ services:
   - elasticsearch
 
 before_install:
-  - 'sudo bash -c "echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
+  # Dodaj discovery.type: single-node w sekcji Discovery
+  - sudo sed -i '/# --------------------------------- Discovery ----------------------------------/a discovery.type: single-node' /etc/elasticsearch/elasticsearch.yml
+  
+  # Wykomentuj linię cluster.initial_master_nodes
+  - sudo sed -i 's/cluster.initial_master_nodes: \["packer-67ed5627-475d-8373-5bba-592c1f1f289b"\]/#cluster.initial_master_nodes: \["packer-67ed5627-475d-8373-5bba-592c1f1f289b"\]/' /etc/elasticsearch/elasticsearch.yml
+  
+  # Zrestartuj Elasticsearch z nowymi ustawieniami
   - sudo systemctl restart elasticsearch
   - sleep 20
 
 script:
-  # Test Elasticsearch availability
+  # Test dostępności Elasticsearch
   - |
     MAX_RETRIES=10
     RETRY_COUNT=0
     until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
-      echo "Attempt $RETRY_COUNT of $MAX_RETRIES - Elasticsearch still unavailable..."
+      echo "Próba $RETRY_COUNT z $MAX_RETRIES - Elasticsearch nadal niedostępny..."
       RETRY_COUNT=$((RETRY_COUNT+1))
       sleep 5
     done
     
     if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-      echo "Elasticsearch failed to start properly within the specified time"
+      echo "Elasticsearch nie uruchomił się poprawnie w określonym czasie"
       exit 1
     else
-      echo "Elasticsearch is working properly"
+      echo "Elasticsearch działa poprawnie"
     fi
-
-after_failure:
-  # Print diagnostics in case of failure
-  - sudo cat /etc/elasticsearch/elasticsearch.yml | grep -v "^#" | grep .
-  - sudo tail -n 100 /var/log/elasticsearch/elasticsearch.log
