@@ -1,5 +1,5 @@
 language: shell
-dist: focal
+dist: bionic
 
 
 services:
