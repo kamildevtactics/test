@@ -6,14 +6,12 @@ services:
   - elasticsearch
 
 before_install:
-  # Get current node name
-  - CURRENT_NODE_NAME=$(hostname)
-  - echo "Current node name: $CURRENT_NODE_NAME"
+  # Fix master node discovery issue - Option 1: Set single-node mode
+  - sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
   
-  # Fix the master node discovery issue with proper syntax
-  - sudo bash -c "echo 'discovery.type: single-node' >> /etc/elasticsearch/elasticsearch.yml"
-  # OR match the initial_master_nodes with current hostname
-  - sudo sed -i "s/cluster.initial_master_nodes: \[\"packer-67ed5627-475d-8373-5bba-592c1f1f289b\"\]/cluster.initial_master_nodes: \[\"$CURRENT_NODE_NAME\"\]/" /etc/elasticsearch/elasticsearch.yml
+  # Fix master node discovery issue - Option 2: Update node name to match config
+  # (Use either Option 1 OR Option 2, not both)
+  #- sudo bash -c 'echo "node.name: packer-67ed5627-475d-8373-5bba-592c1f1f289b" >> /etc/elasticsearch/elasticsearch.yml'
   
   # Restart Elasticsearch with new settings
   - sudo systemctl restart elasticsearch
@@ -26,8 +24,6 @@ script:
     RETRY_COUNT=0
     until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
       echo "Attempt $RETRY_COUNT of $MAX_RETRIES - Elasticsearch still unavailable..."
-      echo "Current error:"
-      curl -s http://localhost:9200/_cluster/health
       RETRY_COUNT=$((RETRY_COUNT+1))
       sleep 5
     done
@@ -37,12 +33,9 @@ script:
       exit 1
     else
       echo "Elasticsearch is working properly"
-      curl -s http://localhost:9200/_cat/nodes?v
     fi
 
 after_failure:
-  # Verify our changes were applied
-  - echo "Current Elasticsearch configuration:"
-  - sudo grep -A2 -B2 "discovery.type\|cluster.initial_master_nodes" /etc/elasticsearch/elasticsearch.yml
-  - echo "Recent logs:"
+  # Print diagnostics in case of failure
+  - sudo cat /etc/elasticsearch/elasticsearch.yml | grep -v "^#" | grep .
   - sudo tail -n 100 /var/log/elasticsearch/elasticsearch.log
