@@ -6,6 +6,7 @@ services:
   - elasticsearch
 
 before_install:
+  - sudo cat /etc/elasticsearch/elasticsearch.yml
   # Update Elasticsearch configuration for single-node operation
   - sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
   - sudo bash -c 'echo "node.name: travis-test-node" >> /etc/elasticsearch/elasticsearch.yml'
