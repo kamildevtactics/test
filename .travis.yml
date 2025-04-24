@@ -1,33 +1,12 @@
 language: shell
-# Use latest Ubuntu LTS environment
 dist: focal
 group: dev
 
+
 services:
-  - elasticsearch
+  - elasticsearch  
 
 before_install:
-  # Configure Elasticsearch for single-node discovery
-  - sudo bash -c 'echo "discovery.type: single-node" >> /etc/elasticsearch/elasticsearch.yml'
-  # Restart Elasticsearch service
-  - sudo service elasticsearch restart
-  # Allow time for ES to start
-  - sleep 20
-
-script:
-  # Retry logic to wait for Elasticsearch cluster to become green
-  - |
-    MAX_RETRIES=10
-    RETRY_COUNT=0
-    until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty || [ "$RETRY_COUNT" -eq "$MAX_RETRIES" ]; do
-      echo "Attempt $RETRY_COUNT of $MAX_RETRIES - Elasticsearch still unavailable..."
-      RETRY_COUNT=$((RETRY_COUNT+1))
-      sleep 5
-    done
-
-    if [ "$RETRY_COUNT" -eq "$MAX_RETRIES" ]; then
-      echo "Elasticsearch failed to start properly within the specified time"
-      exit 1
-    else
-      echo "Elasticsearch is working properly"
-    fi
+  - until curl --silent -XGET --fail http://localhost:9200/_cluster/health?pretty; do printf '...\n'; sleep 2; done
+install: skip
+script: true
