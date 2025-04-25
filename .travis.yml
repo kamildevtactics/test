@@ -1,5 +1,6 @@
 language: shell
-dist: bionic
+dist: jammy
+group: dev
 
 
 services:
