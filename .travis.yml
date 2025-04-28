@@ -12,67 +12,6 @@
       PYTHON_VERSION: "3.12"
       JDK_VERSION:    "21"
   
-  # ---------------------- Przygotowanie systemu ------------------------
-  before_install:
-    # aktualizacja pakietów bazowych
-    - sudo apt-get update -yq
-    - sudo apt-get upgrade -yq
-  
-    # -------- OpenJDK 21 ------------------------------------------------
-    - sudo apt-get install -yq "openjdk-${JDK_VERSION}-jdk"
-    - export JAVA_HOME="/usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64"
-    - java -version
-  
-    # -------- Python 3.12 ----------------------------------------------
-    - sudo apt-get install -yq "python${PYTHON_VERSION}"
-
-    - curl -sSL https://get.rvm.io | bash -s stable
-    - source "${HOME}/.rvm/scripts/rvm"
-    - rvm install "${RUBY_VERSION}" --binary --fuzzy
-    - rvm use     "${RUBY_VERSION}" --default
-    - ruby -v
-  
-    # -------- PHP 8.3 (phpenv / php-build) -----------------------------
-    - git clone https://github.com/phpenv/phpenv.git "${HOME}/.phpenv"
-    - export PATH="$HOME/.phpenv/bin:$PATH"
-    - eval "$(phpenv init -)"
-    - git clone https://github.com/php-build/php-build.git \
-                "${HOME}/.phpenv/plugins/php-build"
-    - phpenv install "${PHP_VERSION}" -f
-    - phpenv global  "${PHP_VERSION}"
-    - php -v
-  
-    # -------- Dodatkowe pakiety systemowe ------------------------------
-    - sudo apt-get install -yqq \
-          postgresql-server-dev-13 \
-          build-essential libxml2-dev libssl-dev libcurl4-openssl-dev \
-          libjpeg-dev libpng-dev libfreetype6-dev libonig-dev libzip-dev \
-          libpq-dev  libbz2-dev  libreadline-dev libxslt1-dev pkg-config \
-          shellcheck shfmt ccache redis-tools
-  
-    # (opcjonalnie) ICU 70 – jeśli Twoja aplikacja go nadal wymaga
-    - |
-      if ! dpkg -s libicu70 >/dev/null 2>&1; then
-        curl -L -o /tmp/libicu70.deb \
-          http://archive.ubuntu.com/ubuntu/pool/universe/i/icu/libicu70_70.1-2_amd64.deb
-        sudo dpkg -i /tmp/libicu70.deb || true
-      fi
-  
-    # -------- Start usług, które nie ruszają automatycznie -------------
-    - |
-      for svc in mysql postgresql redis-server rabbitmq-server docker; do
-        sudo systemctl start "$svc" 2>/dev/null || true
-      done
-      # chwila dla powolnych daemonów (Docker, Elasticsearch itp.)
-      sleep 15
-  
-  # ---------------------- Kroki „build-time” ---------------------------
-  install:
-    # Twój własny skrypt + ewentualne build-time dependencies
-    - chmod +x scripts/script1.sh
-    - scripts/script1.sh
-  
-  # ---------------------- Testy / smoke-check --------------------------
   script: |
     echo "JAVA_HOME=$JAVA_HOME"
     java -XshowSettings:properties -version 2>&1 | grep 'java.home'
