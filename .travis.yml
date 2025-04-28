@@ -1,6 +1,7 @@
 language: generic
 os: linux
-dist: bionic
+dist: jammy
+group: dev
 sudo: required
 
 services:
