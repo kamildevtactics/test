@@ -1,5 +1,6 @@
 language: shell
 dist: noble
+group: dev
 
 services:
   - elasticserach
