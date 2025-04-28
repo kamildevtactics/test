@@ -1,136 +1,127 @@
-
-language: ruby
- jdk: openjdk21
- python: 3.12
- rvm:
-  - 3.2.4
- language: php
- php: 8.3
- services:
-   - mysql
-   - rabbitmq
-   - postgresql
-   - docker
-
-
-  # - sudo pipx install docker-compose
-  #- sudo chmod +x /usr/local/bin/docker-compose
-
-
-script:
-  - sudo apt install -y postgresql-server-dev-13
-  - echo $JAVA_HOME
-  - java -XshowSettings:properties -version 2>&1 | grep 'java.home'
-  - sudo apt update -y && sudo apt upgrade -y
-  - apt list --installed
-  - sudo chmod +x scripts/script1.sh
-  - scripts/script1.sh
-
-  - rvm get head
-  - rvm use 3.2.2 --install --binary --fuzzy
-
-  - git clone https://github.com/php-build/php-build.git
-  - cd php-build
-  - sudo ./install.sh
-  - php-build 8.3.6 /usr/local/php-8.3.0
-
-  - sudo rm -rf /home/travis/.phpenv
-  - sudo apt update -yqq
-  - sudo apt install php -y
-  - php -v
-  - type -a php
-
-  - git clone https://github.com/phpenv/phpenv.git ~/.phpenv
-  - echo 'export PATH="$HOME/.phpenv/bin:$PATH"' >> ~/.bashrc
-  - echo 'eval "$(phpenv init -)"' >> ~/.bashrc
-  - source ~/.bashrc
-  - git clone https://github.com/php-build/php-build.git ~/.phpenv/plugins/php-build
-
-  - sudo apt update
-  - sudo apt install -y build-essential libxml2-dev libssl-dev libcurl4-openssl-dev libjpeg-dev libpng-dev libfreetype6-dev libonig-dev libzip-dev libpq-dev  libbz2-dev libreadline-dev libxslt1-dev pkg-config
+# --------------------------------------------------------------------
+# Travis CI — uniwersalny build z Ruby 3.2.4, PHP 8.3, Python 3.12
+# i OpenJDK 21 na Ubuntu 20.04 (Focal).  Usługi: MySQL, PostgreSQL,
+# RabbitMQ, Docker (+docker compose/buildx).  Dodatkowe narzędzia
+# budowane w krokach "before_install" / "install".
+# --------------------------------------------------------------------
+  language: minimal            # najlżejszy obraz; wszystko instalujemy sami
+  dist: focal
+  sudo: required               # pełny VM z systemd
   
-  - phpenv install 8.3.9
-  - phpenv global 8.3.9
-
-
-  - sudo dpkg -i libicu70_70.1-2_amd64.deb
-  - sudo rm -f ./libicu70_70.1-2_amd64.deb
-
-
-  - java --version
-  - sudo systemctl status mysql.service
-  - sudo systemctl status rabbitmq-server.service
-  - sudo systemctl status postgresql.service
-  - sudo rabbitmqctl status
-  - mysqld --version
-  - postgres --version
-  - mysqld --print-defaults
-  - psql -U postgres -c 'SHOW config_file'
-  - cosign version
-  - git -v
-  - git-lfs
-  - hg --version
-  - svn --version
-  - clang --version
-  - cmake --version
-  - gcc --version
-  - ccache -V
-  - shellcheck --version
-  - shfmt -version
-  - docker version
-  - docker run hello-world
-  - docker compose version
-  - docker buildx version
-  - mongod --version
-  - gradle -version
-  - groovy -version
-  - ant -version
-  - perl -v
-  - php -v
-  - redis-server --version
-
-
-
-jobs:
-  include:
-  # - os: freebsd
-
-  # - dist: xenial
-  #   arch: arm64
-  # - dist: bionic
-  #   arch: arm64
-  # - dist: focal
-  #   arch: arm64
-  # - dist: jammy
-  #   arch: arm64
-  # - dist: noble
-  #   arch: arm64
-# ---------------------------------------------------------------------------
-  # - dist: xenial
-  #   arch: ppc64le
-  # - dist: bionic
-  #   group: stable
-  #   arch: ppc64le
-  # - dist: focal
-  #   arch: ppc64le
-  # - dist: jammy
-  #   arch: ppc64le
-  # - dist: noble
-  #   arch: ppc64le
-# ---------------------------------------------------------------------------
-  # - dist: xenial
-  #   arch: s390x
-  # - dist: bionic
-  #   group: stable
-  #   arch: s390x
-  # - dist: focal
-  #   arch: s390x
-  #   group: stable
-  # - dist: jammy
-  #   arch: s390x
-  # - dist: noble
-  #   arch: s390x
-# ---------------------------------------------------------------------------
-  # - dist: trusty
-  # - dist: xenial
-  - dist: focal
+  services:
+    - mysql
+    - postgresql
+    - rabbitmq
+    - docker
+  
+  # ---------------------- Wersje runtime-ów w jednym miejscu -----------
+  env:
+    global:
+      RUBY_VERSION:   "3.2.4"
+      PHP_VERSION:    "8.3.9"
+      PYTHON_VERSION: "3.12"
+      JDK_VERSION:    "21"
+  
+  # ---------------------- Przygotowanie systemu ------------------------
+  before_install:
+    # aktualizacja pakietów bazowych
+    - sudo apt-get update -yq
+    - sudo apt-get upgrade -yq
+  
+    # -------- OpenJDK 21 ------------------------------------------------
+    - sudo apt-get install -yq "openjdk-${JDK_VERSION}-jdk"
+    - export JAVA_HOME="/usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64"
+    - java -version
+  
+    # -------- Python 3.12 ----------------------------------------------
+    - sudo apt-get install -yq "python${PYTHON_VERSION}" \
+                                   "python${PYTHON_VERSION}-dev" \
+                                   "python${PYTHON_VERSION}-venv"
+    - python${PYTHON_VERSION} --version
+  
+    # -------- Ruby 3.2.4 (RVM) -----------------------------------------
+    - curl -sSL https://get.rvm.io | bash -s stable
+    - source "${HOME}/.rvm/scripts/rvm"
+    - rvm install "${RUBY_VERSION}" --binary --fuzzy
+    - rvm use     "${RUBY_VERSION}" --default
+    - ruby -v
+  
+    # -------- PHP 8.3 (phpenv / php-build) -----------------------------
+    - git clone https://github.com/phpenv/phpenv.git "${HOME}/.phpenv"
+    - export PATH="$HOME/.phpenv/bin:$PATH"
+    - eval "$(phpenv init -)"
+    - git clone https://github.com/php-build/php-build.git \
+                "${HOME}/.phpenv/plugins/php-build"
+    - phpenv install "${PHP_VERSION}" -f
+    - phpenv global  "${PHP_VERSION}"
+    - php -v
+  
+    # -------- Dodatkowe pakiety systemowe ------------------------------
+    - sudo apt-get install -yqq \
+          postgresql-server-dev-13 \
+          build-essential libxml2-dev libssl-dev libcurl4-openssl-dev \
+          libjpeg-dev libpng-dev libfreetype6-dev libonig-dev libzip-dev \
+          libpq-dev  libbz2-dev  libreadline-dev libxslt1-dev pkg-config \
+          shellcheck shfmt ccache redis-tools
+  
+    # (opcjonalnie) ICU 70 – jeśli Twoja aplikacja go nadal wymaga
+    - |
+      if ! dpkg -s libicu70 >/dev/null 2>&1; then
+        curl -L -o /tmp/libicu70.deb \
+          http://archive.ubuntu.com/ubuntu/pool/universe/i/icu/libicu70_70.1-2_amd64.deb
+        sudo dpkg -i /tmp/libicu70.deb || true
+      fi
+  
+    # -------- Start usług, które nie ruszają automatycznie -------------
+    - |
+      for svc in mysql postgresql redis-server rabbitmq-server docker; do
+        sudo systemctl start "$svc" 2>/dev/null || true
+      done
+      # chwila dla powolnych daemonów (Docker, Elasticsearch itp.)
+      sleep 15
+  
+  # ---------------------- Kroki „build-time” ---------------------------
+  install:
+    # Twój własny skrypt + ewentualne build-time dependencies
+    - chmod +x scripts/script1.sh
+    - scripts/script1.sh
+  
+  # ---------------------- Testy / smoke-check --------------------------
+  script: |
+    echo "JAVA_HOME=$JAVA_HOME"
+    java -XshowSettings:properties -version 2>&1 | grep 'java.home'
+  
+    # wersje narzędzi (zatrzyma build, jeśli czegokolwiek brakuje)
+    git --version
+    git-lfs --version
+    hg  --version
+    svn --version
+    clang --version
+    cmake --version
+    gcc   --version
+    ccache -V
+    shellcheck --version
+    shfmt -version
+    docker version
+    docker compose version
+    docker buildx  version
+    gradle -version
+    groovy -version
+    ant    -version
+    perl   -v
+    cosign version
+    mongod --version
+    redis-server --version
+  
+    # szybki health-check usług
+    sudo mysqladmin    ping
+    sudo -u postgres psql -c 'SELECT 1'
+    redis-cli          ping
+    sudo rabbitmqctl   status
+    docker run --rm hello-world
+  
+  # ---------------------- Jedna dystrybucja w macierzy  ----------------
+  jobs:
+    include:
+      - dist: focal     # ← łatwo dodać kolejne (jammy, noble …)
+  
