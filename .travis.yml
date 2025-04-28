@@ -1,6 +1,6 @@
 language: generic
 os: linux
-dist: focal
+dist: bionic
 group: dev
 sudo: required
 
