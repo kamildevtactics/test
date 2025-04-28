@@ -24,9 +24,7 @@
     - java -version
   
     # -------- Python 3.12 ----------------------------------------------
-    - sudo apt-get install -yq "python${PYTHON_VERSION}" \
-                                   "python${PYTHON_VERSION}-dev" \
-                                   "python${PYTHON_VERSION}-venv"
+    - sudo apt-get install -yq "python${PYTHON_VERSION}"
     - python${PYTHON_VERSION} --version
   
     # -------- Ruby 3.2.4 (RVM) -----------------------------------------
