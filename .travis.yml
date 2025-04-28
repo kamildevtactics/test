@@ -1,50 +1,60 @@
-  services:
-    - mysql
-    - postgresql
-    - rabbitmq
-    - docker
-  
-  env:
-    global:
-      RUBY_VERSION:   "3.2.4"
-      PHP_VERSION:    "8.3.9"
-      PYTHON_VERSION: "3.12"
-      JDK_VERSION:    "21"
-  
-  script: |
-    - echo "JAVA_HOME=$JAVA_HOME"
-    - java -XshowSettings:properties -version 2>&1 | grep 'java.home'
-  
-    - git --version
-    - git-lfs --version
-    - hg  --version
-    - svn --version
-    - clang --version
-    - cmake --version
-    - gcc   --version
-    - ccache -V
-    - shellcheck --version
-    - shfmt -version
-    - docker version
-    - docker compose version
-    - docker buildx  version
-    - gradle -version
-    - groovy -version
-    - ant    -version
-    - perl   -v
-    - cosign version
-    - mongod --version
-    - redis-server --version
-  
+language: generic
+os: linux
+dist: focal
+sudo: required
 
-    - sudo mysqladmin    ping
-    - sudo -u postgres psql -c 'SELECT 1'
-    - redis-cli          ping
-    - sudo rabbitmqctl   status
-    - docker run --rm hello-world
-  
+services:
+  - docker
+  - mysql
+  - postgresql
+  - rabbitmq
+  - redis-server
 
-  jobs:
-    include:
-      - dist: focal
-  
+env:
+  global:
+    - RUBY_VERSION=3.2.4
+    - PHP_VERSION=8.3.9
+    - PYTHON_VERSION=3.12
+    - JDK_VERSION=21
+
+# ---------------------------------------------------------------------------
+# Commands to verify compiler / SCM / DB / message‑bus / container runtimes
+# ---------------------------------------------------------------------------
+script:
+  - echo "JAVA_HOME=$JAVA_HOME"
+  - java -XshowSettings:properties -version 2>&1 | grep 'java.home'
+
+  # ─── VCS & build‑toolchain versions ───────────────────────────────────────
+  - git --version
+  - git-lfs --version
+  - hg --version
+  - svn --version
+  - clang --version
+  - cmake --version
+  - gcc --version
+  - ccache -V
+  - shellcheck --version
+  - shfmt -version
+
+  # ─── Container & supply‑chain tools ───────────────────────────────────────
+  - docker version
+  - docker compose version
+  - docker buildx version
+  - cosign version
+
+  # ─── JVM & scripting build tools ─────────────────────────────────────────
+  - gradle -version
+  - groovy -version
+  - ant -version
+  - perl -v
+
+  # ─── Databases & cache ───────────────────────────────────────────────────
+  - mongod --version
+  - redis-server --version
+
+  # ─── Health‑checks ───────────────────────────────────────────────────────
+  - sudo mysqladmin ping
+  - sudo -u postgres psql -c 'SELECT 1'
+  - redis-cli ping
+  - sudo rabbitmqctl status
+  - docker run --rm hello-world
