@@ -1,13 +1,3 @@
-# --------------------------------------------------------------------
-# Travis CI — uniwersalny build z Ruby 3.2.4, PHP 8.3, Python 3.12
-# i OpenJDK 21 na Ubuntu 20.04 (Focal).  Usługi: MySQL, PostgreSQL,
-# RabbitMQ, Docker (+docker compose/buildx).  Dodatkowe narzędzia
-# budowane w krokach "before_install" / "install".
-# --------------------------------------------------------------------
-  language: minimal            # najlżejszy obraz; wszystko instalujemy sami
-  dist: focal
-  sudo: required               # pełny VM z systemd
-  
   services:
     - mysql
     - postgresql
