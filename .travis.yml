@@ -1,6 +1,6 @@
 language: generic
 os: linux
-dist: jammy
+dist: noble
 group: dev
 sudo: required
 
