@@ -4,7 +4,6 @@
     - rabbitmq
     - docker
   
-  # ---------------------- Wersje runtime-ów w jednym miejscu -----------
   env:
     global:
       RUBY_VERSION:   "3.2.4"
@@ -13,40 +12,39 @@
       JDK_VERSION:    "21"
   
   script: |
-    echo "JAVA_HOME=$JAVA_HOME"
-    java -XshowSettings:properties -version 2>&1 | grep 'java.home'
+    - echo "JAVA_HOME=$JAVA_HOME"
+    - java -XshowSettings:properties -version 2>&1 | grep 'java.home'
   
-    # wersje narzędzi (zatrzyma build, jeśli czegokolwiek brakuje)
-    git --version
-    git-lfs --version
-    hg  --version
-    svn --version
-    clang --version
-    cmake --version
-    gcc   --version
-    ccache -V
-    shellcheck --version
-    shfmt -version
-    docker version
-    docker compose version
-    docker buildx  version
-    gradle -version
-    groovy -version
-    ant    -version
-    perl   -v
-    cosign version
-    mongod --version
-    redis-server --version
+    - git --version
+    - git-lfs --version
+    - hg  --version
+    - svn --version
+    - clang --version
+    - cmake --version
+    - gcc   --version
+    - ccache -V
+    - shellcheck --version
+    - shfmt -version
+    - docker version
+    - docker compose version
+    - docker buildx  version
+    - gradle -version
+    - groovy -version
+    - ant    -version
+    - perl   -v
+    - cosign version
+    - mongod --version
+    - redis-server --version
   
-    # szybki health-check usług
-    sudo mysqladmin    ping
-    sudo -u postgres psql -c 'SELECT 1'
-    redis-cli          ping
-    sudo rabbitmqctl   status
-    docker run --rm hello-world
+
+    - sudo mysqladmin    ping
+    - sudo -u postgres psql -c 'SELECT 1'
+    - redis-cli          ping
+    - sudo rabbitmqctl   status
+    - docker run --rm hello-world
   
-  # ---------------------- Jedna dystrybucja w macierzy  ----------------
+
   jobs:
     include:
-      - dist: focal     # ← łatwo dodać kolejne (jammy, noble …)
+      - dist: focal
   
