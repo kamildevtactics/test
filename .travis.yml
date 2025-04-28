@@ -1,5 +1,5 @@
 language: shell
-dist: noble
+dist: bionic
 group: dev
 
 services:
